@@ -1,5 +1,13 @@
 <section id="home" class="slider-area slider-showcase-area fix p-relative">
     <style>
+        .header-three .menu-area:not(.sticky-menu),
+        .header-three .menu-area:not(.sticky-menu) .second-menu,
+        .header-three .menu-area:not(.sticky-menu) .container,
+        .header-three .menu-area:not(.sticky-menu) .container-fluid {
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
         .slider-showcase-area,
         .slider-showcase-active {
             background: #000;
