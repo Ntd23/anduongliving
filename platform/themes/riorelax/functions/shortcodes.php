@@ -904,6 +904,45 @@ app()->booted(function (): void {
     });
 
     Shortcode::register(
+        'onsen-spa-gallery',
+        __('Onsen Spa Gallery'),
+        __('Dark background gallery with title, 6 images and 2 buttons'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.onsen-spa-gallery.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setAdminConfig('onsen-spa-gallery', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Background image'))
+                    ->toArray()
+            )
+            ->add('background_title', TextField::class, TextFieldOption::make()->label(__('Large background title'))->toArray())
+            ->add('subtitle', TextField::class, TextFieldOption::make()->label(__('Subtitle'))->toArray())
+            ->add('item_title_1', TextField::class, TextFieldOption::make()->label(__('Image title 1'))->toArray())
+            ->add('item_image_1', MediaImageField::class, MediaImageFieldOption::make()->label(__('Image 1'))->toArray())
+            ->add('item_title_2', TextField::class, TextFieldOption::make()->label(__('Image title 2'))->toArray())
+            ->add('item_image_2', MediaImageField::class, MediaImageFieldOption::make()->label(__('Image 2'))->toArray())
+            ->add('item_title_3', TextField::class, TextFieldOption::make()->label(__('Image title 3'))->toArray())
+            ->add('item_image_3', MediaImageField::class, MediaImageFieldOption::make()->label(__('Image 3'))->toArray())
+            ->add('item_title_4', TextField::class, TextFieldOption::make()->label(__('Image title 4'))->toArray())
+            ->add('item_image_4', MediaImageField::class, MediaImageFieldOption::make()->label(__('Image 4'))->toArray())
+            ->add('item_title_5', TextField::class, TextFieldOption::make()->label(__('Image title 5'))->toArray())
+            ->add('item_image_5', MediaImageField::class, MediaImageFieldOption::make()->label(__('Image 5'))->toArray())
+            ->add('item_title_6', TextField::class, TextFieldOption::make()->label(__('Image title 6'))->toArray())
+            ->add('item_image_6', MediaImageField::class, MediaImageFieldOption::make()->label(__('Image 6'))->toArray())
+            ->add('section_label', TextField::class, TextFieldOption::make()->label(__('Section label'))->toArray())
+            ->add('button_label_1', TextField::class, TextFieldOption::make()->label(__('Button label 1'))->toArray())
+            ->add('button_url_1', TextField::class, TextFieldOption::make()->label(__('Button URL 1'))->toArray())
+            ->add('button_label_2', TextField::class, TextFieldOption::make()->label(__('Button label 2'))->toArray())
+            ->add('button_url_2', TextField::class, TextFieldOption::make()->label(__('Button URL 2'))->toArray());
+    });
+
+    Shortcode::register(
         'why-choose-us',
         __('Why Choose Us'),
         __('Why Choose Us'),
