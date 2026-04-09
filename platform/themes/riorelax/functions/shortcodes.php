@@ -839,6 +839,71 @@ app()->booted(function (): void {
     });
 
     Shortcode::register(
+        'spa-collage-showcase',
+        __('Spa Collage Showcase'),
+        __('Two large top panels with four bottom images'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.spa-collage-showcase.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setAdminConfig('spa-collage-showcase', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'left_panel_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Left panel background image'))
+                    ->toArray()
+            )
+            ->add(
+                'right_panel_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Right panel image'))
+                    ->toArray()
+            )
+            ->add('title', TextField::class, TextFieldOption::make()->label(__('Title'))->toArray())
+            ->add('subtitle', TextField::class, TextFieldOption::make()->label(__('Subtitle'))->toArray())
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(6)
+                    ->label(__('Description'))
+                    ->toArray()
+            )
+            ->add(
+                'bottom_image_1',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Bottom image 1'))
+                    ->toArray()
+            )
+            ->add(
+                'bottom_image_2',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Bottom image 2'))
+                    ->toArray()
+            )
+            ->add(
+                'bottom_image_3',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Bottom image 3'))
+                    ->toArray()
+            )
+            ->add(
+                'bottom_image_4',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Bottom image 4'))
+                    ->toArray()
+            );
+    });
+
+    Shortcode::register(
         'why-choose-us',
         __('Why Choose Us'),
         __('Why Choose Us'),
