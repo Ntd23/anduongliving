@@ -65,9 +65,9 @@
         .room-mosaic-showcase__collage {
             display: block;
             margin: -140px auto 40px;
-            max-width: 1423px;
+            max-width: 1138px;
             position: relative;
-            width: min(calc(100% - 32px), 1423px);
+            width: min(calc(100% - 32px), 1138px);
             z-index: 2;
         }
 
@@ -86,7 +86,7 @@
         }
 
         .room-mosaic-showcase__main {
-            min-height: 360px;
+            min-height: 288px;
         }
 
         .room-mosaic-showcase__content {
