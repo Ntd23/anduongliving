@@ -343,9 +343,8 @@
 .slider-showcase-content {
     align-items: center;
     display: flex;
-    flex-direction: column;
     inset: 0;
-    justify-content: space-between;
+    justify-content: center;
     padding: 42px 32px 28px;
     pointer-events: none;
     position: absolute;
@@ -363,6 +362,7 @@
 }
 
 .slider-showcase-caption {
+    align-self: flex-end;
     color: rgba(255, 255, 255, 0.96);
     font-size: clamp(15px, 1.15vw, 24px);
     letter-spacing: 0.08em;

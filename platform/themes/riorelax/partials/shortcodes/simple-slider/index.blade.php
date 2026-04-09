@@ -74,9 +74,8 @@
         .slider-showcase-content {
             align-items: center;
             display: flex;
-            flex-direction: column;
             inset: 0;
-            justify-content: space-between;
+            justify-content: center;
             padding: 42px 32px 28px;
             pointer-events: none;
             position: absolute;
@@ -94,6 +93,7 @@
         }
 
         .slider-showcase-caption {
+            align-self: flex-end;
             color: rgba(255, 255, 255, 0.96);
             font-size: clamp(15px, 1.15vw, 24px);
             letter-spacing: 0.08em;
@@ -132,9 +132,10 @@
             @php
                 $imageUrl = RvMedia::getImageUrl($slider->image);
                 $title = BaseHelper::clean($slider->title);
+                $subtitle = BaseHelper::clean($slider->getMetaData('subtitle', true));
                 $description = BaseHelper::clean($slider->description);
                 $buttonPrimaryUrl = $slider->getMetaData('button_primary_url', true);
-                $caption = $description ?: null;
+                $caption = $subtitle ?: ($description ?: $title);
             @endphp
 
             <div class="single-slider slider-bg slider-showcase-slide">
@@ -150,15 +151,9 @@
 
                 <div class="slider-showcase-overlay"></div>
 
-                @if ($title || $caption)
+                @if ($caption)
                     <div class="slider-showcase-content">
-                        @if ($title)
-                            <h2 class="slider-showcase-title" data-animation="fadeInDown" data-delay=".3s">{!! $title !!}</h2>
-                        @endif
-
-                        @if ($caption)
-                            <p class="slider-showcase-caption" data-animation="fadeInUp" data-delay=".5s">{!! $caption !!}</p>
-                        @endif
+                        <p class="slider-showcase-caption" data-animation="fadeInUp" data-delay=".3s">{!! $caption !!}</p>
                     </div>
                 @endif
             </div>
