@@ -757,6 +757,74 @@ app()->booted(function (): void {
     });
 
     Shortcode::register(
+        'room-mosaic-showcase',
+        __('Room Mosaic Showcase'),
+        __('Large hero background with mosaic images and 8 room blocks'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            $rooms = Shortcode::fields()->getTabsData(['title', 'image'], $shortcode);
+
+            return Theme::partial('shortcodes.room-mosaic-showcase.index', compact('shortcode', 'rooms'));
+        }
+    );
+
+    Shortcode::setAdminConfig('room-mosaic-showcase', function (array $attributes) {
+        $fields = [
+            'title' => [
+                'title' => __('Room title'),
+                'required' => true,
+            ],
+            'image' => [
+                'type' => 'image',
+                'title' => __('Room image'),
+                'required' => true,
+            ],
+        ];
+
+        return ShortcodeForm::createFromArray($attributes)
+            ->add('title', TextField::class, TextFieldOption::make()->label(__('Title'))->toArray())
+            ->add('subtitle', TextField::class, TextFieldOption::make()->label(__('Subtitle'))->toArray())
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(4)
+                    ->label(__('Description'))
+                    ->toArray()
+            )
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Top background image'))
+                    ->toArray()
+            )
+            ->add(
+                'main_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Main large image'))
+                    ->toArray()
+            )
+            ->add(
+                'side_text',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(5)
+                    ->label(__('Right side text'))
+                    ->helperText(__('This text will be shown beside the 8 room blocks'))
+                    ->toArray()
+            )
+            ->add(
+                'tabs',
+                ShortcodeTabsField::class,
+                ShortcodeTabsFieldOption::make()
+                    ->attrs($attributes)
+                    ->fields($fields)
+                    ->toArray()
+            );
+    });
+
+    Shortcode::register(
         'why-choose-us',
         __('Why Choose Us'),
         __('Why Choose Us'),
