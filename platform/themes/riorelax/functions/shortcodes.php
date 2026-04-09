@@ -815,6 +815,20 @@ app()->booted(function (): void {
                     ->toArray()
             )
             ->add(
+                'button_label',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Bottom button label'))
+                    ->toArray()
+            )
+            ->add(
+                'button_url',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Bottom button URL'))
+                    ->toArray()
+            )
+            ->add(
                 'tabs',
                 ShortcodeTabsField::class,
                 ShortcodeTabsFieldOption::make()

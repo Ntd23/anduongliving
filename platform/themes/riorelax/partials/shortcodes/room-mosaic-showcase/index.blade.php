@@ -130,6 +130,52 @@
             padding-top: 8px;
         }
 
+        .room-mosaic-showcase__cta {
+            margin-top: 18px;
+            text-align: center;
+        }
+
+        .room-mosaic-showcase__cta-line {
+            background: #b19143;
+            height: 1px;
+            margin: 0 auto 14px;
+            max-width: 252px;
+            width: 100%;
+        }
+
+        .room-mosaic-showcase__cta-title {
+            color: #b19143;
+            font-family: var(--heading-font), sans-serif;
+            font-size: clamp(15.6px, 1.2vw, 26.4px);
+            letter-spacing: 0.04em;
+            line-height: 1.2;
+            margin: 0 0 16px;
+            text-transform: uppercase;
+        }
+
+        .room-mosaic-showcase__cta-button {
+            background: #b19143;
+            color: #fff;
+            display: inline-flex;
+            justify-content: center;
+            min-width: min(100%, 312px);
+            padding: 13px 17px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .room-mosaic-showcase__cta-button:hover {
+            background: #9e7f34;
+            color: #fff;
+        }
+
+        .room-mosaic-showcase__cta-button span {
+            font-size: clamp(16.8px, 1.44vw, 34.8px);
+            letter-spacing: 0.06em;
+            line-height: 1;
+        }
+
         .room-mosaic-showcase__side-text {
             color: #2d241d;
             font-size: 14px;
@@ -249,4 +295,21 @@
             </div>
         </aside>
     </div>
+
+    @if ($shortcode->button_label)
+        <div class="room-mosaic-showcase__cta">
+            <div class="room-mosaic-showcase__cta-line"></div>
+            <h3 class="room-mosaic-showcase__cta-title">{{ __('Guest Room') }}</h3>
+
+            @if ($shortcode->button_url)
+                <a class="room-mosaic-showcase__cta-button" href="{{ $shortcode->button_url }}">
+                    <span>{!! BaseHelper::clean($shortcode->button_label) !!}</span>
+                </a>
+            @else
+                <div class="room-mosaic-showcase__cta-button">
+                    <span>{!! BaseHelper::clean($shortcode->button_label) !!}</span>
+                </div>
+            @endif
+        </div>
+    @endif
 </section>
