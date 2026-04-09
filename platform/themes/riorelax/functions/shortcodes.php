@@ -712,6 +712,51 @@ app()->booted(function (): void {
     });
 
     Shortcode::register(
+        'logo-showcase-banner',
+        __('Logo Showcase Banner'),
+        __('Large background section with centered logo and bottom text'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.logo-showcase-banner.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setAdminConfig('logo-showcase-banner', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Background image'))
+                    ->toArray()
+            )
+            ->add(
+                'logo_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Center logo'))
+                    ->toArray()
+            )
+            ->add(
+                'top_text',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->label(__('Top text'))
+                    ->helperText(__('Each line will be shown on a new row'))
+                    ->rows(6)
+                    ->toArray()
+            )
+            ->add(
+                'bottom_text',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->label(__('Bottom text'))
+                    ->helperText(__('Each line will be shown on a new row'))
+                    ->rows(4)
+                    ->toArray()
+            );
+    });
+
+    Shortcode::register(
         'why-choose-us',
         __('Why Choose Us'),
         __('Why Choose Us'),
