@@ -943,6 +943,53 @@ app()->booted(function (): void {
     });
 
     Shortcode::register(
+        'forest-facility-showcase',
+        __('Forest Facility Showcase'),
+        __('Soft left image fade, center content and 2 right images'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.forest-facility-showcase.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setAdminConfig('forest-facility-showcase', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'left_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Left image'))
+                    ->toArray()
+            )
+            ->add(
+                'right_image_1',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Right image 1'))
+                    ->toArray()
+            )
+            ->add(
+                'right_image_2',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Right image 2'))
+                    ->toArray()
+            )
+            ->add('title', TextField::class, TextFieldOption::make()->label(__('Title'))->toArray())
+            ->add('subtitle', TextField::class, TextFieldOption::make()->label(__('Subtitle'))->toArray())
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(5)
+                    ->label(__('Description'))
+                    ->toArray()
+            )
+            ->add('section_label', TextField::class, TextFieldOption::make()->label(__('Section label'))->toArray())
+            ->add('button_label', TextField::class, TextFieldOption::make()->label(__('Button label'))->toArray())
+            ->add('button_url', TextField::class, TextFieldOption::make()->label(__('Button URL'))->toArray());
+    });
+
+    Shortcode::register(
         'why-choose-us',
         __('Why Choose Us'),
         __('Why Choose Us'),
