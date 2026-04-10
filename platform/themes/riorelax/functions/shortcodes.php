@@ -1083,6 +1083,70 @@ app()->booted(function (): void {
     });
 
     Shortcode::register(
+        'special-story-showcase',
+        __('Special Story Showcase'),
+        __('Dark section with decorative script text, 2 image cards with titles, nav row and CTA'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.special-story-showcase.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setAdminConfig('special-story-showcase', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Background image'))
+                    ->toArray()
+            )
+            ->add('decorative_text', TextField::class, TextFieldOption::make()->label(__('Decorative background text'))->toArray())
+            ->add('section_label', TextField::class, TextFieldOption::make()->label(__('Section label'))->toArray())
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(4)
+                    ->label(__('Description'))
+                    ->toArray()
+            )
+            ->add(
+                'image_1',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Image 1'))
+                    ->toArray()
+            )
+            ->add('image_1_title', TextField::class, TextFieldOption::make()->label(__('Image 1 overlay title'))->toArray())
+            ->add(
+                'image_2',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Image 2'))
+                    ->toArray()
+            )
+            ->add('image_2_title', TextField::class, TextFieldOption::make()->label(__('Image 2 overlay title'))->toArray())
+            ->add(
+                'nav_text_1',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(2)
+                    ->label(__('Navigation text 1 (left)'))
+                    ->toArray()
+            )
+            ->add(
+                'nav_text_2',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(2)
+                    ->label(__('Navigation text 2 (right)'))
+                    ->toArray()
+            )
+            ->add('button_label', TextField::class, TextFieldOption::make()->label(__('Button label'))->toArray())
+            ->add('button_url', TextField::class, TextFieldOption::make()->label(__('Button URL'))->toArray());
+    });
+
+    Shortcode::register(
         'why-choose-us',
         __('Why Choose Us'),
         __('Why Choose Us'),
