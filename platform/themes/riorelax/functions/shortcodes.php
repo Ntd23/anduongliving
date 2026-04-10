@@ -1044,6 +1044,45 @@ app()->booted(function (): void {
     });
 
     Shortcode::register(
+        'cuisine-showcase',
+        __('Cuisine Showcase'),
+        __('White background with centered title, description, 2 food images, label and button'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.cuisine-showcase.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setAdminConfig('cuisine-showcase', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add('title', TextField::class, TextFieldOption::make()->label(__('Title'))->toArray())
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(6)
+                    ->label(__('Description'))
+                    ->toArray()
+            )
+            ->add(
+                'image_1',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Image 1'))
+                    ->toArray()
+            )
+            ->add(
+                'image_2',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Image 2'))
+                    ->toArray()
+            )
+            ->add('section_label', TextField::class, TextFieldOption::make()->label(__('Section label'))->toArray())
+            ->add('button_label', TextField::class, TextFieldOption::make()->label(__('Button label'))->toArray())
+            ->add('button_url', TextField::class, TextFieldOption::make()->label(__('Button URL'))->toArray());
+    });
+
+    Shortcode::register(
         'why-choose-us',
         __('Why Choose Us'),
         __('Why Choose Us'),
