@@ -14,7 +14,7 @@
 
         .forest-facility-showcase__layout {
             display: grid;
-            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.45fr);
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.4fr);
             margin: 0 auto;
             max-width: 2048px;
             min-height: 660px;
@@ -41,42 +41,59 @@
             background: #f4eddc;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            padding: 58px 0 46px;
+            justify-content: space-between;
+            padding: 58px 40px;
             position: relative;
             z-index: 1;
         }
 
-        .forest-facility-showcase__content {
-            color: #7e5d17;
-            margin: 0 auto;
-            max-width: min(100%, 920px);
-            padding: 0 42px 36px;
+        .forest-facility-showcase__top {
+            display: flex;
+            justify-content: center;
             text-align: center;
+            width: 100%;
+            padding-bottom: 32px;
+            transform: translateX(280px);
+        }
+
+        .forest-facility-showcase__bottom {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            width: 100%;
+            transform: translateX(0px);
+        }
+
+        .forest-facility-showcase__bottom-text {
+            color: #7e5d17;
+            padding: 0;
+            text-align: left;
             width: 100%;
         }
 
         .forest-facility-showcase__title {
             color: #8a6518;
-            font-size: clamp(28px, 2.1vw, 48px);
+            font-size: clamp(18px, 1.5vw, 23px);
             font-weight: 700;
             letter-spacing: 0.08em;
             line-height: 1.65;
-            margin: 0 0 44px;
+            margin: 0 auto;
+            text-align: center;
         }
 
         .forest-facility-showcase__description {
             color: #4f4639;
-            font-size: clamp(14px, 0.92vw, 18px);
+            font-size: clamp(13px, 0.85vw, 16px);
             line-height: 2;
-            margin: 0 0 40px;
-            text-align: center;
+            margin: 0 0 36px;
+            text-align: left;
         }
 
         .forest-facility-showcase__line {
             background: #b19143;
             height: 1px;
-            margin: 0 auto 10px;
+            margin: 0 0 10px;
             width: 240px;
         }
 
@@ -85,6 +102,7 @@
             font-family: Georgia, "Times New Roman", serif;
             font-size: 15px;
             margin: 0 0 14px;
+            text-align: left;
             text-transform: uppercase;
         }
 
@@ -93,7 +111,7 @@
             color: #fff;
             display: inline-flex;
             justify-content: center;
-            min-width: 290px;
+            min-width: 220px;
             padding: 13px 22px;
             text-align: center;
             text-decoration: none;
@@ -106,8 +124,10 @@
         }
 
         .forest-facility-showcase__right {
+            align-self: center;
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0;
             overflow: hidden;
             width: 100%;
         }
@@ -116,7 +136,7 @@
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
-            min-height: 414px;
+            min-height: 336px;
             position: relative;
         }
 
@@ -129,17 +149,13 @@
 
         @media (max-width: 1199px) {
             .forest-facility-showcase__layout {
-                grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
                 min-height: 540px;
             }
 
             .forest-facility-showcase__left,
             .forest-facility-showcase__right-item {
                 min-height: 540px;
-            }
-
-            .forest-facility-showcase__right-item {
-                min-height: 340px;
             }
         }
 
@@ -148,18 +164,20 @@
                 grid-template-columns: 1fr;
             }
 
-            .forest-facility-showcase__left,
-            .forest-facility-showcase__right-item {
+            .forest-facility-showcase__left {
                 min-height: 360px;
             }
 
-            .forest-facility-showcase__stage {
-                padding: 40px 0 0;
+            .forest-facility-showcase__right-item {
+                min-height: 300px;
             }
 
-            .forest-facility-showcase__content {
-                max-width: 100%;
-                padding: 0 20px 28px;
+            .forest-facility-showcase__stage {
+                padding: 40px 24px;
+            }
+
+            .forest-facility-showcase__right {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
 
@@ -169,16 +187,17 @@
             }
 
             .forest-facility-showcase__right-item {
-                min-height: 280px;
+                min-height: 250px;
             }
         }
     </style>
 
     <div class="forest-facility-showcase__layout">
-        <div class="forest-facility-showcase__left" @if ($leftImage) style="background-image: url('{{ $leftImage }}');" @endif></div>
+        <div class="forest-facility-showcase__left" @if ($leftImage) style="background-image: url('{{ $leftImage }}');"
+        @endif></div>
 
         <div class="forest-facility-showcase__stage">
-            <div class="forest-facility-showcase__content">
+            <div class="forest-facility-showcase__top">
                 @if ($shortcode->title || $shortcode->subtitle)
                     <h2 class="forest-facility-showcase__title">
                         @if ($shortcode->title)
@@ -189,27 +208,37 @@
                         @endif
                     </h2>
                 @endif
-
-                @if ($shortcode->description)
-                    <div class="forest-facility-showcase__description">{!! BaseHelper::clean($shortcode->description) !!}</div>
-                @endif
-
-                @if ($shortcode->section_label)
-                    <div class="forest-facility-showcase__line"></div>
-                    <div class="forest-facility-showcase__label">{!! BaseHelper::clean($shortcode->section_label) !!}</div>
-                @endif
-
-                @if ($shortcode->button_label)
-                    <a class="forest-facility-showcase__button" href="{{ $shortcode->button_url ?: 'javascript:void(0)' }}">
-                        {!! BaseHelper::clean($shortcode->button_label) !!}
-                    </a>
-                @endif
             </div>
 
-            <div class="forest-facility-showcase__right">
-                <div class="forest-facility-showcase__right-item" @if ($rightImage1) style="background-image: url('{{ $rightImage1 }}');" @endif></div>
-                <div class="forest-facility-showcase__right-item" @if ($rightImage2) style="background-image: url('{{ $rightImage2 }}');" @endif></div>
+            <div class="forest-facility-showcase__bottom">
+                <div class="forest-facility-showcase__bottom-text">
+                    @if ($shortcode->description)
+                        <div class="forest-facility-showcase__description">
+                            {!! BaseHelper::clean($shortcode->description) !!}
+                        </div>
+                    @endif
+
+                    @if ($shortcode->section_label)
+                        <div class="forest-facility-showcase__line"></div>
+                        <div class="forest-facility-showcase__label">{!! BaseHelper::clean($shortcode->section_label) !!}
+                        </div>
+                    @endif
+
+                    @if ($shortcode->button_label)
+                        <a class="forest-facility-showcase__button"
+                            href="{{ $shortcode->button_url ?: 'javascript:void(0)' }}">
+                            {!! BaseHelper::clean($shortcode->button_label) !!}
+                        </a>
+                    @endif
+                </div>
             </div>
+        </div>
+
+        <div class="forest-facility-showcase__right">
+            <div class="forest-facility-showcase__right-item" @if ($rightImage1)
+            style="background-image: url('{{ $rightImage1 }}');" @endif></div>
+            <div class="forest-facility-showcase__right-item" @if ($rightImage2)
+            style="background-image: url('{{ $rightImage2 }}');" @endif></div>
         </div>
     </div>
 </section>
