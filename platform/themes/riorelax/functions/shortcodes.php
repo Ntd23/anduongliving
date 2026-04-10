@@ -1147,6 +1147,55 @@ app()->booted(function (): void {
     });
 
     Shortcode::register(
+        'location-tourism-showcase',
+        __('Location & Tourism Showcase'),
+        __('Dark section with map, 8-image grid, and access/tourism info boxes'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.location-tourism-showcase.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setAdminConfig('location-tourism-showcase', function (array $attributes) {
+        $form = ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Background image (nature)'))
+                    ->toArray()
+            )
+            ->add('decorative_text', TextField::class, TextFieldOption::make()->label(__('Decorative script text (e.g. Location)'))->toArray())
+            ->add('section_title', TextareaField::class, TextareaFieldOption::make()->label(__('Section title (JP)'))->rows(2)->toArray())
+            ->add(
+                'map_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Map image (Left side)'))
+                    ->toArray()
+            );
+
+        for ($i = 1; $i <= 8; $i++) {
+            $form->add(
+                'grid_image_' . $i,
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Grid image ' . $i))
+                    ->toArray()
+            );
+        }
+
+        return $form
+            ->add('access_label', TextField::class, TextFieldOption::make()->label(__('Access column label'))->toArray())
+            ->add('access_desc', TextareaField::class, TextareaFieldOption::make()->label(__('Access description text'))->rows(5)->toArray())
+            ->add('access_btn_label', TextField::class, TextFieldOption::make()->label(__('Access button label'))->toArray())
+            ->add('access_btn_url', TextField::class, TextFieldOption::make()->label(__('Access button URL'))->toArray())
+            ->add('tourism_label', TextField::class, TextFieldOption::make()->label(__('Tourism column label'))->toArray())
+            ->add('tourism_desc', TextareaField::class, TextareaFieldOption::make()->label(__('Tourism description text'))->rows(5)->toArray())
+            ->add('tourism_btn_label', TextField::class, TextFieldOption::make()->label(__('Tourism button label'))->toArray())
+            ->add('tourism_btn_url', TextField::class, TextFieldOption::make()->label(__('Tourism button URL'))->toArray());
+    });
+
+    Shortcode::register(
         'why-choose-us',
         __('Why Choose Us'),
         __('Why Choose Us'),
