@@ -4,241 +4,251 @@
     $rightImage2 = $shortcode->right_image_2 ? RvMedia::getImageUrl($shortcode->right_image_2) : null;
 @endphp
 
-<section class="forest-facility-showcase">
+<section class="rfs">
     <style>
-        .forest-facility-showcase {
-            background: #f4eddc;
-            overflow: hidden;
-            padding: 0;
-        }
-
-        .forest-facility-showcase__layout {
+        /* ── SECTION: single cell, 3 layers stacked ──────────── */
+        .rfs {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.4fr);
-            margin: 0 auto;
-            max-width: 2048px;
-            min-height: 660px;
-        }
-
-        .forest-facility-showcase__left {
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            min-height: 660px;
-            position: relative;
-        }
-
-        .forest-facility-showcase__left::after {
-            background:
-                linear-gradient(180deg, rgba(244, 237, 220, 0.02) 0%, rgba(244, 237, 220, 0.14) 70%, rgba(244, 237, 220, 0.74) 100%),
-                linear-gradient(90deg, rgba(244, 237, 220, 0) 0%, rgba(244, 237, 220, 0.2) 48%, rgba(244, 237, 220, 0.98) 100%);
-            content: "";
-            inset: 0;
-            position: absolute;
-        }
-
-        .forest-facility-showcase__stage {
+            grid-template: 1fr / 1fr;
+            min-height: 88vh;
+            overflow: hidden;
             background: #f4eddc;
+            font-family: 'Yu Mincho', 'Noto Serif JP', 'Times New Roman', Georgia, serif;
+        }
+
+        /* ── LAYER 1: images (bottom) ────────────────────────── */
+        .rfs__images {
+            grid-area: 1 / 1;
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 58px 40px;
-            position: relative;
             z-index: 1;
         }
 
-        .forest-facility-showcase__top {
-            display: flex;
-            justify-content: center;
-            text-align: center;
-            width: 100%;
-            padding-bottom: 32px;
-            transform: translateX(280px);
-        }
-
-        .forest-facility-showcase__bottom {
-            align-items: flex-start;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            width: 100%;
-            transform: translateX(0px);
-        }
-
-        .forest-facility-showcase__bottom-text {
-            color: #7e5d17;
-            padding: 0;
-            text-align: left;
-            width: 100%;
-        }
-
-        .forest-facility-showcase__title {
-            color: #8a6518;
-            font-size: clamp(18px, 1.5vw, 23px);
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            line-height: 1.65;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .forest-facility-showcase__description {
-            color: #4f4639;
-            font-size: clamp(13px, 0.85vw, 16px);
-            line-height: 2;
-            margin: 0 0 36px;
-            text-align: left;
-        }
-
-        .forest-facility-showcase__line {
-            background: #b19143;
-            height: 1px;
-            margin: 0 0 10px;
-            width: 240px;
-        }
-
-        .forest-facility-showcase__label {
-            color: #b19143;
-            font-family: Georgia, "Times New Roman", serif;
-            font-size: 15px;
-            margin: 0 0 14px;
-            text-align: left;
-            text-transform: uppercase;
-        }
-
-        .forest-facility-showcase__button {
-            background: #b19143;
-            color: #fff;
-            display: inline-flex;
-            justify-content: center;
-            min-width: 220px;
-            padding: 13px 22px;
-            text-align: center;
-            text-decoration: none;
-            transition: background-color .2s ease;
-        }
-
-        .forest-facility-showcase__button:hover {
-            background: #9b7d33;
-            color: #fff;
-        }
-
-        .forest-facility-showcase__right {
-            align-self: center;
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 0;
+        /* left big image */
+        .rfs__img-left {
+            flex: 0 0 35%;
+            position: relative;
             overflow: hidden;
+        }
+        .rfs__img-left img {
+            display: block;
             width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: 65% center;
+        }
+        /* fog overlay on left image */
+        .rfs__img-left::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(to right,
+                    rgba(244,237,220,0) 30%,
+                    rgba(244,237,220,0.88) 100%),
+                linear-gradient(to bottom,
+                    rgba(244,237,220,0) 55%,
+                    rgba(244,237,220,0.45) 100%);
+            pointer-events: none;
         }
 
-        .forest-facility-showcase__right-item {
+        /* right gallery: 2 images side by side */
+        .rfs__img-right {
+            flex: 0 0 45%;
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            padding: 12% 0;
+            overflow: hidden;
+        }
+        .rfs__img-right-item {
+            flex: 1;
+            height: 100%;
+            background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            background-size: cover;
-            min-height: 336px;
             position: relative;
         }
-
-        .forest-facility-showcase__right-item::after {
-            background: linear-gradient(180deg, rgba(244, 237, 220, 0) 0%, rgba(244, 237, 220, 0.04) 76%, rgba(244, 237, 220, 0.72) 100%);
-            content: "";
-            inset: 0;
+        .rfs__img-right-item:last-child {
+            flex: 0 0 55%;
+        }
+        .rfs__img-right-item::after {
+            content: '';
             position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom,
+                rgba(244,237,220,0) 60%,
+                rgba(244,237,220,0.3) 100%);
+            pointer-events: none;
         }
 
-        @media (max-width: 1199px) {
-            .forest-facility-showcase__layout {
-                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
-                min-height: 540px;
-            }
-
-            .forest-facility-showcase__left,
-            .forest-facility-showcase__right-item {
-                min-height: 540px;
-            }
+        /* ── LAYER 2: title (middle) ─────────────────────────── */
+        .rfs__title-layer {
+            grid-area: 1 / 1;
+            z-index: 2;
+            pointer-events: none;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 56px;
+            padding-left: 45%;
+            padding-right: 40px;
+        }
+        .rfs__heading {
+            pointer-events: auto;
+            color: #8a6518;
+            font-size: clamp(16px, 1.6vw, 26px);
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            line-height: 2;
+            margin: 0;
+            text-align: center;
         }
 
+        /* ── LAYER 3: info block (top) ───────────────────────── */
+        .rfs__info-layer {
+            grid-area: 1 / 1;
+            z-index: 3;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            padding-left: 38%;
+            padding-right: 55%;
+        }
+        .rfs__info {
+            pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .rfs__desc {
+            color: #4f4639;
+            font-size: 13px;
+            line-height: 2.1;
+            margin: 0 0 32px;
+            max-width: 320px;
+        }
+        .rfs__line {
+            background: #b19143;
+            height: 1px;
+            width: 220px;
+            margin-bottom: 12px;
+        }
+        .rfs__label {
+            color: #b19143;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 11px;
+            letter-spacing: 0.22em;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+        }
+        .rfs__btn {
+            background: #b19143;
+            color: #fff;
+            display: inline-block;
+            font-size: 13px;
+            letter-spacing: 0.06em;
+            min-width: 190px;
+            padding: 12px 28px;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.22s;
+        }
+        .rfs__btn:hover {
+            background: #9a7a32;
+            color: #fff;
+        }
+
+        /* ── RESPONSIVE ──────────────────────────────────────── */
         @media (max-width: 991px) {
-            .forest-facility-showcase__layout {
-                grid-template-columns: 1fr;
+            .rfs {
+                display: flex;
+                flex-direction: column;
+                min-height: auto;
             }
-
-            .forest-facility-showcase__left {
-                min-height: 360px;
+            .rfs__images {
+                flex-direction: column;
             }
-
-            .forest-facility-showcase__right-item {
-                min-height: 300px;
+            .rfs__img-left {
+                flex: none;
+                width: 100%;
+                height: 60vw;
+                min-height: 260px;
             }
-
-            .forest-facility-showcase__stage {
-                padding: 40px 24px;
+            .rfs__img-right {
+                flex: none;
+                width: 100%;
+                padding: 0;
+                min-height: 220px;
             }
-
-            .forest-facility-showcase__right {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+            .rfs__title-layer,
+            .rfs__info-layer {
+                position: relative;
+                grid-area: auto;
+                padding: 32px 24px;
+            }
+            .rfs__title-layer {
+                padding-left: 24px;
+                justify-content: flex-start;
+            }
+            .rfs__info-layer {
+                padding-left: 24px;
+                padding-right: 24px;
             }
         }
-
         @media (max-width: 640px) {
-            .forest-facility-showcase__right {
-                grid-template-columns: 1fr;
+            .rfs__heading {
+                font-size: clamp(14px, 5vw, 20px);
             }
-
-            .forest-facility-showcase__right-item {
-                min-height: 250px;
+            .rfs__img-right {
+                flex-direction: column;
+            }
+            .rfs__img-right-item,
+            .rfs__img-right-item:last-child {
+                flex: none;
+                width: 100%;
+                min-height: 200px;
             }
         }
     </style>
 
-    <div class="forest-facility-showcase__layout">
-        <div class="forest-facility-showcase__left" @if ($leftImage) style="background-image: url('{{ $leftImage }}');"
-        @endif></div>
-
-        <div class="forest-facility-showcase__stage">
-            <div class="forest-facility-showcase__top">
-                @if ($shortcode->title || $shortcode->subtitle)
-                    <h2 class="forest-facility-showcase__title">
-                        @if ($shortcode->title)
-                            {!! BaseHelper::clean($shortcode->title) !!}
-                        @endif
-                        @if ($shortcode->subtitle)
-                            <br>{!! BaseHelper::clean($shortcode->subtitle) !!}
-                        @endif
-                    </h2>
-                @endif
-            </div>
-
-            <div class="forest-facility-showcase__bottom">
-                <div class="forest-facility-showcase__bottom-text">
-                    @if ($shortcode->description)
-                        <div class="forest-facility-showcase__description">
-                            {!! BaseHelper::clean($shortcode->description) !!}
-                        </div>
-                    @endif
-
-                    @if ($shortcode->section_label)
-                        <div class="forest-facility-showcase__line"></div>
-                        <div class="forest-facility-showcase__label">{!! BaseHelper::clean($shortcode->section_label) !!}
-                        </div>
-                    @endif
-
-                    @if ($shortcode->button_label)
-                        <a class="forest-facility-showcase__button"
-                            href="{{ $shortcode->button_url ?: 'javascript:void(0)' }}">
-                            {!! BaseHelper::clean($shortcode->button_label) !!}
-                        </a>
-                    @endif
-                </div>
-            </div>
+    {{-- LAYER 1: All images --}}
+    <div class="rfs__images">
+        <div class="rfs__img-left">
+            @if($leftImage)
+                <img src="{{ $leftImage }}" alt="">
+            @endif
         </div>
-
-        <div class="forest-facility-showcase__right">
-            <div class="forest-facility-showcase__right-item" @if ($rightImage1)
-            style="background-image: url('{{ $rightImage1 }}');" @endif></div>
-            <div class="forest-facility-showcase__right-item" @if ($rightImage2)
-            style="background-image: url('{{ $rightImage2 }}');" @endif></div>
+        <div class="rfs__img-right">
+            @if($rightImage1)
+                <div class="rfs__img-right-item" style="background-image:url('{{ $rightImage1 }}')"></div>
+            @endif
+            @if($rightImage2)
+                <div class="rfs__img-right-item" style="background-image:url('{{ $rightImage2 }}')"></div>
+            @endif
         </div>
     </div>
+
+    {{-- LAYER 2: Title --}}
+    <div class="rfs__title-layer">
+        @if($shortcode->title)
+            <h2 class="rfs__heading">{!! BaseHelper::clean($shortcode->title) !!}</h2>
+        @endif
+    </div>
+
+    {{-- LAYER 3: Info (desc + line + label + button) --}}
+    <div class="rfs__info-layer">
+        <div class="rfs__info">
+            @if($shortcode->description)
+                <p class="rfs__desc">{!! BaseHelper::clean($shortcode->description) !!}</p>
+            @endif
+            <div class="rfs__line"></div>
+            @if($shortcode->section_label)
+                <span class="rfs__label">{!! BaseHelper::clean($shortcode->section_label) !!}</span>
+            @endif
+            @if($shortcode->button_label && $shortcode->button_url)
+                <a href="{{ $shortcode->button_url }}" class="rfs__btn">{{ $shortcode->button_label }}</a>
+            @endif
+        </div>
+    </div>
+
 </section>
