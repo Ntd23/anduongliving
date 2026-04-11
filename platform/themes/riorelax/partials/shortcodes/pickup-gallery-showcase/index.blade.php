@@ -1,12 +1,11 @@
 @php
-    $fallbackImage = Theme::asset()->url('images/pickup-gallery-showcase/pickup-gallery-showcase .jpeg');
-    $bgImage = $shortcode->background_image ? RvMedia::getImageUrl($shortcode->background_image) : $fallbackImage;
-    $image1  = $shortcode->image_1 ? RvMedia::getImageUrl($shortcode->image_1) : $fallbackImage;
-    $image2  = $shortcode->image_2 ? RvMedia::getImageUrl($shortcode->image_2) : $fallbackImage;
-    $image3  = $shortcode->image_3 ? RvMedia::getImageUrl($shortcode->image_3) : $fallbackImage;
+    $bgImage = $shortcode->background_image ? RvMedia::getImageUrl($shortcode->background_image) : null;
+    $image1  = $shortcode->image_1 ? RvMedia::getImageUrl($shortcode->image_1) : null;
+    $image2  = $shortcode->image_2 ? RvMedia::getImageUrl($shortcode->image_2) : null;
+    $image3  = $shortcode->image_3 ? RvMedia::getImageUrl($shortcode->image_3) : null;
 @endphp
 
-<section class="pickup" style="background-image:url('{{ $bgImage }}')">
+<section class="pickup" @if($bgImage) style="background-image:url('{{ $bgImage }}')" @endif>
     <style>
         /* ── SECTION ──────────────────────────────────────────── */
         .pickup {
@@ -213,9 +212,15 @@
 
         {{-- 3 images gallery --}}
         <div class="pickup__gallery">
-            <div class="pickup__gallery-item" style="background-image:url('{{ $image1 }}')"></div>
-            <div class="pickup__gallery-item" style="background-image:url('{{ $image2 }}')"></div>
-            <div class="pickup__gallery-item" style="background-image:url('{{ $image3 }}')"></div>
+            @if($image1)
+                <div class="pickup__gallery-item" style="background-image:url('{{ $image1 }}')"></div>
+            @endif
+            @if($image2)
+                <div class="pickup__gallery-item" style="background-image:url('{{ $image2 }}')"></div>
+            @endif
+            @if($image3)
+                <div class="pickup__gallery-item" style="background-image:url('{{ $image3 }}')"></div>
+            @endif
         </div>
 
         {{-- Info --}}

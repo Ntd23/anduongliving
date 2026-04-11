@@ -1,7 +1,5 @@
 @php
-    $backgroundImage = $shortcode->background_image
-        ? RvMedia::getImageUrl($shortcode->background_image)
-        : Theme::asset()->url('images/Onsen-Spa-Gallery/Onsen Spa Gallery.jpeg');
+    $backgroundImage = $shortcode->background_image ? RvMedia::getImageUrl($shortcode->background_image) : null;
     $items = collect(range(1, 6))->map(function ($index) use ($shortcode) {
         return [
             'title' => $shortcode->{'item_title_' . $index},
@@ -10,7 +8,7 @@
     })->filter(fn ($item) => $item['title'] || $item['image'])->values();
 @endphp
 
-<section class="onsen-spa-gallery" style="background-image: url('{{ $backgroundImage }}');">
+<section class="onsen-spa-gallery" @if ($backgroundImage) style="background-image: url('{{ $backgroundImage }}');" @endif>
     <style>
         .onsen-spa-gallery {
             background-color: #050505;
