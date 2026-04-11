@@ -53,6 +53,8 @@ app()->booted(function (): void {
             return Theme::getThemeNamespace('partials.shortcodes.simple-slider.index');
         });
 
+        Shortcode::setPreviewImage('simple-slider', Theme::asset()->url('images/silde-simple/1.jpeg'));
+
         Shortcode::register(
             'hero-banner-with-booking-form',
             __('Hero banner with booking form'),
@@ -719,6 +721,8 @@ app()->booted(function (): void {
             return Theme::partial('shortcodes.logo-showcase-banner.index', compact('shortcode'));
         }
     );
+
+    Shortcode::setPreviewImage('logo-showcase-banner', Theme::asset()->url('images/logo-showcase-banner/logo-show.jpeg'));
 
     Shortcode::setAdminConfig('logo-showcase-banner', function (array $attributes) {
         return ShortcodeForm::createFromArray($attributes)

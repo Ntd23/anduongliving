@@ -1,11 +1,13 @@
 @php
-    $backgroundImage = $shortcode->background_image ? RvMedia::getImageUrl($shortcode->background_image) : null;
+    $backgroundImage = $shortcode->background_image
+        ? RvMedia::getImageUrl($shortcode->background_image)
+        : Theme::asset()->url('images/logo-showcase-banner/logo-show.jpeg');
     $logoImage = $shortcode->logo_image ? RvMedia::getImageUrl($shortcode->logo_image) : null;
     $topLines = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) $shortcode->top_text))));
     $bottomLines = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) $shortcode->bottom_text))));
 @endphp
 
-<section class="logo-showcase-banner" @if ($backgroundImage) style="background-image: url('{{ $backgroundImage }}');" @endif>
+<section class="logo-showcase-banner" style="background-image: url('{{ $backgroundImage }}');">
     <style>
         .logo-showcase-banner {
             align-items: center;
