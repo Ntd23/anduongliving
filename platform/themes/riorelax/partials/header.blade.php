@@ -6,7 +6,8 @@
 @if ($isBottomStickyMenu)
     <style>
         @media (min-width: 992px) {
-            .header-area.header-three .menu-area.menu-area-bottom-sticky {
+            .header-area.header-three .menu-area.menu-area-bottom-sticky,
+            .header-area.header-three .menu-area.menu-area-bottom-sticky.sticky-menu {
                 background: rgba(0, 0, 0, 0.9) !important;
                 bottom: 0;
                 box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.28);
@@ -20,12 +21,16 @@
 
             .header-area.header-three .menu-area.menu-area-bottom-sticky .second-menu,
             .header-area.header-three .menu-area.menu-area-bottom-sticky .container,
-            .header-area.header-three .menu-area.menu-area-bottom-sticky .container-fluid {
+            .header-area.header-three .menu-area.menu-area-bottom-sticky .container-fluid,
+            .header-area.header-three .menu-area.menu-area-bottom-sticky.sticky-menu .second-menu,
+            .header-area.header-three .menu-area.menu-area-bottom-sticky.sticky-menu .container,
+            .header-area.header-three .menu-area.menu-area-bottom-sticky.sticky-menu .container-fluid {
                 background: transparent !important;
                 box-shadow: none !important;
             }
 
-            .header-area.header-three .menu-area.menu-area-bottom-sticky .second-menu {
+            .header-area.header-three .menu-area.menu-area-bottom-sticky .second-menu,
+            .header-area.header-three .menu-area.menu-area-bottom-sticky.sticky-menu .second-menu {
                 padding: 12px 0 18px;
             }
         }
