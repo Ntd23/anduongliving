@@ -130,7 +130,7 @@
     <div class="slider-active slider-showcase-active">
         @foreach($sliders as $slider)
             @php
-                $imageUrl = Theme::asset()->url('images/silde-simple/1.jpeg');
+                $imageUrl = RvMedia::getImageUrl($slider->image);
                 $title = BaseHelper::clean($slider->title);
                 $subtitle = BaseHelper::clean($slider->getMetaData('subtitle', true));
                 $description = BaseHelper::clean($slider->description);

@@ -53,8 +53,6 @@ app()->booted(function (): void {
             return Theme::getThemeNamespace('partials.shortcodes.simple-slider.index');
         });
 
-        Shortcode::setPreviewImage('simple-slider', Theme::asset()->url('images/silde-simple/1.jpeg'));
-
         Shortcode::register(
             'hero-banner-with-booking-form',
             __('Hero banner with booking form'),
