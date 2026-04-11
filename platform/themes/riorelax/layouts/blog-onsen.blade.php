@@ -12,29 +12,46 @@
     @php
         $heroImage = Theme::get('breadcrumbBackgroundImage');
         $page = Theme::get('page');
-        $eyebrow = $page?->getMetaData('blog_onsen_eyebrow', true) ?: 'ONSEN';
-        $onsenMenus = [
+        $eyebrow = $page?->getMetaData('blog_onsen_eyebrow', true);
+        $onsenMenus = collect([
             [
-                'label' => $page?->getMetaData('blog_onsen_nav_label_1', true) ?: 'すすむしの湯',
-                'target' => $page?->getMetaData('blog_onsen_nav_target_1', true) ?: '#onsen-suzumushi',
+                'label' => $page?->getMetaData('blog_onsen_nav_label_1', true),
+                'target' => $page?->getMetaData('blog_onsen_nav_target_1', true),
             ],
             [
-                'label' => $page?->getMetaData('blog_onsen_nav_label_2', true) ?: '一の蔵',
-                'target' => $page?->getMetaData('blog_onsen_nav_target_2', true) ?: '#onsen-ichinokura',
+                'label' => $page?->getMetaData('blog_onsen_nav_label_2', true),
+                'target' => $page?->getMetaData('blog_onsen_nav_target_2', true),
             ],
             [
-                'label' => $page?->getMetaData('blog_onsen_nav_label_3', true) ?: 'ほたるの湯',
-                'target' => $page?->getMetaData('blog_onsen_nav_target_3', true) ?: '#onsen-hotaru',
+                'label' => $page?->getMetaData('blog_onsen_nav_label_3', true),
+                'target' => $page?->getMetaData('blog_onsen_nav_target_3', true),
             ],
             [
-                'label' => $page?->getMetaData('blog_onsen_nav_label_4', true) ?: '仙の蔵',
-                'target' => $page?->getMetaData('blog_onsen_nav_target_4', true) ?: '#onsen-sennokura',
+                'label' => $page?->getMetaData('blog_onsen_nav_label_4', true),
+                'target' => $page?->getMetaData('blog_onsen_nav_target_4', true),
             ],
             [
-                'label' => $page?->getMetaData('blog_onsen_nav_label_5', true) ?: '歩行湯',
-                'target' => $page?->getMetaData('blog_onsen_nav_target_5', true) ?: '#onsen-hokoyu',
+                'label' => $page?->getMetaData('blog_onsen_nav_label_5', true),
+                'target' => $page?->getMetaData('blog_onsen_nav_target_5', true),
             ],
-        ];
+        ])
+            ->map(function ($item) {
+                $target = trim((string) ($item['target'] ?? ''));
+
+                if ($target === '') {
+                    return null;
+                }
+
+                $fragment = parse_url($target, PHP_URL_FRAGMENT);
+                $target = $fragment ?: ltrim($target, '#');
+
+                return [
+                    'label' => $item['label'],
+                    'target' => '#' . $target,
+                ];
+            })
+            ->filter(fn ($item) => filled($item['label']) && filled($item['target']) && $item['target'] !== '#')
+            ->values();
     @endphp
 
     <style>
@@ -187,6 +204,10 @@
             margin-bottom: 0;
         }
 
+        .blog-onsen-page .ck-content [id] {
+            scroll-margin-top: 24px;
+        }
+
         .blog-onsen-page .ck-content img {
             display: block;
             margin: 0 auto 42px;
@@ -329,25 +350,33 @@
         <div class="blog-onsen-stage">
             <section class="blog-onsen-hero" @if ($heroImage) style="background-image: url('{{ RvMedia::getImageUrl($heroImage) }}');" @endif>
                 <div class="blog-onsen-hero__inner">
-                    <p class="blog-onsen-hero__eyebrow">{{ $eyebrow }}</p>
+                    @if (filled($eyebrow))
+                        <p class="blog-onsen-hero__eyebrow">{{ $eyebrow }}</p>
+                    @endif
                     <h1 class="blog-onsen-hero__title">{{ Theme::get('pageTitle') }}</h1>
                 </div>
             </section>
 
             <section class="blog-onsen-content">
-                <div class="blog-onsen-nav">
-                    <div class="blog-onsen-nav__row blog-onsen-nav__row--top">
-                        @foreach (array_slice($onsenMenus, 0, 3) as $item)
-                            <a href="{{ $item['target'] }}" class="blog-onsen-nav__item">{{ $item['label'] }}</a>
-                        @endforeach
-                    </div>
+                @if ($onsenMenus->isNotEmpty())
+                    <div class="blog-onsen-nav">
+                        @if ($onsenMenus->take(3)->isNotEmpty())
+                            <div class="blog-onsen-nav__row blog-onsen-nav__row--top">
+                                @foreach ($onsenMenus->take(3) as $item)
+                                    <a href="{{ $item['target'] }}" class="blog-onsen-nav__item">{{ $item['label'] }}</a>
+                                @endforeach
+                            </div>
+                        @endif
 
-                    <div class="blog-onsen-nav__row blog-onsen-nav__row--bottom">
-                        @foreach (array_slice($onsenMenus, 3, 2) as $item)
-                            <a href="{{ $item['target'] }}" class="blog-onsen-nav__item">{{ $item['label'] }}</a>
-                        @endforeach
+                        @if ($onsenMenus->slice(3, 2)->isNotEmpty())
+                            <div class="blog-onsen-nav__row blog-onsen-nav__row--bottom">
+                                @foreach ($onsenMenus->slice(3, 2) as $item)
+                                    <a href="{{ $item['target'] }}" class="blog-onsen-nav__item">{{ $item['label'] }}</a>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
-                </div>
+                @endif
 
                 <div class="blog-onsen-shell">
                     {!! Theme::content() !!}
