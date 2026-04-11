@@ -1,11 +1,10 @@
 @php
-    $fallbackImage = Theme::asset()->url('images/special-story-showcase/special-story-showcase.jpeg');
-    $bgImage = $shortcode->background_image ? RvMedia::getImageUrl($shortcode->background_image) : $fallbackImage;
-    $image1  = $shortcode->image_1 ? RvMedia::getImageUrl($shortcode->image_1) : $fallbackImage;
-    $image2  = $shortcode->image_2 ? RvMedia::getImageUrl($shortcode->image_2) : $fallbackImage;
+    $bgImage = $shortcode->background_image ? RvMedia::getImageUrl($shortcode->background_image) : null;
+    $image1  = $shortcode->image_1 ? RvMedia::getImageUrl($shortcode->image_1) : null;
+    $image2  = $shortcode->image_2 ? RvMedia::getImageUrl($shortcode->image_2) : null;
 @endphp
 
-<section class="story" style="background-image:url('{{ $bgImage }}')">
+<section class="story" @if($bgImage) style="background-image:url('{{ $bgImage }}')" @endif>
     <style>
         /* ── SECTION ──────────────────────────────────────────── */
         .story {
@@ -268,18 +267,22 @@
 
     {{-- 2 Image cards with titles --}}
     <div class="story__cards">
-        <div class="story__card">
-            <img src="{{ $image1 }}" alt="">
-            @if($shortcode->image_1_title)
-                <span class="story__card-title">{{ $shortcode->image_1_title }}</span>
-            @endif
-        </div>
-        <div class="story__card">
-            <img src="{{ $image2 }}" alt="">
-            @if($shortcode->image_2_title)
-                <span class="story__card-title">{{ $shortcode->image_2_title }}</span>
-            @endif
-        </div>
+        @if($image1)
+            <div class="story__card">
+                <img src="{{ $image1 }}" alt="">
+                @if($shortcode->image_1_title)
+                    <span class="story__card-title">{{ $shortcode->image_1_title }}</span>
+                @endif
+            </div>
+        @endif
+        @if($image2)
+            <div class="story__card">
+                <img src="{{ $image2 }}" alt="">
+                @if($shortcode->image_2_title)
+                    <span class="story__card-title">{{ $shortcode->image_2_title }}</span>
+                @endif
+            </div>
+        @endif
     </div>
 
     {{-- Navigation row --}}

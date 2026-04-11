@@ -1,7 +1,6 @@
 @php
-    $fallbackImage = Theme::asset()->url('images/location-tourism-showcase/location-tourism-showcase.png');
-    $bgImage = $shortcode->background_image ? RvMedia::getImageUrl($shortcode->background_image) : $fallbackImage;
-    $mapImage = $shortcode->map_image ? RvMedia::getImageUrl($shortcode->map_image) : $fallbackImage;
+    $bgImage = $shortcode->background_image ? RvMedia::getImageUrl($shortcode->background_image) : null;
+    $mapImage = $shortcode->map_image ? RvMedia::getImageUrl($shortcode->map_image) : null;
     $gridImages = [];
     for ($i = 1; $i <= 8; $i++) {
         $imgKey = 'grid_image_' . $i;
@@ -9,13 +8,9 @@
             $gridImages[] = RvMedia::getImageUrl($shortcode->$imgKey);
         }
     }
-
-    if (! $gridImages) {
-        $gridImages = array_fill(0, 8, $fallbackImage);
-    }
 @endphp
 
-<section class="loc" style="background-image: url('{{ $bgImage }}')">
+<section class="loc" @if($bgImage) style="background-image: url('{{ $bgImage }}')" @endif>
     <style>
         .loc {
             position: relative;
@@ -197,7 +192,9 @@
 
     <div class="loc__main">
         <div class="loc__map">
-            <img src="{{ $mapImage }}" alt="Map">
+            @if($mapImage)
+                <img src="{{ $mapImage }}" alt="Map">
+            @endif
         </div>
         <div class="loc__grid">
             @foreach($gridImages as $img)

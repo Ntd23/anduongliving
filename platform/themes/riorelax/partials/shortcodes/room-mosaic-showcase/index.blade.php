@@ -1,7 +1,5 @@
 @php
-    $backgroundImage = $shortcode->background_image
-        ? RvMedia::getImageUrl($shortcode->background_image)
-        : Theme::asset()->url('images/Room-Mosaic-Showcase/Room Mosaic Showcase.jpeg');
+    $backgroundImage = $shortcode->background_image ? RvMedia::getImageUrl($shortcode->background_image) : null;
     $mainImage = $shortcode->main_image ? RvMedia::getImageUrl($shortcode->main_image) : null;
     $sideTextLines = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) $shortcode->side_text))));
     $rooms = collect($rooms)->filter(fn ($room) => ! empty($room['title']) || ! empty($room['image']))->take(8)->values();
@@ -238,7 +236,7 @@
         }
     </style>
 
-    <div class="room-mosaic-showcase__hero" style="background-image: url('{{ $backgroundImage }}');">
+    <div class="room-mosaic-showcase__hero" @if ($backgroundImage) style="background-image: url('{{ $backgroundImage }}');" @endif>
         <div class="room-mosaic-showcase__hero-inner">
             @if ($shortcode->subtitle)
                 <p class="room-mosaic-showcase__subtitle">{!! BaseHelper::clean($shortcode->subtitle) !!}</p>
