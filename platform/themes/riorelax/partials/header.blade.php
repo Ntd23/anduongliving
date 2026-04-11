@@ -1,6 +1,41 @@
-@php($fullWidth = $fullWidth ?? false)
+@php
+    $fullWidth = $fullWidth ?? false;
+    $isBottomStickyMenu = request()->routeIs('public.index');
+@endphp
 
-<div @if(theme_option('header_sticky_enabled', 'yes') == 'yes') id="header-sticky" @endif class="menu-area">
+@if ($isBottomStickyMenu)
+    <style>
+        @media (min-width: 992px) {
+            .header-area.header-three .menu-area.menu-area-bottom-sticky {
+                background: rgba(0, 0, 0, 0.9) !important;
+                bottom: 0;
+                box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.28);
+                left: 0;
+                margin-bottom: 0;
+                position: fixed !important;
+                top: auto !important;
+                width: 100%;
+                z-index: 40 !important;
+            }
+
+            .header-area.header-three .menu-area.menu-area-bottom-sticky .second-menu,
+            .header-area.header-three .menu-area.menu-area-bottom-sticky .container,
+            .header-area.header-three .menu-area.menu-area-bottom-sticky .container-fluid {
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+
+            .header-area.header-three .menu-area.menu-area-bottom-sticky .second-menu {
+                padding: 12px 0 18px;
+            }
+        }
+    </style>
+@endif
+
+<div
+    @if(theme_option('header_sticky_enabled', 'yes') == 'yes') id="header-sticky" @endif
+    @class(['menu-area', 'menu-area-bottom-sticky' => $isBottomStickyMenu])
+>
     <div @class(['container' => ! $fullWidth, 'container-fluid' => $fullWidth])>
         <div class="second-menu">
             <div class="row align-items-center">
