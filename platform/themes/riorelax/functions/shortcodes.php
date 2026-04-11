@@ -712,6 +712,532 @@ app()->booted(function (): void {
     });
 
     Shortcode::register(
+        'logo-showcase-banner',
+        __('Logo Showcase Banner'),
+        __('Large background section with centered logo and bottom text'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.logo-showcase-banner.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setPreviewImage('logo-showcase-banner', Theme::asset()->url('images/logo-showcase-banner/logo-show.jpeg'));
+
+    Shortcode::setAdminConfig('logo-showcase-banner', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Background image'))
+                    ->toArray()
+            )
+            ->add(
+                'logo_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Center logo'))
+                    ->toArray()
+            )
+            ->add(
+                'top_text',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->label(__('Top text'))
+                    ->helperText(__('Each line will be shown on a new row'))
+                    ->rows(6)
+                    ->toArray()
+            )
+            ->add(
+                'bottom_text',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->label(__('Bottom text'))
+                    ->helperText(__('Each line will be shown on a new row'))
+                    ->rows(4)
+                    ->toArray()
+            );
+    });
+
+    Shortcode::register(
+        'room-mosaic-showcase',
+        __('Room Mosaic Showcase'),
+        __('Large hero background with mosaic images and 8 room blocks'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            $rooms = Shortcode::fields()->getTabsData(['title', 'image'], $shortcode);
+
+            return Theme::partial('shortcodes.room-mosaic-showcase.index', compact('shortcode', 'rooms'));
+        }
+    );
+
+    Shortcode::setPreviewImage(
+        'room-mosaic-showcase',
+        Theme::asset()->url('images/Room-Mosaic-Showcase/Room Mosaic Showcase.jpeg')
+    );
+
+    Shortcode::setAdminConfig('room-mosaic-showcase', function (array $attributes) {
+        $fields = [
+            'title' => [
+                'title' => __('Room title'),
+                'required' => true,
+            ],
+            'image' => [
+                'type' => 'image',
+                'title' => __('Room image'),
+                'required' => true,
+            ],
+        ];
+
+        return ShortcodeForm::createFromArray($attributes)
+            ->add('title', TextField::class, TextFieldOption::make()->label(__('Title'))->toArray())
+            ->add('subtitle', TextField::class, TextFieldOption::make()->label(__('Subtitle'))->toArray())
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(4)
+                    ->label(__('Description'))
+                    ->toArray()
+            )
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Top background image'))
+                    ->toArray()
+            )
+            ->add(
+                'main_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Main large image'))
+                    ->toArray()
+            )
+            ->add(
+                'side_text',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(5)
+                    ->label(__('Right side text'))
+                    ->helperText(__('This text will be shown beside the 8 room blocks'))
+                    ->toArray()
+            )
+            ->add(
+                'button_label',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Bottom button label'))
+                    ->toArray()
+            )
+            ->add(
+                'button_url',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Bottom button URL'))
+                    ->toArray()
+            )
+            ->add(
+                'tabs',
+                ShortcodeTabsField::class,
+                ShortcodeTabsFieldOption::make()
+                    ->attrs($attributes)
+                    ->fields($fields)
+                    ->toArray()
+            );
+    });
+
+    Shortcode::register(
+        'spa-collage-showcase',
+        __('Spa Collage Showcase'),
+        __('Two large top panels with four bottom images'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.spa-collage-showcase.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setPreviewImage(
+        'spa-collage-showcase',
+        Theme::asset()->url('images/Spa-Collage-Showcase/Spa Collage Showcase.jpeg')
+    );
+
+    Shortcode::setAdminConfig('spa-collage-showcase', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'left_panel_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Left panel background image'))
+                    ->toArray()
+            )
+            ->add(
+                'right_panel_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Right panel image'))
+                    ->toArray()
+            )
+            ->add('title', TextField::class, TextFieldOption::make()->label(__('Title'))->toArray())
+            ->add('subtitle', TextField::class, TextFieldOption::make()->label(__('Subtitle'))->toArray())
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(6)
+                    ->label(__('Description'))
+                    ->toArray()
+            )
+            ->add(
+                'bottom_image_1',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Bottom image 1'))
+                    ->toArray()
+            )
+            ->add(
+                'bottom_image_2',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Bottom image 2'))
+                    ->toArray()
+            )
+            ->add(
+                'bottom_image_3',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Bottom image 3'))
+                    ->toArray()
+            )
+            ->add(
+                'bottom_image_4',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Bottom image 4'))
+                    ->toArray()
+            );
+    });
+
+    Shortcode::register(
+        'onsen-spa-gallery',
+        __('Onsen Spa Gallery'),
+        __('Dark background gallery with title, 6 images and 2 buttons'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.onsen-spa-gallery.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setPreviewImage(
+        'onsen-spa-gallery',
+        Theme::asset()->url('images/Onsen-Spa-Gallery/Onsen Spa Gallery.jpeg')
+    );
+
+    Shortcode::setAdminConfig('onsen-spa-gallery', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Background image'))
+                    ->toArray()
+            )
+            ->add('background_title', TextField::class, TextFieldOption::make()->label(__('Large background title'))->toArray())
+            ->add('subtitle', TextField::class, TextFieldOption::make()->label(__('Subtitle'))->toArray())
+            ->add('item_title_1', TextField::class, TextFieldOption::make()->label(__('Image title 1'))->toArray())
+            ->add('item_image_1', MediaImageField::class, MediaImageFieldOption::make()->label(__('Image 1'))->toArray())
+            ->add('item_title_2', TextField::class, TextFieldOption::make()->label(__('Image title 2'))->toArray())
+            ->add('item_image_2', MediaImageField::class, MediaImageFieldOption::make()->label(__('Image 2'))->toArray())
+            ->add('item_title_3', TextField::class, TextFieldOption::make()->label(__('Image title 3'))->toArray())
+            ->add('item_image_3', MediaImageField::class, MediaImageFieldOption::make()->label(__('Image 3'))->toArray())
+            ->add('item_title_4', TextField::class, TextFieldOption::make()->label(__('Image title 4'))->toArray())
+            ->add('item_image_4', MediaImageField::class, MediaImageFieldOption::make()->label(__('Image 4'))->toArray())
+            ->add('item_title_5', TextField::class, TextFieldOption::make()->label(__('Image title 5'))->toArray())
+            ->add('item_image_5', MediaImageField::class, MediaImageFieldOption::make()->label(__('Image 5'))->toArray())
+            ->add('item_title_6', TextField::class, TextFieldOption::make()->label(__('Image title 6'))->toArray())
+            ->add('item_image_6', MediaImageField::class, MediaImageFieldOption::make()->label(__('Image 6'))->toArray())
+            ->add('section_label', TextField::class, TextFieldOption::make()->label(__('Section label'))->toArray())
+            ->add('button_label_1', TextField::class, TextFieldOption::make()->label(__('Button label 1'))->toArray())
+            ->add('button_url_1', TextField::class, TextFieldOption::make()->label(__('Button URL 1'))->toArray())
+            ->add('button_label_2', TextField::class, TextFieldOption::make()->label(__('Button label 2'))->toArray())
+            ->add('button_url_2', TextField::class, TextFieldOption::make()->label(__('Button URL 2'))->toArray());
+    });
+
+    Shortcode::register(
+        'forest-facility-showcase',
+        __('Forest Facility Showcase'),
+        __('Soft left image fade, center content and 2 right images'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.forest-facility-showcase.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setPreviewImage(
+        'forest-facility-showcase',
+        Theme::asset()->url('images/Forest-Facility-Showcase/Forest Facility Showcase.jpeg')
+    );
+
+    Shortcode::setAdminConfig('forest-facility-showcase', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'left_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Left image'))
+                    ->toArray()
+            )
+            ->add(
+                'right_image_1',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Right image 1'))
+                    ->toArray()
+            )
+            ->add(
+                'right_image_2',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Right image 2'))
+                    ->toArray()
+            )
+            ->add('title', TextField::class, TextFieldOption::make()->label(__('Title'))->toArray())
+            ->add('subtitle', TextField::class, TextFieldOption::make()->label(__('Subtitle'))->toArray())
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(5)
+                    ->label(__('Description'))
+                    ->toArray()
+            )
+            ->add('section_label', TextField::class, TextFieldOption::make()->label(__('Section label'))->toArray())
+            ->add('button_label', TextField::class, TextFieldOption::make()->label(__('Button label'))->toArray())
+            ->add('button_url', TextField::class, TextFieldOption::make()->label(__('Button URL'))->toArray());
+    });
+
+    Shortcode::register(
+        'pickup-gallery-showcase',
+        __('Pickup Gallery Showcase'),
+        __('Dark background with 3 gallery images, script title and info panel'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.pickup-gallery-showcase.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setPreviewImage(
+        'pickup-gallery-showcase',
+        Theme::asset()->url('images/pickup-gallery-showcase/pickup-gallery-showcase .jpeg')
+    );
+
+    Shortcode::setAdminConfig('pickup-gallery-showcase', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Background image'))
+                    ->toArray()
+            )
+            ->add(
+                'image_1',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Gallery image 1'))
+                    ->toArray()
+            )
+            ->add(
+                'image_2',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Gallery image 2'))
+                    ->toArray()
+            )
+            ->add(
+                'image_3',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Gallery image 3'))
+                    ->toArray()
+            )
+            ->add('pretitle', TextField::class, TextFieldOption::make()->label(__('Pre-title (script text)'))->toArray())
+            ->add('title', TextField::class, TextFieldOption::make()->label(__('Title'))->toArray())
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(5)
+                    ->label(__('Description'))
+                    ->toArray()
+            )
+            ->add('section_label', TextField::class, TextFieldOption::make()->label(__('Section label'))->toArray())
+            ->add('button_label', TextField::class, TextFieldOption::make()->label(__('Button label'))->toArray())
+            ->add('button_url', TextField::class, TextFieldOption::make()->label(__('Button URL'))->toArray());
+    });
+
+    Shortcode::register(
+        'cuisine-showcase',
+        __('Cuisine Showcase'),
+        __('White background with centered title, description, 2 food images, label and button'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.cuisine-showcase.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setPreviewImage(
+        'cuisine-showcase',
+        Theme::asset()->url('images/cuisine-showcase/cuisine-showcase.jpeg')
+    );
+
+    Shortcode::setAdminConfig('cuisine-showcase', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add('title', TextField::class, TextFieldOption::make()->label(__('Title'))->toArray())
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(6)
+                    ->label(__('Description'))
+                    ->toArray()
+            )
+            ->add(
+                'image_1',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Image 1'))
+                    ->toArray()
+            )
+            ->add(
+                'image_2',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Image 2'))
+                    ->toArray()
+            )
+            ->add('section_label', TextField::class, TextFieldOption::make()->label(__('Section label'))->toArray())
+            ->add('button_label', TextField::class, TextFieldOption::make()->label(__('Button label'))->toArray())
+            ->add('button_url', TextField::class, TextFieldOption::make()->label(__('Button URL'))->toArray());
+    });
+
+    Shortcode::register(
+        'special-story-showcase',
+        __('Special Story Showcase'),
+        __('Dark section with decorative script text, 2 image cards with titles, nav row and CTA'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.special-story-showcase.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setPreviewImage(
+        'special-story-showcase',
+        Theme::asset()->url('images/special-story-showcase/special-story-showcase.jpeg')
+    );
+
+    Shortcode::setAdminConfig('special-story-showcase', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Background image'))
+                    ->toArray()
+            )
+            ->add('decorative_text', TextField::class, TextFieldOption::make()->label(__('Decorative background text'))->toArray())
+            ->add('section_label', TextField::class, TextFieldOption::make()->label(__('Section label'))->toArray())
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(4)
+                    ->label(__('Description'))
+                    ->toArray()
+            )
+            ->add(
+                'image_1',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Image 1'))
+                    ->toArray()
+            )
+            ->add('image_1_title', TextField::class, TextFieldOption::make()->label(__('Image 1 overlay title'))->toArray())
+            ->add(
+                'image_2',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Image 2'))
+                    ->toArray()
+            )
+            ->add('image_2_title', TextField::class, TextFieldOption::make()->label(__('Image 2 overlay title'))->toArray())
+            ->add(
+                'nav_text_1',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(2)
+                    ->label(__('Navigation text 1 (left)'))
+                    ->toArray()
+            )
+            ->add(
+                'nav_text_2',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(2)
+                    ->label(__('Navigation text 2 (right)'))
+                    ->toArray()
+            )
+            ->add('button_label', TextField::class, TextFieldOption::make()->label(__('Button label'))->toArray())
+            ->add('button_url', TextField::class, TextFieldOption::make()->label(__('Button URL'))->toArray());
+    });
+
+    Shortcode::register(
+        'location-tourism-showcase',
+        __('Location & Tourism Showcase'),
+        __('Dark section with map, 8-image grid, and access/tourism info boxes'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.location-tourism-showcase.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setPreviewImage(
+        'location-tourism-showcase',
+        Theme::asset()->url('images/location-tourism-showcase/location-tourism-showcase.png')
+    );
+
+    Shortcode::setAdminConfig('location-tourism-showcase', function (array $attributes) {
+        $form = ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Background image (nature)'))
+                    ->toArray()
+            )
+            ->add('decorative_text', TextField::class, TextFieldOption::make()->label(__('Decorative script text (e.g. Location)'))->toArray())
+            ->add('section_title', TextareaField::class, TextareaFieldOption::make()->label(__('Section title (JP)'))->rows(2)->toArray())
+            ->add(
+                'map_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Map image (Left side)'))
+                    ->toArray()
+            );
+
+        for ($i = 1; $i <= 8; $i++) {
+            $form->add(
+                'grid_image_' . $i,
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Grid image ' . $i))
+                    ->toArray()
+            );
+        }
+
+        return $form
+            ->add('access_label', TextField::class, TextFieldOption::make()->label(__('Access column label'))->toArray())
+            ->add('access_desc', TextareaField::class, TextareaFieldOption::make()->label(__('Access description text'))->rows(5)->toArray())
+            ->add('access_btn_label', TextField::class, TextFieldOption::make()->label(__('Access button label'))->toArray())
+            ->add('access_btn_url', TextField::class, TextFieldOption::make()->label(__('Access button URL'))->toArray())
+            ->add('tourism_label', TextField::class, TextFieldOption::make()->label(__('Tourism column label'))->toArray())
+            ->add('tourism_desc', TextareaField::class, TextareaFieldOption::make()->label(__('Tourism description text'))->rows(5)->toArray())
+            ->add('tourism_btn_label', TextField::class, TextFieldOption::make()->label(__('Tourism button label'))->toArray())
+            ->add('tourism_btn_url', TextField::class, TextFieldOption::make()->label(__('Tourism button URL'))->toArray());
+    });
+
+    Shortcode::register(
         'why-choose-us',
         __('Why Choose Us'),
         __('Why Choose Us'),

@@ -1,7 +1,6 @@
 <?php
 
 use Botble\ACL\Forms\ProfileForm;
-use Botble\Base\Forms\FieldOptions\DescriptionFieldOption;
 use Botble\Base\Forms\FieldOptions\EditorFieldOption;
 use Botble\Base\Forms\FieldOptions\MediaImageFieldOption;
 use Botble\Base\Forms\FieldOptions\SelectFieldOption;
@@ -9,7 +8,6 @@ use Botble\Base\Forms\FieldOptions\TextFieldOption;
 use Botble\Base\Forms\Fields\EditorField;
 use Botble\Base\Forms\Fields\MediaImageField;
 use Botble\Base\Forms\Fields\SelectField;
-use Botble\Base\Forms\Fields\TextareaField;
 use Botble\Base\Forms\Fields\TextField;
 use Botble\Hotel\Forms\AmenityForm;
 use Botble\Media\Facades\RvMedia;
@@ -91,64 +89,30 @@ app()->booted(function (): void {
     if (is_plugin_active('simple-slider')) {
         SimpleSliderItemForm::extend(function (SimpleSliderItemForm $form): void {
             $form
-                ->addAfter(
-                    'title',
+                ->addBefore(
+                    'order',
                     'subtitle',
                     TextField::class,
                     TextFieldOption::make()
-                        ->label(__('Subtitle'))
+                        ->label(__('Text under slide'))
                         ->metadata()
-                        ->placeholder(__('Enter the subtitle'))
-                        ->toArray()
-                )
-                ->addAfter(
-                    'subtitle',
-                    'description',
-                    TextareaField::class,
-                    DescriptionFieldOption::make()
-                        ->metadata()
-                        ->toArray()
-                )
-                ->addAfter(
-                    'subtitle',
-                    'button_primary_url',
-                    TextField::class,
-                    TextFieldOption::make()
-                        ->label(__('Button URL'))
-                        ->placeholder(__('Enter the button URL'))
-                        ->metadata()
-                        ->toArray()
-                )
-                ->addAfter(
-                    'subtitle',
-                    'button_primary_label',
-                    TextField::class,
-                    TextFieldOption::make()
-                        ->label(__('Button label'))
-                        ->placeholder(__('Enter the button label'))
-                        ->metadata()
-                        ->toArray()
-                )
-                ->addAfter(
-                    'subtitle',
-                    'button_play_label',
-                    TextField::class,
-                    TextFieldOption::make()
-                        ->label(__('Button play label'))
-                        ->placeholder(__('Enter the button play label'))
-                        ->metadata()
-                        ->toArray()
-                )
-                ->addAfter(
-                    'subtitle',
-                    'youtube_url',
-                    TextField::class,
-                    TextFieldOption::make()
-                        ->metadata()
-                        ->placeholder(__('Enter the YouTube URL'))
-                        ->label(__('YouTube URL'))
+                        ->placeholder(__('Enter one line of text'))
                         ->toArray()
                 );
+
+            foreach ([
+                'title',
+                'link',
+                'description',
+                'button_primary_url',
+                'button_primary_label',
+                'button_play_label',
+                'youtube_url',
+            ] as $field) {
+                if ($form->has($field)) {
+                    $form->remove($field);
+                }
+            }
         }, 99);
     }
 
