@@ -1,7 +1,8 @@
 @php
-    $leftImage = $shortcode->left_image ? RvMedia::getImageUrl($shortcode->left_image) : null;
-    $rightImage1 = $shortcode->right_image_1 ? RvMedia::getImageUrl($shortcode->right_image_1) : null;
-    $rightImage2 = $shortcode->right_image_2 ? RvMedia::getImageUrl($shortcode->right_image_2) : null;
+    $fallbackImage = Theme::asset()->url('images/Forest-Facility-Showcase/Forest Facility Showcase.jpeg');
+    $leftImage = $shortcode->left_image ? RvMedia::getImageUrl($shortcode->left_image) : $fallbackImage;
+    $rightImage1 = $shortcode->right_image_1 ? RvMedia::getImageUrl($shortcode->right_image_1) : $fallbackImage;
+    $rightImage2 = $shortcode->right_image_2 ? RvMedia::getImageUrl($shortcode->right_image_2) : $fallbackImage;
 @endphp
 
 <section class="rfs">
@@ -243,17 +244,11 @@
     {{-- LAYER 1: All images --}}
     <div class="rfs__images">
         <div class="rfs__img-left">
-            @if($leftImage)
-                <img src="{{ $leftImage }}" alt="">
-            @endif
+            <img src="{{ $leftImage }}" alt="">
         </div>
         <div class="rfs__img-right">
-            @if($rightImage1)
-                <div class="rfs__img-right-item" style="background-image:url('{{ $rightImage1 }}')"></div>
-            @endif
-            @if($rightImage2)
-                <div class="rfs__img-right-item" style="background-image:url('{{ $rightImage2 }}')"></div>
-            @endif
+            <div class="rfs__img-right-item" style="background-image:url('{{ $rightImage1 }}')"></div>
+            <div class="rfs__img-right-item" style="background-image:url('{{ $rightImage2 }}')"></div>
         </div>
     </div>
 

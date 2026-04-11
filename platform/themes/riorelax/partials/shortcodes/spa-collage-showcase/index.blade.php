@@ -1,6 +1,7 @@
 @php
-    $leftPanelImage = $shortcode->left_panel_image ? RvMedia::getImageUrl($shortcode->left_panel_image) : null;
-    $rightPanelImage = $shortcode->right_panel_image ? RvMedia::getImageUrl($shortcode->right_panel_image) : null;
+    $fallbackImage = Theme::asset()->url('images/Spa-Collage-Showcase/Spa Collage Showcase.jpeg');
+    $leftPanelImage = $shortcode->left_panel_image ? RvMedia::getImageUrl($shortcode->left_panel_image) : $fallbackImage;
+    $rightPanelImage = $shortcode->right_panel_image ? RvMedia::getImageUrl($shortcode->right_panel_image) : $fallbackImage;
     $bottomImages = collect([
         $shortcode->bottom_image_1,
         $shortcode->bottom_image_2,
@@ -161,7 +162,7 @@
 
     <div class="spa-collage-showcase__inner">
         <div class="spa-collage-showcase__top">
-            <div class="spa-collage-showcase__left" @if ($leftPanelImage) style="background-image: url('{{ $leftPanelImage }}');" @endif>
+            <div class="spa-collage-showcase__left" style="background-image: url('{{ $leftPanelImage }}');">
                 <div class="spa-collage-showcase__text">
                     @if ($shortcode->title)
                         <h2 class="spa-collage-showcase__title">{!! BaseHelper::clean($shortcode->title) !!}</h2>
@@ -177,7 +178,7 @@
                 </div>
             </div>
 
-            <div class="spa-collage-showcase__right" @if ($rightPanelImage) style="background-image: url('{{ $rightPanelImage }}');" @endif></div>
+            <div class="spa-collage-showcase__right" style="background-image: url('{{ $rightPanelImage }}');"></div>
         </div>
 
         @if ($bottomImages->isNotEmpty())

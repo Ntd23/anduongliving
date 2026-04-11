@@ -856,6 +856,11 @@ app()->booted(function (): void {
         }
     );
 
+    Shortcode::setPreviewImage(
+        'spa-collage-showcase',
+        Theme::asset()->url('images/Spa-Collage-Showcase/Spa Collage Showcase.jpeg')
+    );
+
     Shortcode::setAdminConfig('spa-collage-showcase', function (array $attributes) {
         return ShortcodeForm::createFromArray($attributes)
             ->add(
@@ -921,6 +926,11 @@ app()->booted(function (): void {
         }
     );
 
+    Shortcode::setPreviewImage(
+        'onsen-spa-gallery',
+        Theme::asset()->url('images/Onsen-Spa-Gallery/Onsen Spa Gallery.jpeg')
+    );
+
     Shortcode::setAdminConfig('onsen-spa-gallery', function (array $attributes) {
         return ShortcodeForm::createFromArray($attributes)
             ->add(
@@ -958,6 +968,11 @@ app()->booted(function (): void {
         function (ShortcodeCompiler $shortcode): ?string {
             return Theme::partial('shortcodes.forest-facility-showcase.index', compact('shortcode'));
         }
+    );
+
+    Shortcode::setPreviewImage(
+        'forest-facility-showcase',
+        Theme::asset()->url('images/Forest-Facility-Showcase/Forest Facility Showcase.jpeg')
     );
 
     Shortcode::setAdminConfig('forest-facility-showcase', function (array $attributes) {
@@ -1005,6 +1020,11 @@ app()->booted(function (): void {
         function (ShortcodeCompiler $shortcode): ?string {
             return Theme::partial('shortcodes.pickup-gallery-showcase.index', compact('shortcode'));
         }
+    );
+
+    Shortcode::setPreviewImage(
+        'pickup-gallery-showcase',
+        Theme::asset()->url('images/pickup-gallery-showcase/pickup-gallery-showcase .jpeg')
     );
 
     Shortcode::setAdminConfig('pickup-gallery-showcase', function (array $attributes) {
@@ -1061,6 +1081,11 @@ app()->booted(function (): void {
         }
     );
 
+    Shortcode::setPreviewImage(
+        'cuisine-showcase',
+        Theme::asset()->url('images/cuisine-showcase/cuisine-showcase.jpeg')
+    );
+
     Shortcode::setAdminConfig('cuisine-showcase', function (array $attributes) {
         return ShortcodeForm::createFromArray($attributes)
             ->add('title', TextField::class, TextFieldOption::make()->label(__('Title'))->toArray())
@@ -1098,6 +1123,11 @@ app()->booted(function (): void {
         function (ShortcodeCompiler $shortcode): ?string {
             return Theme::partial('shortcodes.special-story-showcase.index', compact('shortcode'));
         }
+    );
+
+    Shortcode::setPreviewImage(
+        'special-story-showcase',
+        Theme::asset()->url('images/special-story-showcase/special-story-showcase.jpeg')
     );
 
     Shortcode::setAdminConfig('special-story-showcase', function (array $attributes) {
@@ -1162,6 +1192,11 @@ app()->booted(function (): void {
         function (ShortcodeCompiler $shortcode): ?string {
             return Theme::partial('shortcodes.location-tourism-showcase.index', compact('shortcode'));
         }
+    );
+
+    Shortcode::setPreviewImage(
+        'location-tourism-showcase',
+        Theme::asset()->url('images/location-tourism-showcase/location-tourism-showcase.png')
     );
 
     Shortcode::setAdminConfig('location-tourism-showcase', function (array $attributes) {

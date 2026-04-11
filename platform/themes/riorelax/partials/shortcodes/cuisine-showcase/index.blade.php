@@ -1,6 +1,7 @@
 @php
-    $image1 = $shortcode->image_1 ? RvMedia::getImageUrl($shortcode->image_1) : null;
-    $image2 = $shortcode->image_2 ? RvMedia::getImageUrl($shortcode->image_2) : null;
+    $fallbackImage = Theme::asset()->url('images/cuisine-showcase/cuisine-showcase.jpeg');
+    $image1 = $shortcode->image_1 ? RvMedia::getImageUrl($shortcode->image_1) : $fallbackImage;
+    $image2 = $shortcode->image_2 ? RvMedia::getImageUrl($shortcode->image_2) : $fallbackImage;
 @endphp
 
 <section class="cuisine">
@@ -147,16 +148,12 @@
 
     {{-- 2 images side by side --}}
     <div class="cuisine__images">
-        @if($image1)
-            <div class="cuisine__img">
-                <img src="{{ $image1 }}" alt="">
-            </div>
-        @endif
-        @if($image2)
-            <div class="cuisine__img">
-                <img src="{{ $image2 }}" alt="">
-            </div>
-        @endif
+        <div class="cuisine__img">
+            <img src="{{ $image1 }}" alt="">
+        </div>
+        <div class="cuisine__img">
+            <img src="{{ $image2 }}" alt="">
+        </div>
     </div>
 
     {{-- Footer: line + label + button --}}
