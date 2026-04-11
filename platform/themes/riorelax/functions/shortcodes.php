@@ -771,6 +771,11 @@ app()->booted(function (): void {
         }
     );
 
+    Shortcode::setPreviewImage(
+        'room-mosaic-showcase',
+        Theme::asset()->url('images/Room-Mosaic-Showcase/Room Mosaic Showcase.jpeg')
+    );
+
     Shortcode::setAdminConfig('room-mosaic-showcase', function (array $attributes) {
         $fields = [
             'title' => [
