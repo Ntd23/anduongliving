@@ -20,6 +20,7 @@ register_page_template([
     'side-menu' => __('Side menu'),
     'full-menu' => __('Full menu'),
     'blog-sidebar' => __('Blog sidebar'),
+    'blog-onsen' => __('Blog Onsen'),
     'full-width' => __('Full width'),
 ]);
 
@@ -60,6 +61,8 @@ RvMedia::setUploadPathAndURLToPublic()
 
 if (class_exists(PageForm::class)) {
     PageForm::extend(function (PageForm $form): void {
+        $currentTemplate = $form->getModel()?->template ?: request()->input('template');
+
         $form
             ->addAfter(
                 'template',
@@ -80,6 +83,45 @@ if (class_exists(PageForm::class)) {
                     ->metadata()
                     ->toArray()
             );
+
+        if ($currentTemplate !== 'blog-onsen') {
+            return;
+        }
+
+        $form->addAfter(
+            'template',
+            'blog_onsen_eyebrow',
+            TextField::class,
+            TextFieldOption::make()
+                ->label(__('Blog Onsen eyebrow text'))
+                ->metadata()
+                ->placeholder('ONSEN')
+                ->toArray()
+        );
+
+        for ($i = 1; $i <= 5; $i++) {
+            $form
+                ->addAfter(
+                    'template',
+                    'blog_onsen_nav_label_' . $i,
+                    TextField::class,
+                    TextFieldOption::make()
+                        ->label(__('Blog Onsen button label ' . $i))
+                        ->metadata()
+                        ->placeholder(__('Button text ' . $i))
+                        ->toArray()
+                )
+                ->addAfter(
+                    'template',
+                    'blog_onsen_nav_target_' . $i,
+                    TextField::class,
+                    TextFieldOption::make()
+                        ->label(__('Blog Onsen button target ' . $i))
+                        ->metadata()
+                        ->placeholder('#onsen-section-' . $i)
+                        ->toArray()
+                );
+        }
     }, 99);
 }
 

@@ -1,6 +1,7 @@
 @php
     Theme::set('pageTitle', $page->name);
     Theme::set('pageDescription', $page->description);
+    Theme::set('page', $page);
     Theme::set('breadcrumbBackgroundImage', $page->getMetaData('breadcrumb_background', true));
     Theme::set('breadcrumb', $page->getMetaData('breadcrumb', true))
 @endphp
