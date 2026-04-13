@@ -1,5 +1,10 @@
 <section>
     <div class="form-group">
+        <label class="control-label">{{ __('Title') }}</label>
+        <input type="text" name="title" class="form-control" placeholder="{{ __('Title') }}" value="{{ Arr::get($config, 'title') }}">
+    </div>
+
+    <div class="form-group">
         <label class="control-label">{{ __('Phone number') }}</label>
         <textarea name="phone_number" class="form-control" placeholder="{{ __('Phone number') }}">{{ Arr::get($config, 'phone_number') }}</textarea>
     </div>

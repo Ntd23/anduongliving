@@ -1,5 +1,11 @@
 <div class="col-xl-4 col-lg-4 col-sm-6">
     <div class="footer-widget mb-30">
+        @if ($title)
+            <div class="f-widget-title">
+                <h2>{{ $title }}</h2>
+            </div>
+        @endif
+
         @if ($logo = theme_option('logo'))
             <div class="f-widget-title mb-30">
                 <img src="{{ Rvmedia::getImageUrl($logo) }}" alt="{{ theme_option('site_name') }}">

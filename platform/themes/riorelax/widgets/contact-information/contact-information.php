@@ -10,6 +10,7 @@ class ContactInformationMenuWidget extends AbstractWidget
         parent::__construct([
             'name' => __('Contact information'),
             'description' => __('Contact information'),
+            'title' => __('Contact information'),
             'phone_number' => null,
             'email' => null,
             'address' => null,
@@ -20,10 +21,11 @@ class ContactInformationMenuWidget extends AbstractWidget
     {
         $config = $this->getConfig();
 
+        $title = Arr::get($config, 'title');
         $phoneNumber =  nl2br(Arr::get($config, 'phone_number'));
         $email = nl2br(Arr::get($config, 'email'));
         $address = nl2br(Arr::get($config, 'address'));
 
-        return compact('phoneNumber', 'email', 'address');
+        return compact('title', 'phoneNumber', 'email', 'address');
     }
 }

@@ -31,6 +31,18 @@ register_sidebar([
 ]);
 
 register_sidebar([
+    'id' => 'footer_panel_1_sidebar',
+    'name' => 'Footer panel 1',
+    'description' => __('Area for the middle footer panel widgets'),
+]);
+
+register_sidebar([
+    'id' => 'footer_panel_2_sidebar',
+    'name' => 'Footer panel 2',
+    'description' => __('Area for the right footer panel widgets'),
+]);
+
+register_sidebar([
     'id' => 'blog_sidebar',
     'name' => __('Blog sidebar'),
     'description' => __('Sidebar on the right of the blog detail site.'),
