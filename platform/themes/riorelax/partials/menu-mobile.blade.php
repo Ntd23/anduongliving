@@ -7,21 +7,33 @@
     @php
         $nodes = $menu_nodes instanceof \Illuminate\Support\Collection ? $menu_nodes->values() : collect($menu_nodes)->values();
         $midpoint = (int) ceil($nodes->count() / 2);
-        $columns = [
-            $nodes->slice(0, $midpoint)->values(),
-            $nodes->slice($midpoint)->values(),
-        ];
+        $leftColumnNodes = $nodes->slice(0, $midpoint)->values();
+        $rightColumnNodes = $nodes->slice($midpoint)->values();
+        $rowCount = max($leftColumnNodes->count(), $rightColumnNodes->count());
     @endphp
 
-    <div class="riorelax-mobile-menu-grid">
-        @foreach ($columns as $columnNodes)
-            <div class="riorelax-mobile-menu-grid__column">
-                {!! Theme::partial('menu-mobile', [
-                    'menu_nodes' => $columnNodes,
-                    'is_column' => true,
-                ]) !!}
+    <div class="riorelax-mobile-menu-rows">
+        @for ($index = 0; $index < $rowCount; $index++)
+            <div class="riorelax-mobile-menu-rows__row">
+                <div class="riorelax-mobile-menu-rows__cell">
+                    @if ($leftNode = $leftColumnNodes->get($index))
+                        {!! Theme::partial('menu-mobile', [
+                            'menu_nodes' => collect([$leftNode]),
+                            'is_column' => true,
+                        ]) !!}
+                    @endif
+                </div>
+
+                <div class="riorelax-mobile-menu-rows__cell">
+                    @if ($rightNode = $rightColumnNodes->get($index))
+                        {!! Theme::partial('menu-mobile', [
+                            'menu_nodes' => collect([$rightNode]),
+                            'is_column' => true,
+                        ]) !!}
+                    @endif
+                </div>
             </div>
-        @endforeach
+        @endfor
     </div>
 @else
     <ul class="riorelax-mobile-menu-list{{ $isChild ? ' riorelax-mobile-menu-list--child' : '' }}">

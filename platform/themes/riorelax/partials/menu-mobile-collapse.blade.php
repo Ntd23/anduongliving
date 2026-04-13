@@ -185,11 +185,22 @@
             width: 100%;
         }
 
-        .riorelax-mobile-menu-grid,
+        .riorelax-mobile-menu-rows,
         .riorelax-mobile-links-grid,
         .riorelax-mobile-language-grid {
             display: grid;
             gap: 14px 18px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .riorelax-mobile-menu-rows {
+            gap: 14px;
+            grid-template-columns: 1fr;
+        }
+
+        .riorelax-mobile-menu-rows__row {
+            display: grid;
+            gap: 18px;
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
@@ -337,7 +348,7 @@
             padding-inline: 18px;
         }
 
-        .riorelax-mobile-menu-grid,
+        .riorelax-mobile-menu-rows__row,
         .riorelax-mobile-links-grid,
         .riorelax-mobile-language-grid {
             gap: 12px 14px;
