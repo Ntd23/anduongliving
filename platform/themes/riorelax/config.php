@@ -59,6 +59,7 @@ return [
             $theme->asset()->usePath()->add('style-css', 'css/theme.css');
             $theme->asset()->usePath()->add('default-css', 'plugins/default.css');
             $theme->asset()->usePath()->add('responsive-css', 'plugins/responsive.css');
+            $theme->asset()->usePath()->add('mobile-header-css', 'css/mobile-header.css');
             $theme->asset()->usePath()->add('datepicker-css', 'plugins/datepicker/bootstrap-datepicker.css');
 
             $theme->asset()->container('header')->usePath()->add('jquery', 'plugins/jquery.min.js');
@@ -77,6 +78,7 @@ return [
             $theme->asset()->container('footer')->usePath()->add('datepicker-js', 'plugins/datepicker/bootstrap-datepicker.js');
             $theme->asset()->container('footer')->usePath()->add('toastr-js', 'plugins/toastr/toastr.min.js');
             $theme->asset()->container('footer')->usePath()->add('main', 'js/main.js');
+            $theme->asset()->container('footer')->usePath()->add('mobile-header', 'js/mobile-header.js');
             $theme->asset()->container('footer')->usePath()->add('script', 'js/script.js', ['datepicker-js', 'bootstrap-datepicker-locale']);
 
             if (function_exists('shortcode')) {
