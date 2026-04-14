@@ -8,16 +8,16 @@
     $accentColor = $shortcode->accent_color ?: '#b49a47';
     $title = $shortcode->title ?: '露天風呂 すずむしの湯';
     $description = $shortcode->description ?: "自然の中で身も心もゆっくり温まり、\n解放感に満たされるひとときをお過ごしください。";
-    $buttonLabel = $shortcode->button_label ?: 'お問い合わせ';
-    $buttonUrl = $shortcode->button_url ?: '#';
+    $isReversed = $shortcode->image_layout === 'large_right';
 @endphp
 
 <section
     id="{{ $sectionId }}"
-    class="onsen-spa-item"
+    @class(['onsen-spa-item', 'onsen-spa-item--reverse' => $isReversed])
     style="
         --onsen-spa-item-bg: {{ $backgroundColor }};
         --onsen-spa-item-accent: {{ $accentColor }};
+        --onsen-spa-item-text: #fff;
         @if ($backgroundImage) background-image: url('{{ $backgroundImage }}'); @endif
     "
 >
@@ -40,8 +40,8 @@
 
         .onsen-spa-item::before {
             background:
-                linear-gradient(90deg, rgba(0, 19, 18, 0.94) 0%, rgba(0, 19, 18, 0.83) 48%, rgba(0, 19, 18, 0.9) 100%),
-                rgba(0, 0, 0, 0.36);
+                linear-gradient(90deg, rgba(0, 19, 18, 0.72) 0%, rgba(0, 19, 18, 0.48) 48%, rgba(0, 19, 18, 0.7) 100%),
+                rgba(0, 0, 0, 0.12);
             content: "";
             inset: 0;
             position: absolute;
@@ -56,48 +56,20 @@
 
         .onsen-spa-item__head {
             align-items: center;
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
+            display: flex;
+            justify-content: center;
             margin: 0 0 clamp(38px, 4vw, 66px);
         }
 
         .onsen-spa-item__title {
-            color: #fff;
+            color: var(--onsen-spa-item-text);
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
             font-size: clamp(20px, 1.45vw, 28px);
-            font-weight: 400;
-            grid-column: 2;
+            font-weight: 500;
             letter-spacing: 0.18em;
             line-height: 1.4;
             margin: 0;
             text-align: center;
-        }
-
-        .onsen-spa-item__button {
-            align-items: center;
-            background: var(--onsen-spa-item-accent);
-            border-radius: 999px;
-            color: #fff;
-            display: inline-flex;
-            gap: 10px;
-            grid-column: 3;
-            justify-self: end;
-            min-height: 54px;
-            min-width: 170px;
-            padding: 0 28px;
-            text-decoration: none;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-
-        .onsen-spa-item__button:hover {
-            background: #9c843b;
-            color: #fff;
-            transform: translateY(-1px);
-        }
-
-        .onsen-spa-item__button i {
-            color: inherit;
-            font-size: 18px;
         }
 
         .onsen-spa-item__layout {
@@ -107,6 +79,20 @@
             grid-template-columns: minmax(0, 2.04fr) minmax(300px, 1fr);
             margin: 0 auto;
             max-width: 1380px;
+        }
+
+        .onsen-spa-item--reverse .onsen-spa-item__layout {
+            grid-template-columns: minmax(300px, 1fr) minmax(0, 2.04fr);
+        }
+
+        .onsen-spa-item--reverse .onsen-spa-item__main {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .onsen-spa-item--reverse .onsen-spa-item__side {
+            grid-column: 1;
+            grid-row: 1;
         }
 
         .onsen-spa-item__main {
@@ -143,15 +129,24 @@
             width: 66%;
         }
 
+        .onsen-spa-item--reverse .onsen-spa-item__side-bottom {
+            justify-self: end;
+        }
+
         .onsen-spa-item__description {
-            color: rgba(255, 255, 255, 0.92);
+            color: var(--onsen-spa-item-text);
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
             font-size: clamp(15px, 0.95vw, 18px);
-            font-weight: 400;
+            font-weight: 500;
             letter-spacing: 0.08em;
             line-height: 2;
             margin: 22px 0 0 clamp(28px, 3vw, 54px);
             max-width: 420px;
+        }
+
+        .onsen-spa-item--reverse .onsen-spa-item__description {
+            margin-left: auto;
+            margin-right: clamp(28px, 3vw, 54px);
         }
 
         .onsen-spa-item__description p {
@@ -161,6 +156,10 @@
         @media (max-width: 1199px) {
             .onsen-spa-item__layout {
                 grid-template-columns: minmax(0, 1.45fr) minmax(280px, 1fr);
+            }
+
+            .onsen-spa-item--reverse .onsen-spa-item__layout {
+                grid-template-columns: minmax(280px, 1fr) minmax(0, 1.45fr);
             }
 
             .onsen-spa-item__side-bottom {
@@ -174,15 +173,7 @@
             }
 
             .onsen-spa-item__head {
-                gap: 22px;
-                grid-template-columns: 1fr;
                 justify-items: center;
-            }
-
-            .onsen-spa-item__title,
-            .onsen-spa-item__button {
-                grid-column: auto;
-                justify-self: center;
             }
 
             .onsen-spa-item__layout {
@@ -190,13 +181,24 @@
                 max-width: 720px;
             }
 
+            .onsen-spa-item--reverse .onsen-spa-item__main,
+            .onsen-spa-item--reverse .onsen-spa-item__side {
+                grid-column: auto;
+                grid-row: auto;
+            }
+
             .onsen-spa-item__side-bottom {
                 justify-self: center;
                 width: 82%;
             }
 
+            .onsen-spa-item--reverse .onsen-spa-item__side-bottom {
+                justify-self: center;
+            }
+
             .onsen-spa-item__description {
                 margin-left: 0;
+                margin-right: 0;
                 max-width: none;
                 text-align: center;
             }
@@ -206,12 +208,6 @@
             .onsen-spa-item {
                 padding-left: 18px;
                 padding-right: 18px;
-            }
-
-            .onsen-spa-item__button {
-                min-width: 0;
-                width: 100%;
-                justify-content: center;
             }
 
             .onsen-spa-item__side-bottom {
@@ -226,12 +222,6 @@
                 <h2 class="onsen-spa-item__title">{!! BaseHelper::clean($title) !!}</h2>
             @endif
 
-            @if ($buttonLabel)
-                <a class="onsen-spa-item__button" href="{{ $buttonUrl }}">
-                    <i class="far fa-comment-alt" aria-hidden="true"></i>
-                    <span>{!! BaseHelper::clean($buttonLabel) !!}</span>
-                </a>
-            @endif
         </div>
 
         <div class="onsen-spa-item__layout">

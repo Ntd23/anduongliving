@@ -1110,6 +1110,17 @@ app()->booted(function (): void {
                     ->toArray()
             )
             ->add(
+                'image_layout',
+                SelectField::class,
+                SelectFieldOption::make()
+                    ->label(__('Image layout'))
+                    ->choices([
+                        'large_left' => __('Large image left'),
+                        'large_right' => __('Large image right'),
+                    ])
+                    ->toArray()
+            )
+            ->add(
                 'main_image',
                 MediaImageField::class,
                 MediaImageFieldOption::make()
@@ -1120,14 +1131,14 @@ app()->booted(function (): void {
                 'top_image',
                 MediaImageField::class,
                 MediaImageFieldOption::make()
-                    ->label(__('Right top image'))
+                    ->label(__('Secondary top image'))
                     ->toArray()
             )
             ->add(
                 'bottom_image',
                 MediaImageField::class,
                 MediaImageFieldOption::make()
-                    ->label(__('Right bottom image'))
+                    ->label(__('Secondary bottom image'))
                     ->toArray()
             )
             ->add(
@@ -1137,9 +1148,7 @@ app()->booted(function (): void {
                     ->label(__('Description'))
                     ->rows(4)
                     ->toArray()
-            )
-            ->add('button_label', TextField::class, TextFieldOption::make()->label(__('Button label'))->toArray())
-            ->add('button_url', TextField::class, TextFieldOption::make()->label(__('Button URL'))->toArray());
+            );
     });
 
     Shortcode::register(
