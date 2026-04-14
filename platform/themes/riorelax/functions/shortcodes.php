@@ -960,6 +960,98 @@ app()->booted(function (): void {
     });
 
     Shortcode::register(
+        'page-lead',
+        __('Page Lead'),
+        __('Centered page lead section with decorative title and text'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.page-lead.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setAdminConfig('page-lead', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'section_id',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Section ID'))
+                    ->placeholder('pageLead')
+                    ->toArray()
+            )
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Background image'))
+                    ->toArray()
+            )
+            ->add(
+                'background_color',
+                ShortcodeColorField::class,
+                InputFieldOption::make()
+                    ->label(__('Background color'))
+                    ->defaultValue('#f7f7f5')
+                    ->toArray()
+            )
+            ->add(
+                'accent_color',
+                ShortcodeColorField::class,
+                InputFieldOption::make()
+                    ->label(__('Accent color'))
+                    ->defaultValue('#9d7f3d')
+                    ->toArray()
+            )
+            ->add(
+                'script_color',
+                ShortcodeColorField::class,
+                InputFieldOption::make()
+                    ->label(__('Decorative script color'))
+                    ->defaultValue('#e7e4de')
+                    ->toArray()
+            )
+            ->add(
+                'text_color',
+                ShortcodeColorField::class,
+                InputFieldOption::make()
+                    ->label(__('Body text color'))
+                    ->defaultValue('#111111')
+                    ->toArray()
+            )
+            ->add(
+                'title',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Title'))
+                    ->placeholder('上質なリラクゼーションを体感')
+                    ->toArray()
+            )
+            ->add(
+                'decorative_text',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Decorative script text'))
+                    ->placeholder('Onsen')
+                    ->toArray()
+            )
+            ->add(
+                'subtitle',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Subtitle'))
+                    ->placeholder('贅沢な時間を過ごす')
+                    ->toArray()
+            )
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->label(__('Description'))
+                    ->rows(6)
+                    ->toArray()
+            );
+    });
+
+    Shortcode::register(
         'forest-facility-showcase',
         __('Forest Facility Showcase'),
         __('Soft left image fade, center content and 2 right images'),
