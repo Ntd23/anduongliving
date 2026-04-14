@@ -1260,6 +1260,115 @@ app()->booted(function (): void {
     });
 
     Shortcode::register(
+        'onsen-video-instagram',
+        __('Onsen Video Instagram'),
+        __('Full-width video preview with editable Instagram image gallery'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            $shortcode->youtube_video_id = $shortcode->youtube_url ? Youtube::getYoutubeVideoID(
+                $shortcode->youtube_url
+            ) : null;
+            $images = Shortcode::fields()->getTabsData(['image'], $shortcode);
+
+            return Theme::partial('shortcodes.onsen-video-instagram.index', compact('shortcode', 'images'));
+        }
+    );
+
+    Shortcode::setAdminConfig('onsen-video-instagram', function (array $attributes) {
+        $socialChoices = [
+            'instagram' => __('Instagram'),
+            'facebook' => __('Facebook'),
+            'x' => __('X'),
+        ];
+        $fields = [
+            'image' => [
+                'type' => 'image',
+                'title' => __('Gallery image'),
+                'required' => false,
+            ],
+        ];
+
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'section_id',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Section ID'))
+                    ->placeholder('onsen_video_instagram')
+                    ->toArray()
+            )
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Background image'))
+                    ->toArray()
+            )
+            ->add(
+                'background_color',
+                ShortcodeColorField::class,
+                InputFieldOption::make()
+                    ->label(__('Background color'))
+                    ->defaultValue('#080202')
+                    ->toArray()
+            )
+            ->add(
+                'youtube_url',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Youtube URL'))
+                    ->toArray()
+            )
+            ->add(
+                'gallery_social',
+                SelectField::class,
+                SelectFieldOption::make()
+                    ->label(__('Gallery social'))
+                    ->choices($socialChoices)
+                    ->toArray()
+            )
+            ->add(
+                'left_caption',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Left caption'))
+                    ->placeholder('Guest post images')
+                    ->toArray()
+            )
+            ->add(
+                'left_social',
+                SelectField::class,
+                SelectFieldOption::make()
+                    ->label(__('Left button social'))
+                    ->choices($socialChoices)
+                    ->toArray()
+            )
+            ->add(
+                'right_caption',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Right caption'))
+                    ->placeholder('Official Instagram')
+                    ->toArray()
+            )
+            ->add(
+                'right_social',
+                SelectField::class,
+                SelectFieldOption::make()
+                    ->label(__('Right button social'))
+                    ->choices($socialChoices)
+                    ->toArray()
+            )
+            ->add(
+                'tabs',
+                ShortcodeTabsField::class,
+                ShortcodeTabsFieldOption::make()
+                    ->attrs($attributes)
+                    ->fields($fields)
+                    ->toArray()
+            );
+    });
+
+    Shortcode::register(
         'forest-facility-showcase',
         __('Forest Facility Showcase'),
         __('Soft left image fade, center content and 2 right images'),
