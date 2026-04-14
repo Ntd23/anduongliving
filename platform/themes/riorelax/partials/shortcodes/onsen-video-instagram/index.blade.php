@@ -25,6 +25,16 @@
     $rightSocial = $socials[$rightSocialKey] ?? $socials['instagram'];
     $leftCaption = $shortcode->left_caption ?: 'Guest post images';
     $rightCaption = $shortcode->right_caption ?: 'Official Instagram';
+    $fontSize = static function ($value, $default, $min = 12, $max = 120) {
+        if (! is_numeric($value)) {
+            return $default;
+        }
+
+        return max($min, min($max, (float) $value));
+    };
+    $headingFontSize = $fontSize($shortcode->heading_font_size ?? null, 34, 16, 60);
+    $captionFontSize = $fontSize($shortcode->caption_font_size ?? null, 17, 12, 34);
+    $buttonFontSize = $fontSize($shortcode->button_font_size ?? null, 18, 12, 34);
     $galleryImages = collect($images ?? [])
         ->map(fn ($item) => $item['image'] ?? null)
         ->filter()
@@ -38,6 +48,9 @@
     class="onsen-video-instagram"
     style="
         --onsen-video-instagram-bg: {{ $backgroundColor }};
+        --onsen-video-instagram-heading-size: {{ $headingFontSize }}px;
+        --onsen-video-instagram-caption-size: {{ $captionFontSize }}px;
+        --onsen-video-instagram-button-size: {{ $buttonFontSize }}px;
         @if ($backgroundImage) background-image: url('{{ $backgroundImage }}'); @endif
     "
 >
@@ -101,7 +114,7 @@
             color: #fff;
             display: inline-flex;
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
-            font-size: clamp(15px, 1vw, 24px);
+            font-size: var(--onsen-video-instagram-heading-size);
             font-style: normal;
             font-weight: 700;
             letter-spacing: 0.04em;
@@ -205,7 +218,7 @@
         .onsen-video-instagram__caption {
             color: #b49a47;
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
-            font-size: clamp(14px, 1vw, 17px);
+            font-size: var(--onsen-video-instagram-caption-size);
             font-weight: 600;
             letter-spacing: 0.08em;
             line-height: 1.55;
@@ -219,7 +232,7 @@
             display: flex;
             gap: 10px;
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
-            font-size: clamp(14px, 1vw, 18px);
+            font-size: var(--onsen-video-instagram-button-size);
             font-weight: 700;
             justify-content: center;
             letter-spacing: 0.04em;
@@ -240,6 +253,10 @@
                 padding-right: 18px;
             }
 
+            .onsen-video-instagram__title {
+                font-size: max(18px, calc(var(--onsen-video-instagram-heading-size) * 0.84));
+            }
+
             .onsen-video-instagram__grid {
                 gap: 8px;
                 grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -248,6 +265,14 @@
             .onsen-video-instagram__actions {
                 gap: 18px;
                 grid-template-columns: 1fr;
+            }
+
+            .onsen-video-instagram__caption {
+                font-size: max(13px, calc(var(--onsen-video-instagram-caption-size) * 0.94));
+            }
+
+            .onsen-video-instagram__button {
+                font-size: max(13px, calc(var(--onsen-video-instagram-button-size) * 0.94));
             }
         }
     </style>

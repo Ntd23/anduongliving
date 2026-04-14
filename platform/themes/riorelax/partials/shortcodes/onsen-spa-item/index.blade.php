@@ -9,6 +9,15 @@
     $title = $shortcode->title ?: 'Open-air Bath Suzumushi';
     $description = $shortcode->description ?: "Warm your body and mind in the middle of nature.\nEnjoy a quiet, open moment surrounded by fresh air and greenery.";
     $isReversed = $shortcode->image_layout === 'large_right';
+    $fontSize = static function ($value, $default, $min = 12, $max = 120) {
+        if (! is_numeric($value)) {
+            return $default;
+        }
+
+        return max($min, min($max, (float) $value));
+    };
+    $titleFontSize = $fontSize($shortcode->title_font_size ?? null, 28, 16, 56);
+    $descriptionFontSize = $fontSize($shortcode->description_font_size ?? null, 18, 12, 34);
 @endphp
 
 <section
@@ -18,6 +27,8 @@
         --onsen-spa-item-bg: {{ $backgroundColor }};
         --onsen-spa-item-accent: {{ $accentColor }};
         --onsen-spa-item-text: #fff;
+        --onsen-spa-item-title-size: {{ $titleFontSize }}px;
+        --onsen-spa-item-description-size: {{ $descriptionFontSize }}px;
         @if ($backgroundImage) background-image: url('{{ $backgroundImage }}'); @endif
     "
 >
@@ -64,7 +75,7 @@
         .onsen-spa-item__title {
             color: var(--onsen-spa-item-text);
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
-            font-size: clamp(20px, 1.45vw, 28px);
+            font-size: var(--onsen-spa-item-title-size);
             font-weight: 500;
             letter-spacing: 0.18em;
             line-height: 1.4;
@@ -136,7 +147,7 @@
         .onsen-spa-item__description {
             color: var(--onsen-spa-item-text);
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
-            font-size: clamp(15px, 0.95vw, 18px);
+            font-size: var(--onsen-spa-item-description-size);
             font-weight: 500;
             letter-spacing: 0.08em;
             line-height: 2;
@@ -197,6 +208,7 @@
             }
 
             .onsen-spa-item__description {
+                font-size: max(15px, calc(var(--onsen-spa-item-description-size) * 0.94));
                 margin-left: 0;
                 margin-right: 0;
                 max-width: none;
@@ -208,6 +220,10 @@
             .onsen-spa-item {
                 padding-left: 18px;
                 padding-right: 18px;
+            }
+
+            .onsen-spa-item__title {
+                font-size: max(20px, calc(var(--onsen-spa-item-title-size) * 0.82));
             }
 
             .onsen-spa-item__side-bottom {

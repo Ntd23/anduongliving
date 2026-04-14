@@ -10,6 +10,17 @@
     $decorativeText = $shortcode->decorative_text ?: 'Onsen';
     $subtitle = $shortcode->subtitle ?: 'Spend a Luxurious Moment';
     $description = $shortcode->description ?: "Tanikawa Onsen has continued to flow naturally since the Edo period.\nSurrounded by clear streams and deep greenery, its gentle alkaline water offers a quiet place to rest.\nEnjoy open-air baths, fragrant indoor cypress baths, and calm walking baths while taking in the fresh mountain air.\nThis is a peaceful retreat for slowing down and restoring both body and mind.";
+    $fontSize = static function ($value, $default, $min = 12, $max = 160) {
+        if (! is_numeric($value)) {
+            return $default;
+        }
+
+        return max($min, min($max, (float) $value));
+    };
+    $titleFontSize = $fontSize($shortcode->title_font_size ?? null, 34, 18, 80);
+    $decorativeFontSize = $fontSize($shortcode->decorative_font_size ?? null, 112, 32, 180);
+    $subtitleFontSize = $fontSize($shortcode->subtitle_font_size ?? null, 19, 12, 48);
+    $descriptionFontSize = $fontSize($shortcode->description_font_size ?? null, 18, 12, 36);
 @endphp
 
 <section
@@ -21,6 +32,10 @@
         --page-lead-heading: {{ $headingColor }};
         --page-lead-script: {{ $scriptColor }};
         --page-lead-text: {{ $textColor }};
+        --page-lead-title-size: {{ $titleFontSize }}px;
+        --page-lead-script-size: {{ $decorativeFontSize }}px;
+        --page-lead-subtitle-size: {{ $subtitleFontSize }}px;
+        --page-lead-description-size: {{ $descriptionFontSize }}px;
         @if ($backgroundImage) background-image: url('{{ $backgroundImage }}'); @endif
     "
 >
@@ -75,7 +90,7 @@
         .page-lead__title {
             color: var(--page-lead-heading) !important;
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
-            font-size: clamp(22px, 1.78vw, 34px);
+            font-size: var(--page-lead-title-size);
             font-weight: 800;
             letter-spacing: 0.16em;
             line-height: 1.35;
@@ -88,7 +103,7 @@
         .page-lead__script {
             color: var(--page-lead-script);
             font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
-            font-size: clamp(58px, 6vw, 112px);
+            font-size: var(--page-lead-script-size);
             font-style: italic;
             font-weight: 300;
             left: 50%;
@@ -106,7 +121,7 @@
         .page-lead__subtitle {
             color: var(--page-lead-heading) !important;
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
-            font-size: clamp(15px, 1.05vw, 19px);
+            font-size: var(--page-lead-subtitle-size);
             font-weight: 700;
             letter-spacing: 0.08em;
             line-height: 1.6;
@@ -117,7 +132,7 @@
 
         .page-lead__description {
             font-family: 'Yu Mincho', 'Noto Serif JP', "Times New Roman", serif;
-            font-size: clamp(16px, 1vw, 18px);
+            font-size: var(--page-lead-description-size);
             font-weight: 500;
             letter-spacing: 0.035em;
             line-height: 2.28;
@@ -140,6 +155,7 @@
             }
 
             .page-lead__description {
+                font-size: max(15px, calc(var(--page-lead-description-size) * 0.94));
                 letter-spacing: 0;
                 line-height: 2;
                 text-align: left;
@@ -149,14 +165,17 @@
 
         @media (max-width: 575px) {
             .page-lead__title {
+                font-size: max(22px, calc(var(--page-lead-title-size) * 0.78));
                 letter-spacing: 0.08em;
             }
 
             .page-lead__script {
+                font-size: max(58px, calc(var(--page-lead-script-size) * 0.68));
                 top: 48px;
             }
 
             .page-lead__subtitle {
+                font-size: max(15px, calc(var(--page-lead-subtitle-size) * 0.88));
                 margin-top: 62px;
             }
         }

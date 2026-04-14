@@ -1034,11 +1034,27 @@ app()->booted(function (): void {
                     ->toArray()
             )
             ->add(
+                'title_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Title font size (px)'))
+                    ->defaultValue(34)
+                    ->toArray()
+            )
+            ->add(
                 'decorative_text',
                 TextField::class,
                 TextFieldOption::make()
                     ->label(__('Decorative script text'))
                     ->placeholder('Onsen')
+                    ->toArray()
+            )
+            ->add(
+                'decorative_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Decorative script font size (px)'))
+                    ->defaultValue(112)
                     ->toArray()
             )
             ->add(
@@ -1050,11 +1066,27 @@ app()->booted(function (): void {
                     ->toArray()
             )
             ->add(
+                'subtitle_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Subtitle font size (px)'))
+                    ->defaultValue(19)
+                    ->toArray()
+            )
+            ->add(
                 'description',
                 TextareaField::class,
                 TextareaFieldOption::make()
                     ->label(__('Description'))
                     ->rows(6)
+                    ->toArray()
+            )
+            ->add(
+                'description_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Description font size (px)'))
+                    ->defaultValue(18)
                     ->toArray()
             );
     });
@@ -1110,6 +1142,14 @@ app()->booted(function (): void {
                     ->toArray()
             )
             ->add(
+                'title_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Title font size (px)'))
+                    ->defaultValue(28)
+                    ->toArray()
+            )
+            ->add(
                 'image_layout',
                 SelectField::class,
                 SelectFieldOption::make()
@@ -1147,6 +1187,14 @@ app()->booted(function (): void {
                 TextareaFieldOption::make()
                     ->label(__('Description'))
                     ->rows(4)
+                    ->toArray()
+            )
+            ->add(
+                'description_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Description font size (px)'))
+                    ->defaultValue(18)
                     ->toArray()
             );
     });
@@ -1210,6 +1258,14 @@ app()->booted(function (): void {
             )
             ->add('title', TextField::class, TextFieldOption::make()->label(__('Title'))->placeholder('Seasonal Walking Bath')->toArray())
             ->add(
+                'title_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Title font size (px)'))
+                    ->defaultValue(26)
+                    ->toArray()
+            )
+            ->add(
                 'main_image',
                 MediaImageField::class,
                 MediaImageFieldOption::make()
@@ -1225,6 +1281,14 @@ app()->booted(function (): void {
                     ->toArray()
             )
             ->add(
+                'description_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Top description font size (px)'))
+                    ->defaultValue(18)
+                    ->toArray()
+            )
+            ->add(
                 'info_background_image',
                 MediaImageField::class,
                 MediaImageFieldOption::make()
@@ -1237,6 +1301,30 @@ app()->booted(function (): void {
                 TextFieldOption::make()
                     ->label(__('Info title'))
                     ->placeholder('About the Private Hot Spring')
+                    ->toArray()
+            )
+            ->add(
+                'info_title_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Info title font size (px)'))
+                    ->defaultValue(26)
+                    ->toArray()
+            )
+            ->add(
+                'info_label_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Info label font size (px)'))
+                    ->defaultValue(14)
+                    ->toArray()
+            )
+            ->add(
+                'info_text_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Info text font size (px)'))
+                    ->defaultValue(14)
                     ->toArray()
             );
 
@@ -1356,6 +1444,30 @@ app()->booted(function (): void {
                 SelectFieldOption::make()
                     ->label(__('Right button social'))
                     ->choices($socialChoices)
+                    ->toArray()
+            )
+            ->add(
+                'heading_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Heading font size (px)'))
+                    ->defaultValue(34)
+                    ->toArray()
+            )
+            ->add(
+                'caption_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Caption font size (px)'))
+                    ->defaultValue(17)
+                    ->toArray()
+            )
+            ->add(
+                'button_font_size',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Button font size (px)'))
+                    ->defaultValue(18)
                     ->toArray()
             )
             ->add(

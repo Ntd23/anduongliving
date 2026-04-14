@@ -10,6 +10,18 @@
     $title = $shortcode->title ?: 'Seasonal Walking Bath';
     $description = $shortcode->description ?: "Beside the spa room, a walking bath faces the flowing Tanikawa stream.\nRelax with forest bathing and comfortably warm water between 38 and 41 degrees Celsius.";
     $infoTitle = $shortcode->info_title ?: 'About the Private Hot Spring';
+    $fontSize = static function ($value, $default, $min = 12, $max = 120) {
+        if (! is_numeric($value)) {
+            return $default;
+        }
+
+        return max($min, min($max, (float) $value));
+    };
+    $titleFontSize = $fontSize($shortcode->title_font_size ?? null, 26, 16, 52);
+    $descriptionFontSize = $fontSize($shortcode->description_font_size ?? null, 18, 12, 34);
+    $infoTitleFontSize = $fontSize($shortcode->info_title_font_size ?? null, 26, 16, 52);
+    $infoLabelFontSize = $fontSize($shortcode->info_label_font_size ?? null, 14, 11, 28);
+    $infoTextFontSize = $fontSize($shortcode->info_text_font_size ?? null, 14, 11, 28);
 
     $defaultRows = [
         ['Spring Quality', 'Calcium sodium sulfate chloride spring. Hypotonic, mildly alkaline hot spring.'],
@@ -47,6 +59,11 @@
         --onsen-detail-bg: {{ $backgroundColor }};
         --onsen-detail-accent: {{ $accentColor }};
         --onsen-detail-title: {{ $titleColor }};
+        --onsen-detail-title-size: {{ $titleFontSize }}px;
+        --onsen-detail-description-size: {{ $descriptionFontSize }}px;
+        --onsen-detail-info-title-size: {{ $infoTitleFontSize }}px;
+        --onsen-detail-label-size: {{ $infoLabelFontSize }}px;
+        --onsen-detail-text-size: {{ $infoTextFontSize }}px;
     "
 >
     <style>
@@ -72,7 +89,7 @@
             color: var(--onsen-detail-title) !important;
             filter: none;
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
-            font-size: clamp(18px, 1.45vw, 26px);
+            font-size: var(--onsen-detail-title-size);
             font-weight: 900;
             letter-spacing: 0.28em;
             line-height: 1.45;
@@ -96,7 +113,7 @@
 
         .onsen-detail-info__lead {
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
-            font-size: clamp(15px, 0.96vw, 18px);
+            font-size: var(--onsen-detail-description-size);
             font-weight: 500;
             letter-spacing: 0.06em;
             line-height: 2;
@@ -132,7 +149,7 @@
             color: var(--onsen-detail-title) !important;
             filter: none;
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
-            font-size: clamp(18px, 1.35vw, 26px);
+            font-size: var(--onsen-detail-info-title-size);
             font-weight: 900;
             letter-spacing: 0.22em;
             line-height: 1.5;
@@ -162,7 +179,7 @@
             color: #fff;
             display: flex;
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
-            font-size: 14px;
+            font-size: var(--onsen-detail-label-size);
             justify-content: center;
             letter-spacing: 0.12em;
             line-height: 1.45;
@@ -176,7 +193,7 @@
             color: #111;
             display: flex;
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
-            font-size: 14px;
+            font-size: var(--onsen-detail-text-size);
             font-weight: 500;
             letter-spacing: 0.05em;
             line-height: 1.85;
@@ -208,10 +225,12 @@
             }
 
             .onsen-detail-info__lead {
+                font-size: max(15px, calc(var(--onsen-detail-description-size) * 0.94));
                 letter-spacing: 0.02em;
             }
 
             .onsen-detail-info__info-title {
+                font-size: max(18px, calc(var(--onsen-detail-info-title-size) * 0.86));
                 letter-spacing: 0.1em;
             }
 
@@ -220,7 +239,16 @@
                 grid-template-columns: 1fr;
             }
 
+            .onsen-detail-info__title {
+                font-size: max(18px, calc(var(--onsen-detail-title-size) * 0.86));
+            }
+
+            .onsen-detail-info__label {
+                font-size: max(12px, calc(var(--onsen-detail-label-size) * 0.94));
+            }
+
             .onsen-detail-info__text {
+                font-size: max(12px, calc(var(--onsen-detail-text-size) * 0.94));
                 padding-bottom: 12px;
             }
         }
