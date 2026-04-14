@@ -10,8 +10,8 @@
     </header>
 
     @php
-        $heroImage = Theme::get('breadcrumbBackgroundImage');
         $page = Theme::get('page');
+        $heroImage = $page?->getMetaData('blog_onsen_background', true) ?: Theme::get('breadcrumbBackgroundImage');
         $eyebrow = $page?->getMetaData('blog_onsen_eyebrow', true);
         $onsenMenus = collect([
             [

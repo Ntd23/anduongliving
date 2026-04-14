@@ -102,6 +102,16 @@ if (class_exists(PageForm::class)) {
 
         $form->addAfter(
             'template',
+            'blog_onsen_background',
+            MediaImageField::class,
+            MediaImageFieldOption::make()
+                ->label(__('Blog Onsen background image'))
+                ->metadata()
+                ->toArray()
+        );
+
+        $form->addAfter(
+            'template',
             'blog_onsen_eyebrow',
             TextField::class,
             TextFieldOption::make()
