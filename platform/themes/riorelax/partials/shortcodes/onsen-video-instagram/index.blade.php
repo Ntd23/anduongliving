@@ -100,11 +100,11 @@
             align-items: center;
             color: #fff;
             display: inline-flex;
-            font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
-            font-size: clamp(34px, 3.6vw, 56px);
-            font-style: italic;
-            font-weight: 600;
-            letter-spacing: 0.02em;
+            font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
+            font-size: clamp(15px, 1vw, 24px);
+            font-style: normal;
+            font-weight: 700;
+            letter-spacing: 0.04em;
             line-height: 1;
             margin: 0;
         }
@@ -112,9 +112,9 @@
         .onsen-video-instagram__social-icon {
             display: inline-flex;
             flex: 0 0 auto;
-            height: 42px;
-            margin-right: 10px;
-            width: 34px;
+            height: 50px;
+            margin-right: 9px;
+            width: 28px;
         }
 
         .onsen-video-instagram__social-icon svg {
