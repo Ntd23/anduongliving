@@ -3,6 +3,7 @@
     $backgroundImage = $shortcode->background_image ? RvMedia::getImageUrl($shortcode->background_image) : null;
     $backgroundColor = $shortcode->background_color ?: '#f7f7f5';
     $accentColor = $shortcode->accent_color ?: '#8b6f2f';
+    $headingColor = $shortcode->heading_color ?: '#7a5c1f';
     $scriptColor = $shortcode->script_color ?: '#dedbd5';
     $textColor = $shortcode->text_color ?: '#111111';
     $title = $shortcode->title ?: '上質なリラクゼーションを体感';
@@ -17,6 +18,7 @@
     style="
         --page-lead-bg: {{ $backgroundColor }};
         --page-lead-accent: {{ $accentColor }};
+        --page-lead-heading: {{ $headingColor }};
         --page-lead-script: {{ $scriptColor }};
         --page-lead-text: {{ $textColor }};
         @if ($backgroundImage) background-image: url('{{ $backgroundImage }}'); @endif
@@ -70,11 +72,10 @@
         }
 
         .page-lead__title {
-            color: #8b6f2f;
-            color: color-mix(in srgb, var(--page-lead-accent) 62%, #4d3913 38%);
+            color: var(--page-lead-heading) !important;
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
             font-size: clamp(22px, 1.78vw, 34px);
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 0.16em;
             line-height: 1.35;
             margin: 0;
@@ -102,11 +103,10 @@
         }
 
         .page-lead__subtitle {
-            color: #8b6f2f;
-            color: color-mix(in srgb, var(--page-lead-accent) 68%, #4d3913 32%);
+            color: var(--page-lead-heading) !important;
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
             font-size: clamp(15px, 1.05vw, 19px);
-            font-weight: 500;
+            font-weight: 600;
             letter-spacing: 0.08em;
             line-height: 1.6;
             margin: 42px 0 0;

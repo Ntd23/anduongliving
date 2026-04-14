@@ -1002,6 +1002,14 @@ app()->booted(function (): void {
                     ->toArray()
             )
             ->add(
+                'heading_color',
+                ShortcodeColorField::class,
+                InputFieldOption::make()
+                    ->label(__('Heading color'))
+                    ->defaultValue('#7a5c1f')
+                    ->toArray()
+            )
+            ->add(
                 'script_color',
                 ShortcodeColorField::class,
                 InputFieldOption::make()
