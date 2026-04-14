@@ -6,8 +6,8 @@
     $backgroundImage = $shortcode->background_image ? RvMedia::getImageUrl($shortcode->background_image) : $mainImage;
     $backgroundColor = $shortcode->background_color ?: '#001514';
     $accentColor = $shortcode->accent_color ?: '#b49a47';
-    $title = $shortcode->title ?: '露天風呂 すずむしの湯';
-    $description = $shortcode->description ?: "自然の中で身も心もゆっくり温まり、\n解放感に満たされるひとときをお過ごしください。";
+    $title = $shortcode->title ?: 'Open-air Bath Suzumushi';
+    $description = $shortcode->description ?: "Warm your body and mind in the middle of nature.\nEnjoy a quiet, open moment surrounded by fresh air and greenery.";
     $isReversed = $shortcode->image_layout === 'large_right';
 @endphp
 

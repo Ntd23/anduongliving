@@ -1006,7 +1006,7 @@ app()->booted(function (): void {
                 ShortcodeColorField::class,
                 InputFieldOption::make()
                     ->label(__('Heading color'))
-                    ->defaultValue('#7a5c1f')
+                    ->defaultValue('#6f5319')
                     ->toArray()
             )
             ->add(
@@ -1014,7 +1014,7 @@ app()->booted(function (): void {
                 ShortcodeColorField::class,
                 InputFieldOption::make()
                     ->label(__('Decorative script color'))
-                    ->defaultValue('#e7e4de')
+                    ->defaultValue('#ebe8e2')
                     ->toArray()
             )
             ->add(
@@ -1030,7 +1030,7 @@ app()->booted(function (): void {
                 TextField::class,
                 TextFieldOption::make()
                     ->label(__('Title'))
-                    ->placeholder('上質なリラクゼーションを体感')
+                    ->placeholder('Experience Refined Relaxation')
                     ->toArray()
             )
             ->add(
@@ -1046,7 +1046,7 @@ app()->booted(function (): void {
                 TextField::class,
                 TextFieldOption::make()
                     ->label(__('Subtitle'))
-                    ->placeholder('贅沢な時間を過ごす')
+                    ->placeholder('Spend a Luxurious Moment')
                     ->toArray()
             )
             ->add(
@@ -1106,7 +1106,7 @@ app()->booted(function (): void {
                 TextField::class,
                 TextFieldOption::make()
                     ->label(__('Title'))
-                    ->placeholder('露天風呂 すずむしの湯')
+                    ->placeholder('Open-air Bath Suzumushi')
                     ->toArray()
             )
             ->add(
@@ -1149,6 +1149,111 @@ app()->booted(function (): void {
                     ->rows(4)
                     ->toArray()
             );
+    });
+
+    Shortcode::register(
+        'onsen-detail-info',
+        __('Onsen Detail Info'),
+        __('White Onsen detail block with image, info table and replaceable bottom logo'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.onsen-detail-info.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setAdminConfig('onsen-detail-info', function (array $attributes) {
+        $form = ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'section_id',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Section ID'))
+                    ->placeholder('onsen_detail_info')
+                    ->toArray()
+            )
+            ->add(
+                'background_color',
+                ShortcodeColorField::class,
+                InputFieldOption::make()
+                    ->label(__('Background color'))
+                    ->defaultValue('#ffffff')
+                    ->toArray()
+            )
+            ->add(
+                'accent_color',
+                ShortcodeColorField::class,
+                InputFieldOption::make()
+                    ->label(__('Accent color'))
+                    ->defaultValue('#7a5c1f')
+                    ->toArray()
+            )
+            ->add(
+                'title_color',
+                ShortcodeColorField::class,
+                InputFieldOption::make()
+                    ->label(__('Title color'))
+                    ->defaultValue('#6b4d16')
+                    ->toArray()
+            )
+            ->add('title', TextField::class, TextFieldOption::make()->label(__('Title'))->placeholder('Seasonal Walking Bath')->toArray())
+            ->add(
+                'main_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Main image'))
+                    ->toArray()
+            )
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->label(__('Top description'))
+                    ->rows(4)
+                    ->toArray()
+            )
+            ->add(
+                'info_background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Info background image'))
+                    ->toArray()
+            )
+            ->add(
+                'info_title',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Info title'))
+                    ->placeholder('About the Private Hot Spring')
+                    ->toArray()
+            );
+
+        for ($i = 1; $i <= 6; $i++) {
+            $form
+                ->add(
+                    'info_label_' . $i,
+                    TextField::class,
+                    TextFieldOption::make()
+                        ->label(__('Info row label ' . $i))
+                        ->toArray()
+                )
+                ->add(
+                    'info_text_' . $i,
+                    TextareaField::class,
+                    TextareaFieldOption::make()
+                        ->label(__('Info row text ' . $i))
+                        ->rows(2)
+                        ->toArray()
+                );
+        }
+
+        return $form
+            ->add(
+                'bottom_logo_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Bottom logo image'))
+                    ->toArray()
+            )
+            ->add('bottom_logo_url', TextField::class, TextFieldOption::make()->label(__('Bottom logo URL'))->toArray());
     });
 
     Shortcode::register(

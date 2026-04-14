@@ -3,13 +3,13 @@
     $backgroundImage = $shortcode->background_image ? RvMedia::getImageUrl($shortcode->background_image) : null;
     $backgroundColor = $shortcode->background_color ?: '#f7f7f5';
     $accentColor = $shortcode->accent_color ?: '#8b6f2f';
-    $headingColor = $shortcode->heading_color ?: '#7a5c1f';
-    $scriptColor = $shortcode->script_color ?: '#dedbd5';
+    $headingColor = $shortcode->heading_color ?: '#6f5319';
+    $scriptColor = $shortcode->script_color ?: '#ebe8e2';
     $textColor = $shortcode->text_color ?: '#111111';
-    $title = $shortcode->title ?: '上質なリラクゼーションを体感';
+    $title = $shortcode->title ?: 'Experience Refined Relaxation';
     $decorativeText = $shortcode->decorative_text ?: 'Onsen';
-    $subtitle = $shortcode->subtitle ?: '贅沢な時間を過ごす';
-    $description = $shortcode->description ?: "水上温泉郷の西方に位置する谷川温泉は江戸時代からこんこんと湧き続け、\n豪雪地帯のみなさまに古くから愛されてきました。\n仙寿庵の湯は、肌にやさしい低張性弱アルカリ性温泉でございます。谷川の清流と緑の中で新鮮な空気とともに\n愉しめる露天風呂、檜の香りが愉しめる内湯、談笑しながらほっとしたひとときを過ごせる歩行湯など、\n何よりも贅沢で心地いい時間を愉しめます。";
+    $subtitle = $shortcode->subtitle ?: 'Spend a Luxurious Moment';
+    $description = $shortcode->description ?: "Tanikawa Onsen has continued to flow naturally since the Edo period.\nSurrounded by clear streams and deep greenery, its gentle alkaline water offers a quiet place to rest.\nEnjoy open-air baths, fragrant indoor cypress baths, and calm walking baths while taking in the fresh mountain air.\nThis is a peaceful retreat for slowing down and restoring both body and mind.";
 @endphp
 
 <section
@@ -66,8 +66,9 @@
         }
 
         .page-lead__header {
+            isolation: isolate;
             margin: 0 auto;
-            min-height: 148px;
+            min-height: 172px;
             position: relative;
         }
 
@@ -75,13 +76,13 @@
             color: var(--page-lead-heading) !important;
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
             font-size: clamp(22px, 1.78vw, 34px);
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 0.16em;
             line-height: 1.35;
             margin: 0;
             position: relative;
-            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
-            z-index: 2;
+            text-shadow: none;
+            z-index: 3;
         }
 
         .page-lead__script {
@@ -93,10 +94,10 @@
             left: 50%;
             letter-spacing: 0.02em;
             line-height: 0.72;
-            opacity: 0.78;
+            opacity: 0.44;
             pointer-events: none;
             position: absolute;
-            top: 38px;
+            top: 44px;
             transform: translateX(-50%);
             white-space: nowrap;
             z-index: 1;
@@ -106,12 +107,12 @@
             color: var(--page-lead-heading) !important;
             font-family: 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
             font-size: clamp(15px, 1.05vw, 19px);
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 0.08em;
             line-height: 1.6;
-            margin: 58px 0 0;
+            margin: 70px 0 0;
             position: relative;
-            z-index: 2;
+            z-index: 3;
         }
 
         .page-lead__description {
@@ -152,11 +153,11 @@
             }
 
             .page-lead__script {
-                top: 42px;
+                top: 48px;
             }
 
             .page-lead__subtitle {
-                margin-top: 48px;
+                margin-top: 62px;
             }
         }
     </style>
