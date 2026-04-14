@@ -20,12 +20,24 @@
         ['Benefits', 'Digestive discomfort, neuralgia, and sensitivity to cold.'],
     ];
 
-    $rows = collect(range(1, 6))->map(function ($index) use ($shortcode, $defaultRows) {
-        $label = $shortcode->{'info_label_' . $index} ?: $defaultRows[$index - 1][0];
-        $text = $shortcode->{'info_text_' . $index} ?: $defaultRows[$index - 1][1];
+    $rows = collect($infoRows ?? [])
+        ->map(function ($row) {
+            return [
+                'label' => $row['label'] ?? '',
+                'text' => $row['text'] ?? '',
+            ];
+        })
+        ->filter(fn ($row) => filled($row['label']) || filled($row['text']))
+        ->values();
 
-        return compact('label', 'text');
-    })->filter(fn ($row) => filled($row['label']) || filled($row['text']))->values();
+    if ($rows->isEmpty()) {
+        $rows = collect(range(1, 6))->map(function ($index) use ($shortcode, $defaultRows) {
+            $label = $shortcode->{'info_label_' . $index} ?: $defaultRows[$index - 1][0];
+            $text = $shortcode->{'info_text_' . $index} ?: $defaultRows[$index - 1][1];
+
+            return compact('label', 'text');
+        })->filter(fn ($row) => filled($row['label']) || filled($row['text']))->values();
+    }
 @endphp
 
 <section

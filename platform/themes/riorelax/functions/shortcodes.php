@@ -1156,11 +1156,25 @@ app()->booted(function (): void {
         __('Onsen Detail Info'),
         __('White Onsen detail block with image, info table and replaceable bottom logo'),
         function (ShortcodeCompiler $shortcode): ?string {
-            return Theme::partial('shortcodes.onsen-detail-info.index', compact('shortcode'));
+            $infoRows = Shortcode::fields()->getTabsData(['label', 'text'], $shortcode);
+
+            return Theme::partial('shortcodes.onsen-detail-info.index', compact('shortcode', 'infoRows'));
         }
     );
 
     Shortcode::setAdminConfig('onsen-detail-info', function (array $attributes) {
+        $fields = [
+            'label' => [
+                'title' => __('Info row label'),
+                'required' => false,
+            ],
+            'text' => [
+                'type' => 'textarea',
+                'title' => __('Info row text'),
+                'required' => false,
+            ],
+        ];
+
         $form = ShortcodeForm::createFromArray($attributes)
             ->add(
                 'section_id',
@@ -1226,26 +1240,15 @@ app()->booted(function (): void {
                     ->toArray()
             );
 
-        for ($i = 1; $i <= 6; $i++) {
-            $form
-                ->add(
-                    'info_label_' . $i,
-                    TextField::class,
-                    TextFieldOption::make()
-                        ->label(__('Info row label ' . $i))
-                        ->toArray()
-                )
-                ->add(
-                    'info_text_' . $i,
-                    TextareaField::class,
-                    TextareaFieldOption::make()
-                        ->label(__('Info row text ' . $i))
-                        ->rows(2)
-                        ->toArray()
-                );
-        }
-
         return $form
+            ->add(
+                'tabs',
+                ShortcodeTabsField::class,
+                ShortcodeTabsFieldOption::make()
+                    ->attrs($attributes)
+                    ->fields($fields)
+                    ->toArray()
+            )
             ->add(
                 'bottom_logo_image',
                 MediaImageField::class,
