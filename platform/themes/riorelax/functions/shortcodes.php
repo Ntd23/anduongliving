@@ -1060,6 +1060,89 @@ app()->booted(function (): void {
     });
 
     Shortcode::register(
+        'onsen-spa-item',
+        __('Onsen Spa Item'),
+        __('Dark full-width Onsen image feature block'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.onsen-spa-item.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setAdminConfig('onsen-spa-item', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'section_id',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Section ID'))
+                    ->placeholder('onsen_spa01_li01')
+                    ->toArray()
+            )
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Background image'))
+                    ->toArray()
+            )
+            ->add(
+                'background_color',
+                ShortcodeColorField::class,
+                InputFieldOption::make()
+                    ->label(__('Background color'))
+                    ->defaultValue('#001514')
+                    ->toArray()
+            )
+            ->add(
+                'accent_color',
+                ShortcodeColorField::class,
+                InputFieldOption::make()
+                    ->label(__('Accent color'))
+                    ->defaultValue('#b49a47')
+                    ->toArray()
+            )
+            ->add(
+                'title',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Title'))
+                    ->placeholder('露天風呂 すずむしの湯')
+                    ->toArray()
+            )
+            ->add(
+                'main_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Main large image'))
+                    ->toArray()
+            )
+            ->add(
+                'top_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Right top image'))
+                    ->toArray()
+            )
+            ->add(
+                'bottom_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Right bottom image'))
+                    ->toArray()
+            )
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->label(__('Description'))
+                    ->rows(4)
+                    ->toArray()
+            )
+            ->add('button_label', TextField::class, TextFieldOption::make()->label(__('Button label'))->toArray())
+            ->add('button_url', TextField::class, TextFieldOption::make()->label(__('Button URL'))->toArray());
+    });
+
+    Shortcode::register(
         'forest-facility-showcase',
         __('Forest Facility Showcase'),
         __('Soft left image fade, center content and 2 right images'),
