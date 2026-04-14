@@ -67,7 +67,7 @@
 
         .page-lead__header {
             margin: 0 auto;
-            min-height: 120px;
+            min-height: 148px;
             position: relative;
         }
 
@@ -96,7 +96,7 @@
             opacity: 0.78;
             pointer-events: none;
             position: absolute;
-            top: 30px;
+            top: 38px;
             transform: translateX(-50%);
             white-space: nowrap;
             z-index: 1;
@@ -109,7 +109,7 @@
             font-weight: 600;
             letter-spacing: 0.08em;
             line-height: 1.6;
-            margin: 42px 0 0;
+            margin: 58px 0 0;
             position: relative;
             z-index: 2;
         }
@@ -119,8 +119,8 @@
             font-size: clamp(16px, 1vw, 18px);
             font-weight: 500;
             letter-spacing: 0.035em;
-            line-height: 2.15;
-            margin: clamp(28px, 2.2vw, 40px) auto 0;
+            line-height: 2.28;
+            margin: clamp(42px, 3.1vw, 58px) auto 0;
             max-width: min(1120px, 74vw);
         }
 
@@ -152,11 +152,11 @@
             }
 
             .page-lead__script {
-                top: 36px;
+                top: 42px;
             }
 
             .page-lead__subtitle {
-                margin-top: 34px;
+                margin-top: 48px;
             }
         }
     </style>
