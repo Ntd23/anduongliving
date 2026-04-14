@@ -5,6 +5,14 @@
 
 <style>
     @media (min-width: 992px) {
+        :root {
+            --riorelax-bottom-header-height: 96px;
+        }
+
+        body {
+            padding-bottom: calc(var(--riorelax-bottom-header-height) + env(safe-area-inset-bottom));
+        }
+
         .header-area.header-three .menu-area.menu-area-bottom-sticky,
         .header-area.header-three .menu-area.menu-area-bottom-sticky.sticky-menu {
             background: rgba(0, 0, 0, 0.9) !important;
@@ -34,6 +42,35 @@
         }
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var bottomHeader = document.querySelector('.menu-area-bottom-sticky')
+
+        if (! bottomHeader) {
+            return
+        }
+
+        var mediaQuery = window.matchMedia('(min-width: 992px)')
+
+        function syncBottomHeaderSpace() {
+            if (! mediaQuery.matches) {
+                document.documentElement.style.removeProperty('--riorelax-bottom-header-height')
+
+                return
+            }
+
+            document.documentElement.style.setProperty('--riorelax-bottom-header-height', bottomHeader.offsetHeight + 'px')
+        }
+
+        syncBottomHeaderSpace()
+        window.addEventListener('resize', syncBottomHeaderSpace)
+
+        if ('ResizeObserver' in window) {
+            new ResizeObserver(syncBottomHeaderSpace).observe(bottomHeader)
+        }
+    })
+</script>
 
 <div
     @if(theme_option('header_sticky_enabled', 'yes') == 'yes') id="header-sticky" @endif
