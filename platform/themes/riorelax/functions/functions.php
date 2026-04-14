@@ -66,13 +66,56 @@ register_sidebar([
     'description' => __('Sidebar in the service page'),
 ]);
 
+$getBlogOnsenSectionChoices = static function (?string $content): array {
+    $content = (string) $content;
+    $defaultSectionIds = [
+        'page-lead' => 'pageLead',
+        'onsen-spa-item' => 'onsen_spa01_li01',
+        'onsen-detail-info' => 'onsen_detail_info',
+        'onsen-video-instagram' => 'onsen_video_instagram',
+    ];
+
+    if ($content === '') {
+        return [];
+    }
+
+    preg_match_all('/\[([a-z0-9_-]+)([^\]]*)\]/i', $content, $matches, PREG_SET_ORDER);
+
+    $choices = [];
+
+    foreach ($matches as $match) {
+        $shortcode = trim((string) ($match[1] ?? ''));
+        $attributes = (string) ($match[2] ?? '');
+
+        preg_match('/\bsection_id\s*=\s*(?:"([^"]+)"|\'([^\']+)\'|([^\s\]]+))/i', $attributes, $sectionIdMatch);
+
+        $sectionId = trim((string) (($sectionIdMatch[1] ?? '') ?: ($sectionIdMatch[2] ?? '') ?: ($sectionIdMatch[3] ?? '')));
+        $sectionId = $sectionId !== '' ? $sectionId : ($defaultSectionIds[$shortcode] ?? '');
+
+        if ($sectionId === '') {
+            continue;
+        }
+
+        preg_match('/\btitle\s*=\s*(?:"([^"]+)"|\'([^\']+)\'|([^\s\]]+))/i', $attributes, $titleMatch);
+
+        $title = trim((string) ($titleMatch[1] ?? $titleMatch[2] ?? $titleMatch[3] ?? ''));
+        $title = strip_tags(html_entity_decode($title, ENT_QUOTES, 'UTF-8'));
+
+        $choices[$sectionId] = $title !== ''
+            ? sprintf('%s (#%s)', $title, $sectionId)
+            : sprintf('[%s] #%s', $shortcode, $sectionId);
+    }
+
+    return $choices;
+};
+
 RvMedia::setUploadPathAndURLToPublic()
     ->addSize('medium', 440, 340)
     ->addSize('small', 300, 340)
     ->addSize('room-image', 850, 460);
 
 if (class_exists(PageForm::class)) {
-    PageForm::extend(function (PageForm $form): void {
+    PageForm::extend(function (PageForm $form) use ($getBlogOnsenSectionChoices): void {
         $currentTemplate = $form->getModel()?->template ?: request()->input('template');
 
         $form
@@ -99,6 +142,14 @@ if (class_exists(PageForm::class)) {
         if ($currentTemplate !== 'blog-onsen') {
             return;
         }
+
+        $pageContent = request()->input('content');
+
+        if (! is_string($pageContent) || $pageContent === '') {
+            $pageContent = $form->getModel()?->content;
+        }
+
+        $blogOnsenTargetChoices = $getBlogOnsenSectionChoices($pageContent);
 
         $form->addAfter(
             'template',
@@ -136,11 +187,28 @@ if (class_exists(PageForm::class)) {
                 ->addAfter(
                     'template',
                     'blog_onsen_nav_target_' . $i,
-                    TextField::class,
-                    TextFieldOption::make()
+                    SelectField::class,
+                    SelectFieldOption::make()
                         ->label(__('Blog Onsen button target ' . $i))
+                        ->choices(array_merge(
+                            ['' => __('Select a section')],
+                            $blogOnsenTargetChoices,
+                            collect([
+                                $form->getModel()?->getMetaData('blog_onsen_nav_target_' . $i, true),
+                                request()->input('blog_onsen_nav_target_' . $i),
+                            ])
+                                ->filter()
+                                ->mapWithKeys(function ($value) {
+                                    $value = trim((string) $value);
+                                    $fragment = parse_url($value, PHP_URL_FRAGMENT);
+                                    $value = $fragment ?: ltrim($value, '#');
+
+                                    return $value !== '' ? [$value => '#' . $value] : [];
+                                })
+                                ->all()
+                        ))
                         ->metadata()
-                        ->placeholder('#onsen-section-' . $i)
+                        ->helperText(__('This list is taken from shortcode section_id values in the current Blog Onsen page content.'))
                         ->toArray()
                 );
         }

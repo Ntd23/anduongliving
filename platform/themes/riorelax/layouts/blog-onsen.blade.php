@@ -205,7 +205,7 @@
         }
 
         .blog-onsen-page .ck-content [id] {
-            scroll-margin-top: 24px;
+            scroll-margin-top: 160px;
         }
 
         .blog-onsen-page .ck-content img {
@@ -384,6 +384,68 @@
             </section>
         </div>
     </section>
+
+    @if ($onsenMenus->isNotEmpty())
+        <script>
+            (() => {
+                const navLinks = document.querySelectorAll('.blog-onsen-nav__item[href^="#"]');
+
+                if (!navLinks.length) {
+                    return;
+                }
+
+                const getOffset = () => {
+                    const header = document.querySelector('.header-area');
+                    const headerHeight = header ? header.getBoundingClientRect().height : 0;
+
+                    return Math.max(headerHeight + 18, 120);
+                };
+
+                const scrollToTarget = (hash, smooth = true) => {
+                    const id = (hash || '').replace(/^#/, '');
+
+                    if (!id) {
+                        return;
+                    }
+
+                    const target = document.getElementById(id);
+
+                    if (!target) {
+                        return;
+                    }
+
+                    const top = window.scrollY + target.getBoundingClientRect().top - getOffset();
+
+                    window.scrollTo({
+                        top,
+                        behavior: smooth ? 'smooth' : 'auto',
+                    });
+                };
+
+                navLinks.forEach((link) => {
+                    link.addEventListener('click', (event) => {
+                        const hash = link.getAttribute('href');
+
+                        if (!hash || hash === '#') {
+                            return;
+                        }
+
+                        if (!document.getElementById(hash.replace(/^#/, ''))) {
+                            return;
+                        }
+
+                        event.preventDefault();
+                        scrollToTarget(hash);
+                        window.history.replaceState(null, '', hash);
+                    });
+                });
+
+                if (window.location.hash) {
+                    window.requestAnimationFrame(() => scrollToTarget(window.location.hash, false));
+                }
+            })();
+        </script>
+    @endif
 
     {!! Theme::partial('footer') !!}
 @endsection
