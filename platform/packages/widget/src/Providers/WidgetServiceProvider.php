@@ -44,7 +44,7 @@ class WidgetServiceProvider extends ServiceProvider
             ->setNamespace('packages/widget')
             ->loadAndPublishConfigurations(['permissions'])
             ->loadHelpers()
-            ->loadRoutes()
+            ->loadRoutes(['api','web'])
             ->loadMigrations()
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()

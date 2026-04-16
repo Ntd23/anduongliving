@@ -29,6 +29,7 @@
         "botble/widget": "*@dev",
         "doctrine/dbal": "^4.2",
         "guzzlehttp/guzzle": "^7.9",
+        "knuckleswtf/scribe": "^5.9",
         "laravel/framework": "12.43.1",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10",

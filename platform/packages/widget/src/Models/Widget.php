@@ -6,7 +6,7 @@ use Botble\Base\Models\BaseModel;
 use Botble\Language\Facades\Language;
 use Botble\Theme\Facades\Theme;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 class Widget extends BaseModel
 {
     protected $table = 'widgets';
@@ -27,7 +27,22 @@ class Widget extends BaseModel
     {
         return Attribute::get(fn ($value) => $value >= 0 && $value < 127 ? $value : (int) substr($value, -1));
     }
+    public function translations(): HasMany
+    {
+        return $this->hasMany(WidgetTranslation::class, 'widgets_id');
+    }
 
+
+    public function getTranslation(?string $lang = null)
+    {
+        if (!$lang) {
+            $lang = Language::getCurrentLocale();
+        }
+
+        return $this->translations()
+            ->where('lang_code', $lang)
+            ->first();
+    }
     public static function getThemeName(
         ?string $locale = null,
         ?string $defaultLocale = null,
