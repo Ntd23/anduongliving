@@ -6,6 +6,9 @@ use Botble\Base\Facades\Assets;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Supports\Breadcrumb;
 use Botble\Widget\Events\RenderingWidgetSettings;
+use Botble\Widget\Models\WidgetTranslation;
+use Botble\Language\Facades\Language;
+
 use Botble\Widget\Facades\WidgetGroup;
 use Botble\Widget\Models\Widget;
 use Exception;
@@ -66,7 +69,6 @@ class WidgetController extends BaseController
                 if (empty($data['id'])) {
                     continue;
                 }
-
                 Widget::query()->create([
                     'sidebar_id' => $sidebarId,
                     'widget_id' => $data['id'],
@@ -75,7 +77,6 @@ class WidgetController extends BaseController
                     'data' => $data,
                 ]);
             }
-
             $widgetAreas = Widget::query()->where([
                 'sidebar_id' => $sidebarId,
                 'theme' => $themeName,
