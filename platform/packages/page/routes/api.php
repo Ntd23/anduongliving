@@ -8,5 +8,5 @@ Route::group([
     'namespace' => 'Botble\Page\Http\Controllers\API',
 ], function (): void {
     Route::get('pages', 'PageController@index');
-    Route::get('pages/{id}', 'PageController@show')->wherePrimaryKey();
+    Route::get('pages/{slug}', 'PageController@show');
 });

@@ -1,8 +1,8 @@
 <template>
   <div>
     <NuxtRouteAnnouncer />
-    <HomePage />
-    <Footer />
+    <LanguageSwitcher />
+    <NuxtPage />
   </div>
 </template>
 <style>
