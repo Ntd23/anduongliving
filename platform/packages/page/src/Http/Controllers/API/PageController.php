@@ -3,6 +3,7 @@
 namespace Botble\Page\Http\Controllers\API;
 
 use Botble\Api\Http\Controllers\BaseApiController;
+use Botble\Base\Facades\BaseHelper;
 use Botble\Page\Http\Resources\ListPageResource;
 use Botble\Page\Http\Resources\PageResource;
 use Botble\Page\Models\Page;
@@ -39,12 +40,7 @@ class PageController extends BaseApiController
     {
         $languageCode = $this->languageCode($request);
 
-        $pages = Page::query()
-            ->wherePublished()
-            ->with('slugable')
-            ->when($languageCode, function (Builder $query, string $languageCode): void {
-                $this->applyLanguageFilter($query, $languageCode);
-            })
+        $pages = $this->pageQuery($languageCode)
             ->paginate($request->integer('per_page', 10) ?: 10);
 
         if ($languageCode) {
@@ -57,6 +53,48 @@ class PageController extends BaseApiController
             ->httpResponse()
             ->setData(ListPageResource::collection($pages))
             ->toApiResponse();
+    }
+
+    /**
+     * Get configured homepage
+     *
+     * @group Page
+     *
+     * @response 200 {
+     *   "error": false,
+     *   "data": {
+     *     "id": 1,
+     *     "title": "Home",
+     *     "slug": "home-page-01",
+     *     "content": "This is the homepage content...",
+     *     "published_at": "2023-01-01T00:00:00.000000Z"
+     *   },
+     *   "message": null
+     * }
+     *
+     * @response 404 {
+     *   "error": true,
+     *   "message": "Homepage is not configured"
+     * }
+     */
+    public function homepage(Request $request)
+    {
+        $languageCode = $this->languageCode($request);
+        $homepageId = BaseHelper::getHomepageId();
+
+        if (! $homepageId) {
+            return $this->missingPageResponse('Homepage is not configured.');
+        }
+
+        $page = $this->pageQuery($languageCode)
+            ->whereKey($homepageId)
+            ->first();
+
+        if (! $page) {
+            return $this->missingPageResponse('Homepage page was not found.');
+        }
+
+        return $this->pageResponse($page, $languageCode);
     }
 
     /**
@@ -87,12 +125,7 @@ class PageController extends BaseApiController
     {
         $languageCode = $this->languageCode($request);
 
-        $page = Page::query()
-            ->wherePublished()
-            ->with('slugable')
-            ->when($languageCode, function (Builder $query, string $languageCode): void {
-                $this->applyLanguageFilter($query, $languageCode);
-            })
+        $page = $this->pageQuery($languageCode)
             ->where(function (Builder $query) use ($slug): void {
                 if (is_numeric($slug)) {
                     $query->where('id', (int) $slug);
@@ -106,21 +139,10 @@ class PageController extends BaseApiController
             ->first();
 
         if (! $page) {
-            return $this
-                ->httpResponse()
-                ->setError()
-                ->setCode(404)
-                ->setMessage(trans('packages/page::pages.not_found'));
+            return $this->missingPageResponse(trans('packages/page::pages.not_found'));
         }
 
-        if ($languageCode) {
-            $page = $this->translatePage($page, $languageCode);
-        }
-
-        return $this
-            ->httpResponse()
-            ->setData(new PageResource($page))
-            ->toApiResponse();
+        return $this->pageResponse($page, $languageCode);
     }
 
     protected function languageCode(Request $request): ?string
@@ -150,6 +172,39 @@ class PageController extends BaseApiController
                 ->whereColumn('pages_translations.pages_id', 'pages.id')
                 ->where('pages_translations.lang_code', $languageCode);
         });
+    }
+
+    protected function pageQuery(?string $languageCode): Builder
+    {
+        return Page::query()
+            ->wherePublished()
+            ->with('slugable')
+            ->when($languageCode, function (Builder $query, string $languageCode): void {
+                $this->applyLanguageFilter($query, $languageCode);
+            });
+    }
+
+    protected function pageResponse(Page $page, ?string $languageCode)
+    {
+        if ($languageCode) {
+            $page = $this->translatePage($page, $languageCode);
+        }
+
+        $page->loadMissing('metadata');
+
+        return $this
+            ->httpResponse()
+            ->setData(new PageResource($page))
+            ->toApiResponse();
+    }
+
+    protected function missingPageResponse(string $message)
+    {
+        return $this
+            ->httpResponse()
+            ->setError()
+            ->setCode(404)
+            ->setMessage($message);
     }
 
     protected function translatePage(Page $page, string $languageCode): Page

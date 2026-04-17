@@ -68,13 +68,10 @@
           <!-- Contact Information Widget with Logo -->
           <div v-else-if="widget.data.phone_number || widget.data.email || widget.data.address">
             <div>
-              <!-- Logo Image -->
               <div style="text-align: center; margin-bottom: 20px;">
-                <img 
-                  src="/images/logo.png" 
-                  alt="An Duong Living Logo" 
-                  style="max-width: 150px; height: auto; margin-bottom: 10px;"
-                />
+                <div style="display: inline-flex; align-items: center; justify-content: center; min-width: 150px; min-height: 56px; padding: 0 18px; border: 1px solid rgba(255,255,255,0.2); border-radius: 999px; background: rgba(255,255,255,0.08); font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;">
+                  An Duong Living
+                </div>
               </div>
               
               <h3 v-if="widget.data.name" style="margin-bottom: 15px; font-size: 18px; text-align: center;">{{ widget.data.name }}</h3>

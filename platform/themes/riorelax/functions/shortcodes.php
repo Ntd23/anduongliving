@@ -712,6 +712,75 @@ app()->booted(function (): void {
     });
 
     Shortcode::register(
+        'hero-story',
+        __('Hero Story'),
+        __('Full-bleed narrative hero with layered image and CTA'),
+        function (ShortcodeCompiler $shortcode): ?string {
+            return Theme::partial('shortcodes.hero-story.index', compact('shortcode'));
+        }
+    );
+
+    Shortcode::setAdminConfig('hero-story', function (array $attributes) {
+        return ShortcodeForm::createFromArray($attributes)
+            ->columns()
+            ->add(
+                'subtitle',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Subtitle'))
+                    ->colspan(2)
+                    ->toArray()
+            )
+            ->add(
+                'title',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Title'))
+                    ->colspan(2)
+                    ->toArray()
+            )
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->rows(5)
+                    ->colspan(2)
+                    ->label(__('Description'))
+                    ->toArray()
+            )
+            ->add(
+                'button_label',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Button label'))
+                    ->toArray()
+            )
+            ->add(
+                'button_url',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Button URL'))
+                    ->toArray()
+            )
+            ->add(
+                'background_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Background image'))
+                    ->helperText(__('Used as the full-bleed background image.'))
+                    ->toArray()
+            )
+            ->add(
+                'foreground_image',
+                MediaImageField::class,
+                MediaImageFieldOption::make()
+                    ->label(__('Foreground image'))
+                    ->helperText(__('Optional floating image card on the right side.'))
+                    ->toArray()
+            );
+    });
+
+    Shortcode::register(
         'logo-showcase-banner',
         __('Logo Showcase Banner'),
         __('Large background section with centered logo and bottom text'),
