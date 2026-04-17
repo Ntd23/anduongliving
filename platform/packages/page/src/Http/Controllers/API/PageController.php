@@ -60,11 +60,11 @@ class PageController extends BaseApiController
     }
 
     /**
-     * Get page by ID
+     * Get page by slug or ID
      *
      * @group Page
      *
-     * @urlParam id integer required The ID of the page to retrieve.
+     * @urlParam slug string required The slug or ID of the page to retrieve.
      *
      * @response 200 {
      *   "error": false,
@@ -83,16 +83,25 @@ class PageController extends BaseApiController
      *   "message": "Not found"
      * }
      */
-    public function show(int|string $id, Request $request)
+    public function show(int|string $slug, Request $request)
     {
         $languageCode = $this->languageCode($request);
 
         $page = Page::query()
-            ->where('id', $id)
             ->wherePublished()
             ->with('slugable')
             ->when($languageCode, function (Builder $query, string $languageCode): void {
                 $this->applyLanguageFilter($query, $languageCode);
+            })
+            ->where(function (Builder $query) use ($slug): void {
+                if (is_numeric($slug)) {
+                    $query->where('id', (int) $slug);
+                }
+
+                $query->orWhereHas('slugable', function (Builder $slugQuery) use ($slug): void {
+                    $slugQuery->where('key', (string) $slug)
+                        ->where('reference_type', Page::class);
+                });
             })
             ->first();
 
