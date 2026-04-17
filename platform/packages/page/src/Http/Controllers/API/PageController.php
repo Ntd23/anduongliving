@@ -6,7 +6,9 @@ use Botble\Api\Http\Controllers\BaseApiController;
 use Botble\Page\Http\Resources\ListPageResource;
 use Botble\Page\Http\Resources\PageResource;
 use Botble\Page\Models\Page;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class PageController extends BaseApiController
 {
@@ -37,6 +39,9 @@ class PageController extends BaseApiController
         $pages = Page::query()
             ->wherePublished()
             ->with('slugable')
+            ->when($this->languageCode($request), function (Builder $query, string $languageCode): void {
+                $this->applyLanguageFilter($query, $languageCode);
+            })
             ->paginate($request->integer('per_page', 10) ?: 10);
 
         return $this
@@ -69,12 +74,15 @@ class PageController extends BaseApiController
      *   "message": "Not found"
      * }
      */
-    public function show(int|string $id)
+    public function show(int|string $id, Request $request)
     {
         $page = Page::query()
             ->where('id', $id)
             ->wherePublished()
             ->with('slugable')
+            ->when($this->languageCode($request), function (Builder $query, string $languageCode): void {
+                $this->applyLanguageFilter($query, $languageCode);
+            })
             ->first();
 
         if (! $page) {
@@ -89,5 +97,26 @@ class PageController extends BaseApiController
             ->httpResponse()
             ->setData(new PageResource($page))
             ->toApiResponse();
+    }
+
+    protected function languageCode(Request $request): ?string
+    {
+        $languageCode = (string) $request->input('lang', $request->input('locale', ''));
+
+        return $languageCode !== '' ? $languageCode : null;
+    }
+
+    protected function applyLanguageFilter(Builder $query, string $languageCode): void
+    {
+        if (! Schema::hasTable('pages_translations')) {
+            return;
+        }
+
+        $query->whereExists(function ($subQuery) use ($languageCode): void {
+            $subQuery->selectRaw('1')
+                ->from('pages_translations')
+                ->whereColumn('pages_translations.pages_id', 'pages.id')
+                ->where('pages_translations.lang_code', $languageCode);
+        });
     }
 }
