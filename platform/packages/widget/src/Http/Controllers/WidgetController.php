@@ -54,8 +54,8 @@ class WidgetController extends BaseController
     {
         try {
             $sidebarId = $request->input('sidebar_id');
-
-            $themeName = Widget::getThemeName();
+            $locale = $request->input('locale', $request->input('lang'));
+            $themeName = Widget::getThemeName($locale);
 
             Widget::query()->where([
                 'sidebar_id' => $sidebarId,
@@ -69,6 +69,7 @@ class WidgetController extends BaseController
                 if (empty($data['id'])) {
                     continue;
                 }
+                
                 Widget::query()->create([
                     'sidebar_id' => $sidebarId,
                     'widget_id' => $data['id'],
@@ -86,14 +87,15 @@ class WidgetController extends BaseController
                 ->httpResponse()
                 ->setData(view('packages/widget::item', compact('widgetAreas'))->render())
                 ->setMessage(trans('packages/widget::widget.save_success'));
-        } catch (Exception $exception) {
+        } catch (Exception $e) {
             return $this
                 ->httpResponse()
                 ->setError()
-                ->setMessage($exception->getMessage());
+                ->setMessage($e->getMessage());
         }
     }
 
+    
     public function getWidgetForm(Request $request)
     {
         $widgetId = $request->input('widget_id');
