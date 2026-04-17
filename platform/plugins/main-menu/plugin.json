@@ -1,0 +1,11 @@
+{
+    "id": "anduongliving/main-menu",
+    "name": "Main Menu",
+    "namespace": "Anduongliving\\MainMenu\\",
+    "provider": "Anduongliving\\MainMenu\\Providers\\MainMenuServiceProvider",
+    "author": "AnDuongLiving",
+    "url": "https://anduongliving.test",
+    "version": "1.0.0",
+    "description": "Main menu API",
+    "minimum_core_version": "7.6.3"
+}
