@@ -2,7 +2,7 @@
 
 @push('header-action')
     @if (count($widgets) > 0)
-        <x-core::button
+        <x-core::button 
             color="primary"
             :outlined="true"
             class="manage-widget"
