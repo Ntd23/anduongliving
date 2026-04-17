@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { parseSkillBlock } from "~/utils/shortcode-content";
-import type { ShortcodeBlock } from "~/composables/usePage";
+import { parseSkillBlock, type ShortcodeBlock } from "~/utils/shortcode";
 
 const props = defineProps<{
   block: ShortcodeBlock;
@@ -81,7 +80,7 @@ const sectionStyle = computed(() =>
   position: relative;
   overflow: hidden;
   padding: 5.5rem 0;
-  color: #fff;
+  color: #f8f3ea;
 }
 
 .skill-decor {
@@ -105,9 +104,9 @@ const sectionStyle = computed(() =>
 
 .skill-eyebrow {
   margin: 0 0 0.75rem;
-  color: #c5a059;
+  color: #dcc3a0;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
@@ -115,13 +114,13 @@ const sectionStyle = computed(() =>
   margin: 0;
   font-size: clamp(2rem, 5vw, 4.25rem);
   line-height: 1.02;
-  color: #fff;
+  color: #f8f3ea;
 }
 
 .skill-description {
   max-width: 42rem;
   margin: 1.25rem 0 0;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(248, 243, 234, 0.76);
   font-size: 1.02rem;
 }
 
@@ -143,15 +142,15 @@ const sectionStyle = computed(() =>
   overflow: hidden;
   height: 0.95rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(248, 243, 234, 0.16);
 }
 
 .skill-bar__fill {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #c5a059, #f4da94);
-  box-shadow: 0 8px 24px rgba(197, 160, 89, 0.35);
+  background: linear-gradient(90deg, #b9825a, #dfc09b);
+  box-shadow: 0 8px 24px rgba(185, 130, 90, 0.28);
   transition: width 0.6s ease;
 }
 
@@ -159,10 +158,10 @@ const sectionStyle = computed(() =>
   justify-self: end;
   width: min(100%, 38rem);
   padding: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(248, 243, 234, 0.12);
   border-radius: 1.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+  background: rgba(248, 243, 234, 0.05);
+  box-shadow: 0 30px 80px rgba(20, 10, 6, 0.24);
 }
 
 .skill-media img {

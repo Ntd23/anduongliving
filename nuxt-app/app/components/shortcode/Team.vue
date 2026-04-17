@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { parseTeamBlock } from "~/utils/shortcode-content";
-import type { ShortcodeBlock } from "~/composables/usePage";
+import { parseTeamBlock, type ShortcodeBlock } from "~/utils/shortcode";
 
 const props = defineProps<{
   block: ShortcodeBlock;
@@ -78,6 +77,7 @@ const section = computed(() => parseTeamBlock(props.block.raw));
 <style scoped>
 .shortcode-team {
   padding: 5.5rem 0;
+  background: linear-gradient(180deg, rgba(255, 252, 246, 0.9), rgba(243, 236, 223, 0.72));
 }
 
 .team-grid {
@@ -88,10 +88,10 @@ const section = computed(() => parseTeamBlock(props.block.raw));
 
 .team-card {
   overflow: hidden;
-  border: 1px solid rgba(15, 23, 42, 0.1);
+  border: 1px solid rgba(111, 117, 83, 0.12);
   border-radius: 1.25rem;
-  background: #fff;
-  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+  background: rgba(255, 252, 246, 0.92);
+  box-shadow: 0 24px 48px rgba(47, 36, 29, 0.08);
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
@@ -100,8 +100,8 @@ const section = computed(() => parseTeamBlock(props.block.raw));
 
 .team-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(0, 124, 195, 0.22);
-  box-shadow: 0 28px 60px rgba(15, 23, 42, 0.12);
+  border-color: rgba(111, 117, 83, 0.24);
+  box-shadow: 0 28px 60px rgba(47, 36, 29, 0.12);
 }
 
 .team-card__media {
@@ -109,8 +109,8 @@ const section = computed(() => parseTeamBlock(props.block.raw));
   aspect-ratio: 15 / 17;
   overflow: hidden;
   background:
-    radial-gradient(circle at top, rgba(197, 160, 89, 0.28), transparent 55%),
-    linear-gradient(180deg, #f8fafc, #eef4f7);
+    radial-gradient(circle at top, rgba(185, 130, 90, 0.24), transparent 55%),
+    linear-gradient(180deg, #f8f3ea, #ede4d6);
 }
 
 .team-card__media img {
@@ -128,7 +128,7 @@ const section = computed(() => parseTeamBlock(props.block.raw));
   margin: 0;
   font-size: 1.35rem;
   line-height: 1.2;
-  color: #0f172a;
+  color: var(--retreat-ink);
 }
 
 .team-card__name a,
@@ -138,12 +138,12 @@ const section = computed(() => parseTeamBlock(props.block.raw));
 }
 
 .team-card__name a:hover {
-  color: #007cc3;
+  color: var(--retreat-olive);
 }
 
 .team-card__title {
   margin: 0.45rem 0 0;
-  color: #007cc3;
+  color: var(--retreat-clay);
   font-weight: 600;
 }
 
@@ -161,8 +161,8 @@ const section = computed(() => parseTeamBlock(props.block.raw));
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 999px;
-  background: #007cc3;
-  color: #fff;
+  background: var(--retreat-olive);
+  color: #fffdf9;
   text-decoration: none;
   transition:
     transform 0.2s ease,
@@ -171,7 +171,7 @@ const section = computed(() => parseTeamBlock(props.block.raw));
 
 .team-card__socials a:hover {
   transform: translateY(-1px);
-  background: #005a8f;
+  background: #5d6447;
 }
 
 @media (min-width: 640px) {

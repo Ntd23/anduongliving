@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ShortcodeBlock } from "~/composables/usePage";
+import type { ShortcodeBlock } from "~/utils/shortcode";
 
 defineProps<{
   block: ShortcodeBlock;

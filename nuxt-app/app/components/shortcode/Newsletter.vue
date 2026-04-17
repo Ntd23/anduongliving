@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { parseNewsletterBlock } from "~/utils/shortcode-content";
-import type { ShortcodeBlock } from "~/composables/usePage";
+import { parseNewsletterBlock, type ShortcodeBlock } from "~/utils/shortcode";
 
 const props = defineProps<{
   block: ShortcodeBlock;
@@ -80,10 +79,10 @@ const submitNewsletter = async () => {
     <div class="container">
       <div class="newsletter-panel">
         <div class="newsletter-copy">
-          <p v-if="section.subtitle" class="newsletter-eyebrow">
+          <p v-if="section.subtitle" class="newsletter-eyebrow shortcode-narrative-eyebrow">
             {{ section.subtitle }}
           </p>
-          <h2 v-if="section.title" class="newsletter-title">
+          <h2 v-if="section.title" class="newsletter-title shortcode-narrative-title">
             {{ section.title }}
           </h2>
           <p v-if="section.description" class="newsletter-description">
@@ -129,6 +128,8 @@ const submitNewsletter = async () => {
   position: relative;
   overflow: hidden;
   padding: 5.5rem 0;
+  background:
+    linear-gradient(180deg, rgba(248, 243, 234, 0.72), rgba(237, 228, 214, 0.9));
 }
 
 .newsletter-decor {
@@ -144,25 +145,22 @@ const submitNewsletter = async () => {
   max-width: 58rem;
   margin: 0 auto;
   padding: clamp(2rem, 5vw, 3.5rem);
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(111, 117, 83, 0.12);
   border-radius: 2rem;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.1);
+  background: rgba(255, 252, 246, 0.82);
+  box-shadow: 0 30px 80px rgba(47, 36, 29, 0.08);
   backdrop-filter: blur(10px);
   text-align: center;
 }
 
 .newsletter-eyebrow {
   margin: 0 0 0.8rem;
-  color: #007cc3;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  color: var(--retreat-olive);
 }
 
 .newsletter-title {
   margin: 0;
-  color: #0f172a;
+  color: var(--retreat-ink);
   font-size: clamp(2rem, 5vw, 3.8rem);
   line-height: 1.05;
 }
@@ -170,7 +168,7 @@ const submitNewsletter = async () => {
 .newsletter-description {
   max-width: 40rem;
   margin: 1rem auto 0;
-  color: #475569;
+  color: rgba(47, 36, 29, 0.76);
   font-size: 1.02rem;
 }
 
@@ -190,15 +188,15 @@ const submitNewsletter = async () => {
   width: 100%;
   height: 3.7rem;
   padding: 0 1.15rem;
-  border: 1px solid rgba(15, 23, 42, 0.12);
+  border: 1px solid rgba(111, 117, 83, 0.18);
   border-radius: 999px;
-  background: #fff;
-  color: #0f172a;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--retreat-ink);
 }
 
 .newsletter-field input:focus {
-  outline: 2px solid rgba(0, 124, 195, 0.18);
-  border-color: #007cc3;
+  outline: 2px solid rgba(111, 117, 83, 0.18);
+  border-color: var(--retreat-olive);
 }
 
 .newsletter-submit {
@@ -206,8 +204,8 @@ const submitNewsletter = async () => {
   padding: 0 1.5rem;
   border: none;
   border-radius: 999px;
-  background: linear-gradient(135deg, #007cc3, #005a8f);
-  color: #fff;
+  background: linear-gradient(135deg, var(--retreat-olive), #5e6746);
+  color: #fffdf9;
   font-weight: 700;
   letter-spacing: 0.02em;
   transition:
