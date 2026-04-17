@@ -1,3 +1,3 @@
 <?php
 
-// API routes are handled by plugins
+use Illuminate\Support\Facades\Route;
