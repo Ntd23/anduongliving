@@ -8,6 +8,7 @@ use Botble\Page\Http\Resources\PageResource;
 use Botble\Page\Models\Page;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class PageController extends BaseApiController
@@ -36,13 +37,21 @@ class PageController extends BaseApiController
      */
     public function index(Request $request)
     {
+        $languageCode = $this->languageCode($request);
+
         $pages = Page::query()
             ->wherePublished()
             ->with('slugable')
-            ->when($this->languageCode($request), function (Builder $query, string $languageCode): void {
+            ->when($languageCode, function (Builder $query, string $languageCode): void {
                 $this->applyLanguageFilter($query, $languageCode);
             })
             ->paginate($request->integer('per_page', 10) ?: 10);
+
+        if ($languageCode) {
+            $pages->setCollection($pages->getCollection()->map(function (Page $page) use ($languageCode): Page {
+                return $this->translatePage($page, $languageCode);
+            }));
+        }
 
         return $this
             ->httpResponse()
@@ -76,11 +85,13 @@ class PageController extends BaseApiController
      */
     public function show(int|string $id, Request $request)
     {
+        $languageCode = $this->languageCode($request);
+
         $page = Page::query()
             ->where('id', $id)
             ->wherePublished()
             ->with('slugable')
-            ->when($this->languageCode($request), function (Builder $query, string $languageCode): void {
+            ->when($languageCode, function (Builder $query, string $languageCode): void {
                 $this->applyLanguageFilter($query, $languageCode);
             })
             ->first();
@@ -93,6 +104,10 @@ class PageController extends BaseApiController
                 ->setMessage(trans('packages/page::pages.not_found'));
         }
 
+        if ($languageCode) {
+            $page = $this->translatePage($page, $languageCode);
+        }
+
         return $this
             ->httpResponse()
             ->setData(new PageResource($page))
@@ -101,9 +116,17 @@ class PageController extends BaseApiController
 
     protected function languageCode(Request $request): ?string
     {
-        $languageCode = (string) $request->input('lang', $request->input('locale', ''));
+        $language = (string) $request->input('lang', $request->input('locale', ''));
 
-        return $languageCode !== '' ? $languageCode : null;
+        if ($language === '' || ! Schema::hasTable('languages')) {
+            return null;
+        }
+
+        $languageCode = DB::table('languages')
+            ->where('lang_locale', $language)
+            ->value('lang_code');
+
+        return $languageCode ?: null;
     }
 
     protected function applyLanguageFilter(Builder $query, string $languageCode): void
@@ -118,5 +141,35 @@ class PageController extends BaseApiController
                 ->whereColumn('pages_translations.pages_id', 'pages.id')
                 ->where('pages_translations.lang_code', $languageCode);
         });
+    }
+
+    protected function translatePage(Page $page, string $languageCode): Page
+    {
+        if (! Schema::hasTable('pages_translations')) {
+            return $page;
+        }
+
+        $translation = DB::table('pages_translations')
+            ->where('pages_id', $page->getKey())
+            ->where('lang_code', $languageCode)
+            ->first();
+
+        if (! $translation) {
+            return $page;
+        }
+
+        $page->setAttribute('name', $translation->name ?? $page->name);
+        $page->setAttribute('description', $translation->description ?? $page->description);
+        $page->setAttribute('content', $translation->content ?? $page->content);
+
+        foreach (['slug', 'title', 'excerpt'] as $field) {
+            if (isset($translation->{$field})) {
+                $page->setAttribute($field, $translation->{$field});
+            }
+        }
+
+        $page->setRelation('translation', $translation);
+
+        return $page;
     }
 }
