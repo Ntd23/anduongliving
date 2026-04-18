@@ -3,6 +3,7 @@
     <NuxtRouteAnnouncer />
     <LanguageSwitcher />
     <NuxtPage />
+    <Footer />
   </div>
 </template>
 <style>
@@ -13,6 +14,5 @@ body {
 }
 </style>
 <script setup>
-import HomePage from '../components/HomePage.vue'
 import Footer from '../components/Footer.vue'
 </script>
