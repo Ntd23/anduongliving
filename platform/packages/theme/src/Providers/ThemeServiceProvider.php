@@ -44,6 +44,10 @@ class ThemeServiceProvider extends ServiceProvider
             ->loadRoutes()
             ->publishAssets();
 
+        if (class_exists('ApiHelper')) {
+            $this->loadRoutes(['api']);
+        }
+
         DashboardMenu::default()->beforeRetrieving(function (DashboardMenuSupport $menu): void {
             $config = $this->app['config'];
 

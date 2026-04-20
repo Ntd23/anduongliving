@@ -1,6 +1,7 @@
 <?php
 
 use Botble\ACL\Forms\ProfileForm;
+use Botble\Base\Forms\FieldOptions\DescriptionFieldOption;
 use Botble\Base\Forms\FieldOptions\EditorFieldOption;
 use Botble\Base\Forms\FieldOptions\MediaImageFieldOption;
 use Botble\Base\Forms\FieldOptions\SelectFieldOption;
@@ -8,6 +9,7 @@ use Botble\Base\Forms\FieldOptions\TextFieldOption;
 use Botble\Base\Forms\Fields\EditorField;
 use Botble\Base\Forms\Fields\MediaImageField;
 use Botble\Base\Forms\Fields\SelectField;
+use Botble\Base\Forms\Fields\TextareaField;
 use Botble\Base\Forms\Fields\TextField;
 use Botble\Hotel\Forms\AmenityForm;
 use Botble\Media\Facades\RvMedia;
@@ -20,7 +22,6 @@ register_page_template([
     'side-menu' => __('Side menu'),
     'full-menu' => __('Full menu'),
     'blog-sidebar' => __('Blog sidebar'),
-    'blog-onsen' => __('Blog Onsen'),
     'full-width' => __('Full width'),
 ]);
 
@@ -61,8 +62,6 @@ RvMedia::setUploadPathAndURLToPublic()
 
 if (class_exists(PageForm::class)) {
     PageForm::extend(function (PageForm $form): void {
-        $currentTemplate = $form->getModel()?->template ?: request()->input('template');
-
         $form
             ->addAfter(
                 'template',
@@ -83,45 +82,6 @@ if (class_exists(PageForm::class)) {
                     ->metadata()
                     ->toArray()
             );
-
-        if ($currentTemplate !== 'blog-onsen') {
-            return;
-        }
-
-        $form->addAfter(
-            'template',
-            'blog_onsen_eyebrow',
-            TextField::class,
-            TextFieldOption::make()
-                ->label(__('Blog Onsen eyebrow text'))
-                ->metadata()
-                ->placeholder('ONSEN')
-                ->toArray()
-        );
-
-        for ($i = 1; $i <= 5; $i++) {
-            $form
-                ->addAfter(
-                    'template',
-                    'blog_onsen_nav_label_' . $i,
-                    TextField::class,
-                    TextFieldOption::make()
-                        ->label(__('Blog Onsen button label ' . $i))
-                        ->metadata()
-                        ->placeholder(__('Button text ' . $i))
-                        ->toArray()
-                )
-                ->addAfter(
-                    'template',
-                    'blog_onsen_nav_target_' . $i,
-                    TextField::class,
-                    TextFieldOption::make()
-                        ->label(__('Blog Onsen button target ' . $i))
-                        ->metadata()
-                        ->placeholder('#onsen-section-' . $i)
-                        ->toArray()
-                );
-        }
     }, 99);
 }
 
@@ -131,30 +91,64 @@ app()->booted(function (): void {
     if (is_plugin_active('simple-slider')) {
         SimpleSliderItemForm::extend(function (SimpleSliderItemForm $form): void {
             $form
-                ->addBefore(
-                    'order',
+                ->addAfter(
+                    'title',
                     'subtitle',
                     TextField::class,
                     TextFieldOption::make()
-                        ->label(__('Text under slide'))
+                        ->label(__('Subtitle'))
                         ->metadata()
-                        ->placeholder(__('Enter one line of text'))
+                        ->placeholder(__('Enter the subtitle'))
+                        ->toArray()
+                )
+                ->addAfter(
+                    'subtitle',
+                    'description',
+                    TextareaField::class,
+                    DescriptionFieldOption::make()
+                        ->metadata()
+                        ->toArray()
+                )
+                ->addAfter(
+                    'subtitle',
+                    'button_primary_url',
+                    TextField::class,
+                    TextFieldOption::make()
+                        ->label(__('Button URL'))
+                        ->placeholder(__('Enter the button URL'))
+                        ->metadata()
+                        ->toArray()
+                )
+                ->addAfter(
+                    'subtitle',
+                    'button_primary_label',
+                    TextField::class,
+                    TextFieldOption::make()
+                        ->label(__('Button label'))
+                        ->placeholder(__('Enter the button label'))
+                        ->metadata()
+                        ->toArray()
+                )
+                ->addAfter(
+                    'subtitle',
+                    'button_play_label',
+                    TextField::class,
+                    TextFieldOption::make()
+                        ->label(__('Button play label'))
+                        ->placeholder(__('Enter the button play label'))
+                        ->metadata()
+                        ->toArray()
+                )
+                ->addAfter(
+                    'subtitle',
+                    'youtube_url',
+                    TextField::class,
+                    TextFieldOption::make()
+                        ->metadata()
+                        ->placeholder(__('Enter the YouTube URL'))
+                        ->label(__('YouTube URL'))
                         ->toArray()
                 );
-
-            foreach ([
-                'title',
-                'link',
-                'description',
-                'button_primary_url',
-                'button_primary_label',
-                'button_play_label',
-                'youtube_url',
-            ] as $field) {
-                if ($form->has($field)) {
-                    $form->remove($field);
-                }
-            }
         }, 99);
     }
 

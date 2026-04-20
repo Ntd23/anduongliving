@@ -14,6 +14,19 @@ use Illuminate\Support\Facades\Schema;
 
 class PageController extends BaseApiController
 {
+    protected function isDefaultLanguageCode(?string $languageCode): bool
+    {
+        if (! $languageCode || ! Schema::hasTable('languages')) {
+            return false;
+        }
+
+        $defaultLanguageCode = DB::table('languages')
+            ->where('lang_is_default', 1)
+            ->value('lang_code');
+
+        return $defaultLanguageCode === $languageCode;
+    }
+
     /**
      * List pages
      *
@@ -86,7 +99,7 @@ class PageController extends BaseApiController
             return $this->missingPageResponse('Homepage is not configured.');
         }
 
-        $page = $this->pageQuery($languageCode)
+        $page = $this->pageQuery(null)
             ->whereKey($homepageId)
             ->first();
 
@@ -153,8 +166,40 @@ class PageController extends BaseApiController
             return null;
         }
 
+        $normalized = str_replace('-', '_', trim($language));
+        $candidates = array_values(array_unique(array_filter([
+            $normalized,
+            str_replace('_', '-', $normalized),
+        ])));
+
         $languageCode = DB::table('languages')
-            ->where('lang_locale', $language)
+            ->whereIn('lang_code', $candidates)
+            ->value('lang_code');
+
+        if ($languageCode) {
+            return $languageCode;
+        }
+
+        $languageCode = DB::table('languages')
+            ->whereIn('lang_locale', $candidates)
+            ->value('lang_code');
+
+        if ($languageCode) {
+            return $languageCode;
+        }
+
+        $shortCodes = array_values(array_unique(array_filter(array_map(
+            static fn (string $value): string => preg_split('/[-_]/', $value)[0] ?? '',
+            $candidates
+        ))));
+
+        if (! $shortCodes) {
+            return null;
+        }
+
+        $languageCode = DB::table('languages')
+            ->whereIn('lang_code', $shortCodes)
+            ->orWhereIn('lang_locale', $shortCodes)
             ->value('lang_code');
 
         return $languageCode ?: null;
@@ -162,7 +207,7 @@ class PageController extends BaseApiController
 
     protected function applyLanguageFilter(Builder $query, string $languageCode): void
     {
-        if (! Schema::hasTable('pages_translations')) {
+        if (! Schema::hasTable('pages_translations') || $this->isDefaultLanguageCode($languageCode)) {
             return;
         }
 
@@ -209,7 +254,7 @@ class PageController extends BaseApiController
 
     protected function translatePage(Page $page, string $languageCode): Page
     {
-        if (! Schema::hasTable('pages_translations')) {
+        if (! Schema::hasTable('pages_translations') || $this->isDefaultLanguageCode($languageCode)) {
             return $page;
         }
 

@@ -18,6 +18,7 @@ class CategoryResource extends JsonResource
             'slug' => $this->slug,
             'url' => $this->url,
             'description' => $this->description,
+            'posts_count' => $this->whenCounted('posts'),
         ];
     }
 }

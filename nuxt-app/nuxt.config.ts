@@ -1,4 +1,5 @@
 import { tr } from "@nuxt/ui/runtime/locale/index.js";
+import { resolveCmsProxyBaseUrl } from "./shared/cms-routing";
 
 const DEV_HOST = process.env.NUXT_DEV_HOST || "127.0.0.1";
 const DEV_PORT = Number(process.env.NUXT_DEV_PORT || 3000);
@@ -8,6 +9,12 @@ const API_KEY =
     process.env.NUXT_API_KEY || "Xg4liH4fHPAh8AaFkBo5OoksJ3QxkIlJ";
 const PUBLIC_SITE_URL =
     process.env.NUXT_PUBLIC_SITE_URL || `http://${DEV_HOST}:${DEV_PORT}`;
+const CMS_PROXY_BASE_URL = resolveCmsProxyBaseUrl({
+    explicitBaseUrl: process.env.NUXT_PUBLIC_CMS_PROXY_BASE_URL,
+    isDevelopment: process.env.NODE_ENV !== "production",
+    devHost: DEV_HOST,
+    devPort: DEV_PORT,
+});
 
 const NUXT_MODULES = [
     "@pinia/nuxt",
@@ -68,6 +75,7 @@ export default defineNuxtConfig({
         public: {
             apiBaseUrl: API_BASE_URL,
             siteUrl: PUBLIC_SITE_URL,
+            cmsProxyBaseUrl: CMS_PROXY_BASE_URL,
         },
     },
 });

@@ -1,20 +1,12 @@
 import type { ComputedRef, Ref } from "vue";
 import type { PageData } from "~/composables/usePage";
+import {
+  buildAbsoluteUrl,
+  normalizePath,
+  normalizeSiteUrl,
+} from "~~/shared/cms-routing";
 
 type PageRef = Ref<PageData | undefined | null> | ComputedRef<PageData | undefined | null>;
-
-const normalizeSiteUrl = (siteUrl: string) => siteUrl.replace(/\/+$/, "");
-
-const normalizePath = (path?: string | null) => {
-  if (!path || path === "/") {
-    return "/";
-  }
-
-  return path.startsWith("/") ? path : `/${path}`;
-};
-
-const buildAbsoluteUrl = (siteUrl: string, path?: string | null) =>
-  `${normalizeSiteUrl(siteUrl)}${normalizePath(path)}`;
 
 const toAbsoluteAssetUrl = (siteUrl: string, value?: string | null) => {
   if (!value) {

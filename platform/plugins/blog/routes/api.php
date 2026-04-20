@@ -16,4 +16,5 @@ Route::group([
     Route::get('posts/{slug}', 'PostController@findBySlug');
     Route::get('categories/filters', 'CategoryController@getFilters');
     Route::get('categories/{slug}', 'CategoryController@findBySlug');
+    Route::get('tags/{slug}', 'TagController@findBySlug');
 });

@@ -50,6 +50,10 @@ class MenuServiceProvider extends ServiceProvider
             ->loadMigrations()
             ->publishAssets();
 
+        if (class_exists('ApiHelper')) {
+            $this->loadRoutes(['api']);
+        }
+
         DashboardMenu::default()->beforeRetrieving(function (): void {
             DashboardMenu::make()
                 ->registerItem(
