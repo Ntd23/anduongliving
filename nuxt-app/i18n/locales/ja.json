@@ -1,0 +1,7 @@
+{
+  "home": "ホーム",
+  "about": "会社情報",
+  "contact": "お問い合わせ",
+  "welcome_message": "私たちのウェブサイトへようこそ！",
+  "description": "これは多言語対応の Nuxt.js アプリケーションです。"
+}
