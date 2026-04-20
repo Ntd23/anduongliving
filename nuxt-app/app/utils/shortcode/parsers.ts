@@ -320,3 +320,35 @@ export const parsePricingBlock = (html: string): PricingSectionData => {
       .filter(Boolean) as PricingItem[],
   };
 };
+export const parseServiceBlock = (html: string): ServiceSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "services-area") || html;
+  const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
+  const serviceBlocks = extractBlocksByTag(section, "div", "single-services");
+
+  return {
+    subtitle: titleBlock ? extractTextFromTag(titleBlock, "h5") : null,
+    title: titleBlock ? extractTextFromTag(titleBlock, "h2") : null,
+    description: titleBlock ? extractTextFromTag(titleBlock, "p") : null,
+    items: serviceBlocks
+      .map((serviceBlock: string, index: number) => {
+        const title = extractTextFromTag(serviceBlock, "h4")?.trim().replace(/^["']|["']$/g, '');
+        const link = extractAttribute(extractFirstTag(serviceBlock, "h4 a") || "", "href");
+        const image = extractFirstImage(serviceBlock); 
+        const button = extractTextFromTag(serviceBlock, "button");
+        const price = button ? button.replace(/[^0-9.]/g, '') : '';
+
+        if (!title) return null;
+
+        return {
+          id: index,
+          name: title,
+          url: link || '#',
+          image: image?.src || '',
+          bookLabel: button || 'Book Now',
+          price: price,
+          amenities: [], // Can be enhanced later
+        } satisfies ServiceItem;
+      })
+      .filter(Boolean) as ServiceItem[],
+  };
+};
