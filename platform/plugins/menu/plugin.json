@@ -1,0 +1,11 @@
+{
+    "id": "anduongliving/menu",
+    "name": "Menu",
+    "namespace": "Menu\\",
+    "provider": "Menu\\Providers\\MenuServiceProvider",
+    "author": "AnDuongLiving",
+ 
+    "version": "1.0.0",
+    "description": "Menu API",
+    "minimum_core_version": "7.6.3"
+}

@@ -3,17 +3,21 @@
 namespace Botble\Widget\Http\Controllers\API;
 
 use Botble\Api\Http\Controllers\BaseApiController;
+use Botble\Hotel\Facades\HotelHelper;
 use Botble\Language\Facades\Language;
+use Botble\Menu\Models\Menu;
+use Botble\Widget\AbstractWidget;
 use Botble\Widget\Http\Resources\WidgetResource;
 use Botble\Widget\Models\Widget;
-use Botble\Menu\Models\Menu;
-use Botble\Theme\Facades\Theme;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
+use Throwable;
+
 class WidgetController extends BaseApiController
 {
-
     public function index(Request $request)
     {
         $query = Widget::query();
@@ -22,8 +26,8 @@ class WidgetController extends BaseApiController
             $query->where('sidebar_id', $request->query('sidebar_id'));
         }
 
-        $locale = $request->input('locale', $request->input('lang'));
-        
+        $locale = $this->resolveLanguageCode($request->input('locale', $request->input('lang')));
+         
         if ($request->has('theme')) {
             // If theme is explicitly passed, use it
             $themeName = $request->query('theme');
@@ -42,23 +46,24 @@ class WidgetController extends BaseApiController
             ->setData(WidgetResource::collection($widgets))
             ->toApiResponse();
     }
-        public function getBySidebar(Request $request, string $sidebarId)
+
+    public function getBySidebar(Request $request, string $sidebarId)
     {
-        $locale = $request->input('lang', $request->input('lang'));
-        $themeName = Widget::getThemeName($locale);
-        
+        [$languageCode] = $this->setLanguageContext($request);
+        $themeName = Widget::getThemeName($languageCode);
+
         $widgets = Widget::query()
             ->where('theme', $themeName)
             ->where('sidebar_id', $sidebarId)
             ->orderBy('position')
             ->get();
 
-        // Fetch menu data for widgets that have menu_id
-        $widgets->each(function ($widget) use ($themeName) {
+        app('botble.widget-group-collection')->load(true);
+
+        $widgets->each(function ($widget) {
             if (isset($widget->data['menu_id']) && !empty($widget->data['menu_id'])) {
                 $menuId = $widget->data['menu_id'];
-                
-                // Try to find menu by slug first, then by ID
+
                 $menu = Menu::query()
                     ->where(function ($query) use ($menuId) {
                         $query->where('slug', $menuId)
@@ -103,11 +108,143 @@ class WidgetController extends BaseApiController
                     ];
                 }
             }
+
+            $widget->rendered_html = $this->renderWidgetHtml($widget);
+            $widget->meta = $this->resolveWidgetMeta($widget);
         });
 
         return $this
             ->httpResponse()
-            ->setData(WidgetResource::collection($widgets))
+            ->setData([
+                'sidebar_id' => $sidebarId,
+                'lang' => $languageCode,
+                'locale' => Language::getCurrentLocale(),
+                'items' => WidgetResource::collection($widgets)->resolve($request),
+            ])
             ->toApiResponse();
+    }
+
+    public function renderSidebar(Request $request, string $sidebarId)
+    {
+        [$languageCode, $languageLocale] = $this->setLanguageContext($request);
+
+        app('botble.widget-group-collection')->load(true);
+
+        return $this
+            ->httpResponse()
+            ->setData([
+                'sidebar_id' => $sidebarId,
+                'lang' => $languageCode,
+                'locale' => $languageLocale,
+                'html' => dynamic_sidebar($sidebarId),
+            ])
+            ->toApiResponse();
+    }
+
+    protected function setLanguageContext(Request $request): array
+    {
+        $languageCode = $this->resolveLanguageCode($request->input('locale', $request->input('lang')));
+        $languageLocale = $this->resolveLanguageLocale($languageCode);
+
+        if ($languageLocale) {
+            App::setLocale($languageLocale);
+            Language::setCurrentLocale($languageLocale);
+        }
+
+        if ($languageCode) {
+            Language::setCurrentLocaleCode($languageCode);
+        }
+
+        return [$languageCode, $languageLocale];
+    }
+
+    protected function renderWidgetHtml(Widget $widget): ?string
+    {
+        if (! class_exists($widget->widget_id)) {
+            return null;
+        }
+
+        try {
+            $instance = new $widget->widget_id();
+
+            if (! $instance instanceof AbstractWidget) {
+                return null;
+            }
+
+            return $instance->run($widget->sidebar_id, $widget->position);
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    protected function resolveWidgetMeta(Widget $widget): ?array
+    {
+        return match ($widget->widget_id) {
+            'NewsletterWidget' => $this->resolveNewsletterMeta(),
+            'CheckAvailabilityForm' => $this->resolveCheckAvailabilityMeta(),
+            default => null,
+        };
+    }
+
+    protected function resolveNewsletterMeta(): ?array
+    {
+        if (! Route::has('public.newsletter.subscribe')) {
+            return null;
+        }
+
+        return [
+            'action_url' => route('public.newsletter.subscribe'),
+        ];
+    }
+
+    protected function resolveCheckAvailabilityMeta(): ?array
+    {
+        if (! is_plugin_active('hotel') || ! Route::has('public.rooms')) {
+            return null;
+        }
+
+        return [
+            'action_url' => route('public.rooms'),
+            'date_format' => HotelHelper::getDateFormat(),
+            'datepicker_format' => HotelHelper::getBookingFormDateFormat(),
+            'minimum_adults' => HotelHelper::getMinimumNumberOfGuests(),
+            'maximum_adults' => HotelHelper::getMaximumNumberOfGuests(),
+            'default_children' => 0,
+            'default_rooms' => 1,
+        ];
+    }
+
+    protected function resolveLanguageCode(?string $value): ?string
+    {
+        if (! $value || ! Schema::hasTable('languages')) {
+            return $value;
+        }
+
+        $language = DB::table('languages')
+            ->select(['lang_code', 'lang_locale'])
+            ->where('lang_code', $value)
+            ->orWhere('lang_locale', $value)
+            ->first();
+
+        if ($language?->lang_code) {
+            return $language->lang_code;
+        }
+
+        return match ($value) {
+            'vi_VN' => 'vi',
+            'ja_JP' => 'ja',
+            default => $value,
+        };
+    }
+
+    protected function resolveLanguageLocale(?string $languageCode): ?string
+    {
+        if (! $languageCode || ! Schema::hasTable('languages')) {
+            return null;
+        }
+
+        return DB::table('languages')
+            ->where('lang_code', $languageCode)
+            ->value('lang_locale');
     }
 }

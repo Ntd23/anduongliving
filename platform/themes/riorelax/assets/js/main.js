@@ -77,10 +77,6 @@ $(document).ready(function () {
     // mainSlider
     function mainSlider() {
         var BasicSlider = $('.slider-active')
-        if (!BasicSlider.length || BasicSlider.hasClass('slick-initialized')) {
-            return
-        }
-
         BasicSlider.on('init', function (e, slick) {
             var $firstAnimatingElements = $('.single-slider:first-child').find('[data-animation]')
             doAnimations($firstAnimatingElements)
@@ -91,18 +87,13 @@ $(document).ready(function () {
         })
         BasicSlider.slick({
             autoplay: true,
-            autoplaySpeed: 6000,
+            autoplaySpeed: 10000,
             dots: false,
             fade: true,
-            arrows: false,
-            infinite: true,
-            speed: 1600,
-            cssEase: 'ease-in-out',
-            pauseOnHover: false,
-            pauseOnFocus: false,
-            swipe: false,
-            draggable: false,
-            touchMove: false,
+            arrows: true,
+            prevArrow: '<button type="button" class="slick-prev"><i class="far fa-angle-left"></i></button>',
+            nextArrow: '<button type="button" class="slick-next"><i class="far fa-angle-right"></i></button>',
+            responsive: [{ breakpoint: 1200, settings: { dots: false, arrows: false } }],
             rtl: RiorelaxTheme.isRtl(),
         })
 

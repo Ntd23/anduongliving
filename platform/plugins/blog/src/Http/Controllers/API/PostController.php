@@ -5,103 +5,120 @@ namespace Botble\Blog\Http\Controllers\API;
 use Botble\Api\Http\Controllers\BaseApiController;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Base\Facades\BaseHelper;
+use Botble\Blog\Http\Controllers\API\Concerns\InteractsWithBlogTranslations;
 use Botble\Blog\Http\Resources\ListPostResource;
 use Botble\Blog\Http\Resources\PostResource;
 use Botble\Blog\Models\Post;
-use Botble\Blog\Repositories\Interfaces\PostInterface;
 use Botble\Blog\Supports\FilterPost;
 use Botble\Slug\Facades\SlugHelper;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class PostController extends BaseApiController
 {
-    public function __construct(protected PostInterface $postRepository)
-    {
-    }
+    use InteractsWithBlogTranslations;
 
-    /**
-     * List posts
-     *
-     * @group Blog
-     *
-     * @queryParam per_page integer The number of items to return per page (default: 10).
-     * @queryParam page integer The page number to retrieve (default: 1).
-     *
-     * @response 200 {
-     *   "error": false,
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "title": "Sample Post",
-     *       "slug": "sample-post",
-     *       "excerpt": "This is a sample post excerpt",
-     *       "content": "Full post content here...",
-     *       "published_at": "2023-01-01T00:00:00.000000Z",
-     *       "author": {
-     *         "id": 1,
-     *         "name": "John Doe"
-     *       },
-     *       "categories": [],
-     *       "tags": []
-     *     }
-     *   ],
-     *   "message": null
-     * }
-     */
     public function index(Request $request)
     {
-        $data = $this->postRepository
-            ->advancedGet([
-                'with' => ['tags', 'categories', 'author', 'slugable'],
-                'condition' => ['status' => BaseStatusEnum::PUBLISHED],
-                'paginate' => [
-                    'per_page' => $request->integer('per_page', 10),
-                    'current_paged' => $request->integer('page', 1),
-                ],
-            ]);
+        $languageCode = $this->resolveLanguageCodeFromRequest($request);
+        $this->setLanguageContext($languageCode);
+
+        $type = strtolower((string) $request->query('type', ''));
+        $limit = max(1, $request->integer('limit', $request->integer('per_page', 10)));
+
+        $query = Post::query()
+            ->where('status', BaseStatusEnum::PUBLISHED)
+            ->with(['tags', 'categories', 'author', 'slugable']);
+
+        $this->applyTranslationFilter($query, 'posts_translations', 'posts_id', $languageCode);
+
+        if ($type === 'popular') {
+            $posts = $query
+                ->orderByDesc('views')
+                ->orderByDesc('created_at')
+                ->limit($limit)
+                ->get()
+                ->map(fn (Post $post) => $this->translatePost($post, $languageCode));
+
+            return $this
+                ->httpResponse()
+                ->setData(ListPostResource::collection($posts))
+                ->toApiResponse();
+        }
+
+        if ($type === 'recent') {
+            $posts = $query
+                ->latest('created_at')
+                ->limit($limit)
+                ->get()
+                ->map(fn (Post $post) => $this->translatePost($post, $languageCode));
+
+            return $this
+                ->httpResponse()
+                ->setData(ListPostResource::collection($posts))
+                ->toApiResponse();
+        }
+
+        $posts = $query
+            ->latest('created_at')
+            ->paginate($request->integer('per_page', 10));
+
+        $posts->setCollection(
+            $posts->getCollection()->map(fn (Post $post) => $this->translatePost($post, $languageCode))
+        );
 
         return $this
             ->httpResponse()
-            ->setData(ListPostResource::collection($data))
+            ->setData(ListPostResource::collection($posts))
             ->toApiResponse();
     }
 
-    /**
-     * Search post
-     *
-     * @group Blog
-     *
-     * @bodyParam q string required The search keyword.
-     *
-     * @response 200 {
-     *   "error": false,
-     *   "data": {
-     *     "items": [
-     *       {
-     *         "id": 1,
-     *         "title": "Sample Post",
-     *         "slug": "sample-post",
-     *         "excerpt": "This is a sample post excerpt"
-     *       }
-     *     ],
-     *     "query": "sample",
-     *     "count": 1
-     *   }
-     * }
-     *
-     * @response 400 {
-     *   "error": true,
-     *   "message": "No search result"
-     * }
-     */
-    public function getSearch(Request $request, PostInterface $postRepository)
+    public function getSearch(Request $request)
     {
-        $query = BaseHelper::stringify($request->input('q'));
-        $posts = $postRepository->getSearch($query);
+        $languageCode = $this->resolveLanguageCodeFromRequest($request);
+        $this->setLanguageContext($languageCode);
+
+        $searchTerm = BaseHelper::stringify($request->input('q'));
+
+        $query = Post::query()
+            ->where('status', BaseStatusEnum::PUBLISHED)
+            ->with(['tags', 'categories', 'author', 'slugable']);
+
+        $this->applyTranslationFilter($query, 'posts_translations', 'posts_id', $languageCode);
+
+        if ($searchTerm !== '') {
+            $query->where(function (Builder $builder) use ($searchTerm, $languageCode): void {
+                $builder
+                    ->where('name', 'LIKE', '%' . $searchTerm . '%')
+                    ->orWhere('description', 'LIKE', '%' . $searchTerm . '%');
+
+                if ($languageCode && Schema::hasTable('posts_translations')) {
+                    $builder->orWhereExists(function ($subQuery) use ($searchTerm, $languageCode): void {
+                        $subQuery->selectRaw('1')
+                            ->from('posts_translations')
+                            ->whereColumn('posts_translations.posts_id', 'posts.id')
+                            ->where('posts_translations.lang_code', $languageCode)
+                            ->where(function ($translationQuery) use ($searchTerm): void {
+                                $translationQuery
+                                    ->where('posts_translations.name', 'LIKE', '%' . $searchTerm . '%')
+                                    ->orWhere('posts_translations.description', 'LIKE', '%' . $searchTerm . '%')
+                                    ->orWhere('posts_translations.content', 'LIKE', '%' . $searchTerm . '%');
+                            });
+                    });
+                }
+            });
+        }
+
+        $posts = $query
+            ->latest('created_at')
+            ->limit(max(1, $request->integer('limit', 10)))
+            ->get()
+            ->map(fn (Post $post) => $this->translatePost($post, $languageCode));
 
         $data = [
-            'items' => $posts,
-            'query' => $query,
+            'items' => ListPostResource::collection($posts),
+            'query' => $searchTerm,
             'count' => $posts->count(),
         ];
 
@@ -117,47 +134,94 @@ class PostController extends BaseApiController
             ->setMessage(trans('core/base::layouts.no_search_result'));
     }
 
-    /**
-     * Filters posts
-     *
-     * @group Blog
-     * @queryParam page                 Current page of the collection. Default: 1
-     * @queryParam per_page             Maximum number of items to be returned in result set.Default: 10
-     * @queryParam search               Limit results to those matching a string.
-     * @queryParam after                Limit response to posts published after a given ISO8601 compliant date.
-     * @queryParam author               Limit result set to posts assigned to specific authors.
-     * @queryParam author_exclude       Ensure result set excludes posts assigned to specific authors.
-     * @queryParam before               Limit response to posts published before a given ISO8601 compliant date.
-     * @queryParam exclude              Ensure result set excludes specific IDs.
-     * @queryParam include              Limit result set to specific IDs.
-     * @queryParam order                Order sort attribute ascending or descending. Default: desc .One of: asc, desc
-     * @queryParam order_by             Sort collection by object attribute. Default: updated_at. One of: author, created_at, updated_at, id,  slug, title
-     * @queryParam categories           Limit result set to all items that have the specified term assigned in the categories taxonomy.
-     * @queryParam categories_exclude   Limit result set to all items except those that have the specified term assigned in the categories taxonomy.
-     * @queryParam tags                 Limit result set to all items that have the specified term assigned in the tags taxonomy.
-     * @queryParam tags_exclude         Limit result set to all items except those that have the specified term assigned in the tags taxonomy.
-     * @queryParam featured             Limit result set to items that are sticky.
-     */
     public function getFilters(Request $request)
     {
+        $languageCode = $this->resolveLanguageCodeFromRequest($request);
+        $this->setLanguageContext($languageCode);
+
         $filters = FilterPost::setFilters($request->input());
 
-        $data = $this->postRepository->getFilters($filters);
+        $query = Post::query()
+            ->where('status', BaseStatusEnum::PUBLISHED)
+            ->with(['tags', 'categories', 'author', 'slugable']);
+
+        $this->applyTranslationFilter($query, 'posts_translations', 'posts_id', $languageCode);
+
+        if ($search = $filters['search']) {
+            $query->where(function (Builder $builder) use ($search, $languageCode): void {
+                $builder
+                    ->where('name', 'LIKE', '%' . $search . '%')
+                    ->orWhere('description', 'LIKE', '%' . $search . '%');
+
+                if ($languageCode && Schema::hasTable('posts_translations')) {
+                    $builder->orWhereExists(function ($subQuery) use ($search, $languageCode): void {
+                        $subQuery->selectRaw('1')
+                            ->from('posts_translations')
+                            ->whereColumn('posts_translations.posts_id', 'posts.id')
+                            ->where('posts_translations.lang_code', $languageCode)
+                            ->where(function ($translationQuery) use ($search): void {
+                                $translationQuery
+                                    ->where('posts_translations.name', 'LIKE', '%' . $search . '%')
+                                    ->orWhere('posts_translations.description', 'LIKE', '%' . $search . '%')
+                                    ->orWhere('posts_translations.content', 'LIKE', '%' . $search . '%');
+                            });
+                    });
+                }
+            });
+        }
+
+        $categoryIds = $this->normalizeFilterIds($filters['categories']);
+        if ($categoryIds) {
+            $query->whereHas('categories', function (Builder $builder) use ($categoryIds): void {
+                $builder->whereIn('categories.id', $categoryIds);
+            });
+        }
+
+        $tagIds = $this->normalizeFilterIds($filters['tags']);
+        if ($tagIds) {
+            $query->whereHas('tags', function (Builder $builder) use ($tagIds): void {
+                $builder->whereIn('tags.id', $tagIds);
+            });
+        }
+
+        if ($filters['featured'] !== null && $filters['featured'] !== '') {
+            $query->where('is_featured', (bool) $filters['featured']);
+        }
+
+        $orderBy = match ($filters['order_by']) {
+            'author' => 'author_id',
+            'title' => 'name',
+            'slug' => 'slugs.key',
+            'created_at', 'updated_at', 'id' => $filters['order_by'],
+            default => 'updated_at',
+        };
+
+        if ($orderBy === 'slugs.key') {
+            $query->join('slugs', function ($join): void {
+                $join->on('slugs.reference_id', '=', 'posts.id')
+                    ->where('slugs.reference_type', Post::class);
+            })->select('posts.*');
+        }
+
+        $posts = $query
+            ->orderBy($orderBy, $filters['order'])
+            ->paginate((int) $filters['per_page']);
+
+        $posts->setCollection(
+            $posts->getCollection()->map(fn (Post $post) => $this->translatePost($post, $languageCode))
+        );
 
         return $this
             ->httpResponse()
-            ->setData(ListPostResource::collection($data))
+            ->setData(ListPostResource::collection($posts))
             ->toApiResponse();
     }
 
-    /**
-     * Get post by slug
-     *
-     * @group Blog
-     * @queryParam slug Find by slug of post.
-     */
-    public function findBySlug(string $slug)
+    public function findBySlug(string $slug, Request $request)
     {
+        $languageCode = $this->resolveLanguageCodeFromRequest($request);
+        $this->setLanguageContext($languageCode);
+
         $slug = SlugHelper::getSlug($slug, SlugHelper::getPrefix(Post::class));
 
         if (! $slug) {
@@ -169,6 +233,7 @@ class PostController extends BaseApiController
         }
 
         $post = Post::query()
+            ->with(['categories', 'tags', 'author', 'slugable'])
             ->where([
                 'id' => $slug->reference_id,
                 'status' => BaseStatusEnum::PUBLISHED,
@@ -183,9 +248,34 @@ class PostController extends BaseApiController
                 ->setMessage('Not found');
         }
 
+        if ($languageCode) {
+            $post = $this->translatePost($post, $languageCode);
+        }
+
+        $relatedPosts = get_related_posts($post->id, 2)
+            ->map(fn (Post $relatedPost) => $languageCode ? $this->translatePost($relatedPost, $languageCode) : $relatedPost)
+            ->values();
+
+        $resource = (new PostResource($post))->toArray($request);
+        $resource['navigation'] = [
+            'previous' => isset($relatedPosts[0]) ? ListPostResource::make($relatedPosts[0])->resolve($request) : null,
+            'next' => isset($relatedPosts[1]) ? ListPostResource::make($relatedPosts[1])->resolve($request) : null,
+        ];
+
         return $this
             ->httpResponse()
-            ->setData(new PostResource($post))
+            ->setData($resource)
             ->toApiResponse();
+    }
+
+    protected function normalizeFilterIds(mixed $value): array
+    {
+        if (! $value) {
+            return [];
+        }
+
+        $items = is_array($value) ? $value : explode(',', (string) $value);
+
+        return array_values(array_filter(array_map(static fn ($item) => (int) $item, $items)));
     }
 }

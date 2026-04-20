@@ -1,14 +1,13 @@
 import {
+  CMS_HOMEPAGE_TOKEN,
+  cmsProxyRoutes,
+  resolveCmsLocale,
+  resolveCmsProxyRequestUrl,
+} from "~~/shared/cms-routing";
+import {
   parseShortcodeBlocks,
   type ShortcodeBlock,
 } from "~/utils/shortcode";
-
-export const CMS_HOMEPAGE_TOKEN = "homepage";
-export const CMS_LOCALE_MAP: Record<string, string> = {
-  vi: "vi_VN",
-  en: "en_US",
-  ja: "ja_JP",
-};
 
 export type PageData = {
   id: number;
@@ -21,6 +20,11 @@ export type PageData = {
   status?: {
     value?: string;
     label?: string;
+  };
+  breadcrumb?: {
+    enabled?: boolean;
+    background_image?: string | null;
+    background_image_url?: string | null;
   };
   seo?: {
     title?: string | null;
@@ -38,20 +42,22 @@ export type PageData = {
   updated_at?: string;
 };
 
-export const resolveCmsLocale = (locale?: string) =>
-  CMS_LOCALE_MAP[locale || ""] || "vi_VN";
-
 export const usePage = async (
   slug: string,
   locale?: string,
 ): Promise<{ page: PageData; blocks: ShortcodeBlock[] }> => {
+  const config = useRuntimeConfig();
   const endpoint =
     slug === CMS_HOMEPAGE_TOKEN
-      ? "/api/cms/pages/homepage"
-      : `/api/cms/pages/${slug}`;
+      ? cmsProxyRoutes.pages.homepage()
+      : cmsProxyRoutes.pages.detail(slug);
 
   const response = await $fetch<{ data?: PageData }>(endpoint, {
-    query: locale ? { lang: locale } : undefined,
+    baseURL: resolveCmsProxyRequestUrl("/", {
+      cmsProxyBaseUrl: config.public.cmsProxyBaseUrl,
+      client: import.meta.client,
+    }),
+    query: locale ? { lang: resolveCmsLocale(locale) } : undefined,
   });
 
   const page = response.data;

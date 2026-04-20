@@ -1,11 +1,17 @@
 <script setup lang="ts">
+const props = withDefaults(defineProps<{
+  mode?: "inline" | "floating";
+}>(), {
+  mode: "floating",
+});
+
 const { locale, locales } = useI18n();
 const switchLocalePath = useSwitchLocalePath();
 
 const languageLabels: Record<string, string> = {
   vi: "VI",
   en: "EN",
-  ja: "日本語",
+  ja: "JA",
 };
 
 const items = computed(() =>
@@ -23,7 +29,11 @@ const items = computed(() =>
 </script>
 
 <template>
-  <nav class="language-switcher" aria-label="Language switcher">
+  <nav
+    class="language-switcher"
+    :class="{ 'language-switcher--inline': mode === 'inline' }"
+    aria-label="Language switcher"
+  >
     <NuxtLink
       v-for="item in items"
       :key="item.code"
@@ -39,10 +49,6 @@ const items = computed(() =>
 
 <style scoped>
 .language-switcher {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 40;
   display: inline-flex;
   gap: 0.35rem;
   padding: 0.35rem;
@@ -51,6 +57,22 @@ const items = computed(() =>
   background: rgba(255, 255, 255, 0.88);
   box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
   backdrop-filter: blur(12px);
+}
+
+.language-switcher:not(.language-switcher--inline) {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 40;
+}
+
+.language-switcher--inline {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .language-switcher__link {
@@ -88,8 +110,30 @@ const items = computed(() =>
   transform: translateY(-1px);
 }
 
+.language-switcher--inline .language-switcher__link {
+  min-width: auto;
+  height: auto;
+  padding: 0;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.language-switcher--inline .language-switcher__link:hover {
+  background: transparent;
+  color: #ffffff;
+}
+
+.language-switcher--inline .language-switcher__link--active {
+  background: transparent;
+  box-shadow: none;
+  color: #d8b56b;
+}
+
 @media (max-width: 640px) {
-  .language-switcher {
+  .language-switcher:not(.language-switcher--inline) {
     top: 0.75rem;
     right: 0.75rem;
   }

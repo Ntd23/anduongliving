@@ -8,4 +8,5 @@ Route::group([
     'namespace' => 'Botble\Widget\Http\Controllers\API'], function () {
     Route::get('', 'WidgetController@index');
     Route::get('sidebar/{sidebarId}', 'WidgetController@getBySidebar');
+    Route::get('sidebar/{sidebarId}/render', 'WidgetController@renderSidebar');
 });

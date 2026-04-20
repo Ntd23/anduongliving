@@ -1,65 +1,21 @@
 <script setup lang="ts">
 import { parseNewsletterBlock, type ShortcodeBlock } from "~/utils/shortcode";
+import { useNewsletterSubscribe } from "~/composables/useNewsletterSubscribe";
 
 const props = defineProps<{
   block: ShortcodeBlock;
 }>();
 
 const section = computed(() => parseNewsletterBlock(props.block.raw));
-const email = ref("");
-const pending = ref(false);
-const feedback = ref<{ type: "success" | "error"; message: string } | null>(null);
-const xsrfToken = useCookie<string | null>("XSRF-TOKEN");
+const { email, pending, feedback, submit } = useNewsletterSubscribe(
+  computed(() => section.value.action),
+);
 
 const sectionStyle = computed(() =>
   section.value.backgroundColor ? { backgroundColor: section.value.backgroundColor } : undefined,
 );
 
-const submitNewsletter = async () => {
-  if (!section.value.action || pending.value) {
-    return;
-  }
-
-  pending.value = true;
-  feedback.value = null;
-
-  try {
-    const formData = new FormData();
-    formData.append("email", email.value);
-
-    const response = await fetch(section.value.action, {
-      method: "POST",
-      body: formData,
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-        ...(xsrfToken.value
-          ? { "X-XSRF-TOKEN": decodeURIComponent(xsrfToken.value) }
-          : {}),
-      },
-    });
-    const payload = await response.json().catch(() => null);
-
-    if (!response.ok || payload?.error) {
-      throw new Error(payload?.message || "Unable to subscribe right now.");
-    }
-
-    email.value = "";
-    feedback.value = {
-      type: "success",
-      message: payload?.message || "Subscribed successfully.",
-    };
-  } catch (error) {
-    feedback.value = {
-      type: "error",
-      message:
-        error instanceof Error ? error.message : "Unable to subscribe right now.",
-    };
-  } finally {
-    pending.value = false;
-  }
-};
+const submitNewsletter = () => submit();
 </script>
 
 <template>

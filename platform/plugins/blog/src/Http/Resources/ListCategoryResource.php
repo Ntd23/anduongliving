@@ -16,7 +16,9 @@ class ListCategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'url' => $this->url,
             'description' => $this->description,
+            'posts_count' => $this->whenCounted('posts'),
             'children' => CategoryResource::collection($this->children),
             'parent' => new CategoryResource($this->parent),
         ];

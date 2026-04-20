@@ -29,9 +29,22 @@ class PageResource extends JsonResource
             'image' => $this->image ? RvMedia::url($this->image) : null,
             'template' => $this->template,
             'status' => $this->status,
+            'breadcrumb' => $this->resolveBreadcrumb(),
             'seo' => $this->resolveSeo($compiledContent),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+        ];
+    }
+
+    protected function resolveBreadcrumb(): array
+    {
+        $backgroundImage = $this->getMetaData('breadcrumb_background', true);
+        $enabled = $this->getMetaData('breadcrumb', true);
+
+        return [
+            'enabled' => filter_var($enabled, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? (bool) $enabled,
+            'background_image' => $backgroundImage,
+            'background_image_url' => $backgroundImage ? RvMedia::getImageUrl($backgroundImage) : null,
         ];
     }
 
@@ -41,6 +54,7 @@ class PageResource extends JsonResource
             ? $this->resolveHomepageSeo($compiledContent)
             : $this->resolvePageSeo($compiledContent);
     }
+
 
     protected function resolvePageSeo(string $compiledContent): array
     {
