@@ -5,6 +5,24 @@ const SHORTCODE_OPEN_TAG = /<shortcode(\s[^>]*)?>([\s\S]*?)<\/shortcode>/gi;
 const BRACKET_SHORTCODE_TAG = /\[([a-zA-Z0-9_-]+)(\s[^\]]*)?\]([\s\S]*?)\[\/\1\]/gi;
 const SECTION_TAG = /<section(\s[^>]*)?>([\s\S]*?)<\/section>/gi;
 
+const normalizeShortcodeFragments = (blocks: ShortcodeBlock[]): ShortcodeBlock[] =>
+  blocks.map((block) => {
+    if (block.type !== "html") {
+      return block;
+    }
+
+    const name = detectShortcodeName(block.raw);
+    if (!name) {
+      return block;
+    }
+
+    return {
+      type: "shortcode" as const,
+      raw: block.raw,
+      name,
+    };
+  });
+
 export const parseShortcodeBlocks = (content: string): ShortcodeBlock[] => {
   if (!content) return [];
 
@@ -31,7 +49,7 @@ export const parseShortcodeBlocks = (content: string): ShortcodeBlock[] => {
   });
 
   if (shortcodeBlocks.some((block) => block.type === "shortcode")) {
-    return shortcodeBlocks;
+    return normalizeShortcodeFragments(shortcodeBlocks);
   }
 
   const bracketBlocks = collectMatchedBlocks(content, BRACKET_SHORTCODE_TAG, (match) => {
@@ -54,7 +72,7 @@ export const parseShortcodeBlocks = (content: string): ShortcodeBlock[] => {
   });
 
   if (bracketBlocks.some((block) => block.type === "shortcode")) {
-    return bracketBlocks;
+    return normalizeShortcodeFragments(bracketBlocks);
   }
 
   const sectionBlocks = collectMatchedBlocks(content, SECTION_TAG, (match) => {
@@ -80,7 +98,18 @@ export const parseShortcodeBlocks = (content: string): ShortcodeBlock[] => {
   });
 
   if (sectionBlocks.length > 0) {
-    return sectionBlocks;
+    return normalizeShortcodeFragments(sectionBlocks);
+  }
+
+  const detectedName = detectShortcodeName(content);
+  if (detectedName) {
+    return [
+      {
+        type: "shortcode" as const,
+        raw: content,
+        name: detectedName,
+      },
+    ];
   }
 
   const fallback = content.trim();

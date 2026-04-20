@@ -4,8 +4,10 @@ import {
   parseHeroStoryBlock,
   parseNewsletterBlock,
   parsePricingBlock,
+  parseServiceBlock,
   parseSkillBlock,
   parseTeamBlock,
+  parseTestimonialsBlock,
 } from "./parsers";
 import type { ShortcodeDefinition, ShortcodeName } from "./types";
 
@@ -57,6 +59,19 @@ export const shortcodeRegistry = [
     aliases: ["team-area", "team-area2"],
     componentName: "Team",
     parser: parseTeamBlock,
+  },
+  {
+    name: "testimonials",
+    aliases: [
+      "testimonials",
+      "testimonials-area",
+      "testimonial-area",
+      "testimonial",
+      "testimonial-slider",
+      "testimonials-slider",
+    ],
+    componentName: "Testimonials",
+    parser: parseTestimonialsBlock,
   },
 ] as const satisfies readonly ShortcodeDefinition[];
 
