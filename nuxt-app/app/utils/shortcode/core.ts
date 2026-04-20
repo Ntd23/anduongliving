@@ -204,7 +204,7 @@ export const extractTextFromTag = (html: string, tagName: string, classNeedle?: 
 };
 
 export const extractAttribute = (html: string, attribute: string): string | null => {
-  const pattern = new RegExp(`${attribute}\\s*=\\s*(["'])(.*?)\\1`, "i");
+  const pattern = new RegExp(`${attribute}\\s*=\\s*(['"])(.*?)\\1`, "i");
   const match = pattern.exec(html);
 
   if (!match) {
@@ -288,5 +288,17 @@ export const decodeHtmlEntities = (value: string): string =>
     .replace(/&gt;/gi, ">")
     .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
     .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCharCode(Number.parseInt(code, 16)));
+
+export const parseShortcodeAttributes = (shortcode: string): Record<string, string> => {
+  const attributes: Record<string, string> = {};
+  const attrPattern = /(\w+)="([^"]*)"/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = attrPattern.exec(shortcode))) {
+    attributes[match[1]] = match[2];
+  }
+
+  return attributes;
+};
 
 export const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

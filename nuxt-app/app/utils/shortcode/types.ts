@@ -3,6 +3,7 @@ export type ShortcodeName =
   | "feature"
   | "hero-story"
   | "newsletter"
+  | "pricing"
   | "skill"
   | "team";
 
@@ -17,6 +18,7 @@ export type ShortcodeComponentName =
   | "Feature"
   | "HeroStory"
   | "Newsletter"
+  | "Pricing"
   | "Skill"
   | "Team";
 
@@ -90,6 +92,9 @@ export type FeatureSectionData = {
   backgroundColor: string | null;
   backgroundImage: ShortcodeImage | null;
   image: ShortcodeImage | null;
+  secondaryImage: ShortcodeImage | null;
+  quote: string | null;
+  quoteAuthor: string | null;
   subtitle: string | null;
   title: string | null;
   description: string | null;
@@ -108,6 +113,28 @@ export type NewsletterSectionData = {
   action: string | null;
   placeholder: string;
   buttonLabel: string;
+};
+
+export type PricingItem = {
+  title: string;
+  description: string | null;
+  price: string;
+  currency: string;
+  period: string;
+  features: string[];
+  buttonLabel: string;
+  buttonUrl: string;
+  isPopular: boolean;
+};
+
+export type PricingSectionData = {
+  backgroundColor: string | null;
+  backgroundImage1: ShortcodeImage | null;
+  backgroundImage2: ShortcodeImage | null;
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  items: PricingItem[];
 };
 
 export type ShortcodeDefinition = {
