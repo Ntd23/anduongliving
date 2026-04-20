@@ -24,7 +24,11 @@ deploy_production:
       -o StrictHostKeyChecking=no
       -o UserKnownHostsFile=/dev/null
       "$DEPLOY_USER@$DEPLOY_HOST"
-      "DEPLOY_PATH='${DEPLOY_PATH}'
-      DEPLOY_BRANCH='${DEPLOY_BRANCH:-main}'
-      NITRO_APP_NAME='${NITRO_APP_NAME:-anduongliving-nuxt}'
-      bash '${DEPLOY_PATH}/deploy.sh'"
+      "export DEPLOY_PATH='${DEPLOY_PATH}';
+      export DEPLOY_BRANCH='${DEPLOY_BRANCH:-main}';
+      export NITRO_APP_NAME='${NITRO_APP_NAME:-anduongliving-nuxt}';
+      printf 'DEPLOY_PATH=<%s>\n' \"\$DEPLOY_PATH\";
+      ls -la \"\$DEPLOY_PATH\";
+      cd \"\$DEPLOY_PATH\";
+      chmod +x ./deploy.sh;
+      bash ./deploy.sh"
