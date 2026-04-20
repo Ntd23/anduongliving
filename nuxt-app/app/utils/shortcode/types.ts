@@ -104,6 +104,23 @@ export type FeaturedRoomsSectionData = {
   items: ServiceItem[];
 };
 
+export type TestimonialItem = {
+  name: string;
+  title: string | null;
+  content: string;
+  image: ShortcodeImage | null;
+  rating: number | null;
+};
+
+export type TestimonialsSectionData = {
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  backgroundImage: ShortcodeImage | null;
+  testimonialIds: string[];
+  items: TestimonialItem[];
+};
+
 export type TeamSocialPlatform = "facebook" | "twitter" | "instagram" | "website";
 
 export type TeamSocialLink = {
@@ -212,6 +229,13 @@ export type PricingSectionData = {
   title: string | null;
   description: string | null;
   items: PricingItem[];
+};
+export type ServiceDetailItem = {
+  title: string;
+  iconImgUrl: string;
+  iconImgAlt: string;
+  thumbImgUrl: string;
+  thumbImgAlt: string;
 };
 
 export type ShortcodeAction = {
@@ -510,4 +534,18 @@ export type ShortcodeDefinition = {
   aliases: readonly string[];
   componentName: ShortcodeComponentName;
   parser: (html: string) => unknown;
+};
+export type BookingRoomOption = {
+  value: string | undefined;
+  label: string | undefined;
+};
+
+export type BookingSectionData = {
+  subtitle: string | null;
+  title: string | null;
+  description:string | null ;
+  actionUrl: string | null | undefined;
+  imageSrc: string | null;
+  imageAlt: string | null;
+  rooms: BookingRoomOption[] | null;
 };

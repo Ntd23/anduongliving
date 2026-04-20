@@ -31,9 +31,8 @@ const sectionStyle = computed(() =>
     </div>
     <div class="container">
       <div v-if="section.title || section.subtitle || section.description" class="pricing-header">
-        <pre style="white-space: pre-wrap; font-size: 12px;">
-{{ JSON.stringify(section, null, 2) }}
-</pre>
+      
+
         <p v-if="section.subtitle" class="pricing-subtitle">
           {{ section.subtitle }}
         </p>
@@ -268,7 +267,7 @@ const sectionStyle = computed(() =>
   display: inline-block;
   width: 100%;
   padding: 12px 24px;
-  background: #007bff;
+  background: #000000;
   color: white;
   text-decoration: none;
   border-radius: 8px;
@@ -278,8 +277,9 @@ const sectionStyle = computed(() =>
 }
 
 .pricing-button:hover {
-  background: #0056b3;
+  background: #ffffff;
   transform: translateY(-2px);
+  color: #000000;
 }
 
 .pricing-button--popular {
