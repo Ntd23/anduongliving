@@ -3,12 +3,15 @@ import { resolveCmsProxyBaseUrl } from "./shared/cms-routing";
 
 const DEV_HOST = process.env.NUXT_DEV_HOST || "127.0.0.1";
 const DEV_PORT = Number(process.env.NUXT_DEV_PORT || 3000);
-const API_BASE_URL =
-    process.env.NUXT_API_BASE_URL || "http://anduongliving.test/api";
-const API_KEY =
-    process.env.NUXT_API_KEY || "Xg4liH4fHPAh8AaFkBo5OoksJ3QxkIlJ";
+const HMR_HOST = process.env.NUXT_HMR_HOST || DEV_HOST;
+const API_BASE_URL = process.env.NUXT_API_BASE_URL || "http://127.0.0.1/api";
+const API_KEY = process.env.NUXT_API_KEY || "";
 const PUBLIC_SITE_URL =
     process.env.NUXT_PUBLIC_SITE_URL || `http://${DEV_HOST}:${DEV_PORT}`;
+const ALLOWED_HOSTS = (process.env.NUXT_ALLOWED_HOSTS || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
 const CMS_PROXY_BASE_URL = resolveCmsProxyBaseUrl({
     explicitBaseUrl: process.env.NUXT_PUBLIC_CMS_PROXY_BASE_URL,
     isDevelopment: process.env.NODE_ENV !== "production",
@@ -48,10 +51,10 @@ export default defineNuxtConfig({
             __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: true,
         },
         server: {
-            allowedHosts: ["anduongliving.test"],
+            allowedHosts: ALLOWED_HOSTS.length ? ALLOWED_HOSTS : true,
             hmr: {
                 protocol: "ws",
-                host: "anduongliving.test",
+                host: HMR_HOST,
                 clientPort: DEV_PORT,
             },
         },
