@@ -6,7 +6,10 @@ export type ShortcodeName =
   | "pricing"
   | "skill"
   | "team"
-  | "services";
+  | "services"
+  | "service-details"
+  | "booking"
+  ;
 
 export type ShortcodeBlock = {
   type: "shortcode" | "html" | "text";
@@ -22,7 +25,9 @@ export type ShortcodeComponentName =
   | "Pricing"
   | "Skill"
   | "Team"
-  | "Services";
+  | "Services"
+  | "ServiceDetails"
+  | "Booking";
 
 export type ShortcodeImage = {
   src: string;
@@ -155,10 +160,38 @@ export type PricingSectionData = {
   description: string | null;
   items: PricingItem[];
 };
+export type ServiceDetailItem = {
+  title: string;
+  iconImgUrl: string;
+  iconImgAlt: string;
+  thumbImgUrl: string;
+  thumbImgAlt: string;
+};
 
+export type ServiceDetailsData = {
+  bgImageUrl: string | null | undefined;
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  items: ServiceDetailItem[];
+};
 export type ShortcodeDefinition = {
   name: ShortcodeName;
   aliases: readonly string[];
   componentName: ShortcodeComponentName;
   parser: (html: string) => unknown;
+};
+export type BookingRoomOption = {
+  value: string | undefined;
+  label: string | undefined;
+};
+
+export type BookingSectionData = {
+  subtitle: string | null;
+  title: string | null;
+  description:string | null ;
+  actionUrl: string | null | undefined;
+  imageSrc: string | null;
+  imageAlt: string | null;
+  rooms: BookingRoomOption[] | null;
 };

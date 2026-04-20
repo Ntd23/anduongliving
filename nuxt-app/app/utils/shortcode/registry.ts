@@ -3,6 +3,8 @@ import {
   parseFeatureBlock,
   parseHeroStoryBlock,
   parseNewsletterBlock,
+  parseServiceDetailsBlock,
+  parseBookingBlock,
   parsePricingBlock,
   parseSkillBlock,
   parseTeamBlock,
@@ -28,6 +30,12 @@ export const shortcodeRegistry = [
     componentName: "Services",
     parser: parseServiceBlock,
   },
+  {
+  name: "service-details",
+  aliases: ["service-details"],
+  componentName: "ServiceDetails",
+  parser: parseServiceDetailsBlock,
+},
   {
     name: "skill",
     aliases: ["skill-area"],
@@ -58,6 +66,12 @@ export const shortcodeRegistry = [
     componentName: "Team",
     parser: parseTeamBlock,
   },
+  {
+  name: "booking",
+  aliases: ["booking", "form-booking"],
+  componentName: "Booking",
+  parser: parseBookingBlock,
+},
 ] as const satisfies readonly ShortcodeDefinition[];
 
 export const findShortcodeDefinition = (name?: string | null): ShortcodeDefinition | null => {
