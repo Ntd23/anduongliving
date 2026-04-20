@@ -16,12 +16,15 @@ import {
   extractStyleValue,
   extractTextFromTag,
   normalizeText,
+  parseShortcodeAttributes,
 } from "./core";
 import type {
   AboutSectionData,
   FeatureSectionData,
   HeroStorySectionData,
   NewsletterSectionData,
+  PricingItem,
+  PricingSectionData,
   SkillItem,
   SkillSectionData,
   TeamMember,
@@ -174,10 +177,17 @@ export const parseFeatureBlock = (html: string): FeatureSectionData => {
   const backgroundImageBlock = extractFirstBlockByClass(section, "div", "animations-02");
   const actionLink = extractLinks(extractFirstBlockByClass(section, "div", "slider-btn") || "")[0];
 
+  const allImages = extractAllImages(section);
+  const mainImage = imageBlock ? extractFirstImage(imageBlock) : allImages[0] || null;
+  const secondaryImage = allImages.length > 1 ? allImages[1] || null : null;
+
   return {
     backgroundColor: extractStyleValue(section, "background"),
     backgroundImage: backgroundImageBlock ? extractFirstImage(backgroundImageBlock) : null,
-    image: imageBlock ? extractFirstImage(imageBlock) : null,
+    image: mainImage,
+    secondaryImage,
+    quote: null,
+    quoteAuthor: null,
     subtitle: titleBlock ? extractTextFromTag(titleBlock, "h5") : null,
     title: titleBlock ? extractTextFromTag(titleBlock, "h2") : null,
     description: contentBlock ? extractFirstParagraphText(contentBlock) : null,
@@ -210,6 +220,106 @@ export const parseNewsletterBlock = (html: string): NewsletterSectionData => {
   };
 };
 
+export const parsePricingBlock = (html: string): PricingSectionData => {
+
+  const attributes = parseShortcodeAttributes(html);
+  const section = extractFirstBlockByClass(html, "section", "pricing-area") || html;
+  const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
+  const pricingBlocks = extractBlocksByTag(section, "div", "single-pricing");
+
+  const parsePriceText = (priceText: string): { price: string; currency: string } => {
+    const priceMatch = priceText.match(/^([^\d]*)([\d.,]+)(.*)$/);
+    if (!priceMatch) {
+      return { price: priceText, currency: "" };
+    }
+
+    const prefix = priceMatch[1]?.trim() || "";
+    const digits = priceMatch[2]?.trim() || priceText;
+    const suffix = priceMatch[3]?.trim() || "";
+
+    return {
+      price: digits,
+      currency: prefix || suffix || "",
+    };
+  };
+
+  const getFeatures = (rawValue: string | null): string[] =>
+    (rawValue || "")
+      .split(/\s*,\s*/)
+      .map((feature) => feature.trim().replace(/\.*$/, ""))
+      .filter(Boolean);
+
+  const buildPricingItems = (): PricingItem[] => {
+    const quantity = Math.max(0, Number.parseInt(attributes.quantity || "", 10));
+    const itemCount = quantity || 6;
+
+    return Array.from({ length: itemCount }, (_, index) => index + 1)
+      .map((itemIndex) => {
+        const title = attributes[`title_${itemIndex}`] || null;
+        const priceText = attributes[`price_${itemIndex}`] || null;
+        const duration = attributes[`duration_${itemIndex}`] || null;
+        const features = getFeatures(attributes[`feature_list_${itemIndex}`] || null);
+        const buttonLabel = attributes[`button_label_${itemIndex}`] || "Bắt đầu ngay";
+        const buttonUrl = attributes[`button_url_${itemIndex}`] || attributes[`button_url_${itemIndex}`] || "#";
+
+        if (!title || !priceText) {
+          return null;
+        }
+
+        const parsedPrice = parsePriceText(priceText);
+
+        return {
+          title,
+          price: parsedPrice.price,
+          currency: parsedPrice.currency,
+          period: duration || "",
+          features,
+          buttonLabel,
+          buttonUrl,
+          isPopular: false,
+        } satisfies PricingItem;
+      })
+      .filter(Boolean) as PricingItem[];
+  };
+
+  return {
+    backgroundColor: attributes.background_color || null,
+    backgroundImage1: attributes.background_image_1
+      ? { src: attributes.background_image_1, alt: "" }
+      : null,
+    backgroundImage2: attributes.background_image_2
+      ? { src: attributes.background_image_2, alt: "" }
+      : null,
+    subtitle: attributes.subtitle ? attributes.subtitle : titleBlock ? extractTextFromTag(titleBlock, "h5") : null,
+    title: attributes.title ? attributes.title : titleBlock ? extractTextFromTag(titleBlock, "h2") : null,
+    description:
+      attributes.description || (titleBlock ? extractTextFromTag(titleBlock, "p") : null),
+    items: buildPricingItems().length ? buildPricingItems() : pricingBlocks
+      .map((pricingBlock) => {
+        const title = extractTextFromTag(pricingBlock, "h4");
+        const priceText = extractTextFromTag(pricingBlock, "h2");
+        const features = extractListItems(pricingBlock);
+        const buttonLink = extractLinks(pricingBlock)[0];
+
+        if (!title || !priceText) return null;
+
+        const parsedPrice = parsePriceText(priceText);
+
+        return {
+          title,
+          description: null,
+          price: parsedPrice.price,
+          currency: parsedPrice.currency,
+          period: extractTextFromTag(pricingBlock, "span") || "",
+          features,
+          buttonLabel: buttonLink ? normalizeText(buttonLink.raw) : "Get Started",
+          buttonUrl: buttonLink?.url || "#",
+          isPopular: pricingBlock.includes("popular") || pricingBlock.includes("featured"),
+        } satisfies PricingItem;
+      })
+      .filter(Boolean) as PricingItem[],
+  };
+};
 export const parseServiceBlock = (html: string): ServiceSectionData => {
   const section = extractFirstBlockByClass(html, "section", "services-area") || html;
   const titleBlock = extractFirstBlockByClass(section, "div", "section-title");

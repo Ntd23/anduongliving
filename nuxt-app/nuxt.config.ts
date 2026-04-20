@@ -5,7 +5,7 @@ const DEV_PORT = Number(process.env.NUXT_DEV_PORT || 3000);
 const API_BASE_URL =
     process.env.NUXT_API_BASE_URL || "http://anduongliving.test/api";
 const API_KEY =
-    process.env.NUXT_API_KEY || "6bpm0t8Kk5NVnmJqOH8J7s0RGMoKdJIe";
+    process.env.NUXT_API_KEY || "mPsuj51abZp3YL3EwNJFdaLaylVlKQ0Y";
 const PUBLIC_SITE_URL =
     process.env.NUXT_PUBLIC_SITE_URL || `http://${DEV_HOST}:${DEV_PORT}`;
 
@@ -25,7 +25,7 @@ const I18N_LOCALES = [
 
 export default defineNuxtConfig({
     compatibilityDate: "2025-07-15",
-    devtools: { enabled: true },
+    devtools: { enabled: false },
     ssr: true,
     sourcemap: {
         server: true,
@@ -42,11 +42,11 @@ export default defineNuxtConfig({
         },
         server: {
             allowedHosts: ["anduongliving.test"],
-            hmr: {
-                protocol: "ws",
-                host: "anduongliving.test",
-                clientPort: DEV_PORT,
-            },
+            // hmr: {
+            //     protocol: "ws",
+            //     host: "anduongliving.test",
+            //     clientPort: DEV_PORT,
+            // },
         },
     },
     modules: [...NUXT_MODULES],

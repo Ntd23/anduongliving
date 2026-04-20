@@ -2,6 +2,7 @@ import { detectShortcodeName } from "./registry";
 import type { ShortcodeBlock } from "./types";
 
 const SHORTCODE_OPEN_TAG = /<shortcode(\s[^>]*)?>([\s\S]*?)<\/shortcode>/gi;
+const BRACKET_SHORTCODE_TAG = /\[([a-zA-Z0-9_-]+)(\s[^\]]*)?\]([\s\S]*?)\[\/\1\]/gi;
 const SECTION_TAG = /<section(\s[^>]*)?>([\s\S]*?)<\/section>/gi;
 
 export const parseShortcodeBlocks = (content: string): ShortcodeBlock[] => {
@@ -31,6 +32,29 @@ export const parseShortcodeBlocks = (content: string): ShortcodeBlock[] => {
 
   if (shortcodeBlocks.some((block) => block.type === "shortcode")) {
     return shortcodeBlocks;
+  }
+
+  const bracketBlocks = collectMatchedBlocks(content, BRACKET_SHORTCODE_TAG, (match) => {
+    const block = (match[0] || "").trim();
+    const name = detectShortcodeName(block);
+
+    if (!name) {
+      return {
+        type: "html" as const,
+        raw: block,
+        name: null,
+      };
+    }
+
+    return {
+      type: "shortcode" as const,
+      raw: block,
+      name,
+    };
+  });
+
+  if (bracketBlocks.some((block) => block.type === "shortcode")) {
+    return bracketBlocks;
   }
 
   const sectionBlocks = collectMatchedBlocks(content, SECTION_TAG, (match) => {
