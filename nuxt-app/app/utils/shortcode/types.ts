@@ -6,7 +6,8 @@ export type ShortcodeName =
   | "pricing"
   | "skill"
   | "team"
-  | "services";
+  | "services"
+  | "testimonials";
 
 export type ShortcodeBlock = {
   type: "shortcode" | "html" | "text";
@@ -22,7 +23,8 @@ export type ShortcodeComponentName =
   | "Pricing"
   | "Skill"
   | "Team"
-  | "Services";
+  | "Services"
+  | "Testimonials";
 
 export type ShortcodeImage = {
   src: string;
@@ -44,6 +46,23 @@ export type ServiceSectionData = {
   title: string | null;
   description: string | null;
   items: ServiceItem[];
+};
+
+export type TestimonialItem = {
+  name: string;
+  title: string | null;
+  content: string;
+  image: ShortcodeImage | null;
+  rating: number | null;
+};
+
+export type TestimonialsSectionData = {
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  backgroundImage: ShortcodeImage | null;
+  testimonialIds: string[];
+  items: TestimonialItem[];
 };
 
 export type TeamSocialPlatform = "facebook" | "twitter" | "instagram" | "website";

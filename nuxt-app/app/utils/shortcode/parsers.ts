@@ -30,6 +30,7 @@ import type {
   TeamMember,
   TeamSectionData,
   TeamSocialLink,
+  TestimonialsSectionData,
 } from "./types";
 
 export const parseTeamBlock = (html: string): TeamSectionData => {
@@ -220,6 +221,39 @@ export const parseNewsletterBlock = (html: string): NewsletterSectionData => {
   };
 };
 
+export const parseServiceBlock = (html: string): ServiceSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "services-area") || html;
+  const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
+  const serviceBlocks = extractBlocksByTag(section, "div", "single-services");
+
+  return {
+    subtitle: titleBlock ? extractTextFromTag(titleBlock, "h5") : null,
+    title: titleBlock ? extractTextFromTag(titleBlock, "h2") : null,
+    description: titleBlock ? extractTextFromTag(titleBlock, "p") : null,
+    items: serviceBlocks
+      .map((serviceBlock: string, index: number) => {
+        const title = extractTextFromTag(serviceBlock, "h4")?.trim().replace(/^["']|["']$/g, '');
+        const link = extractAttribute(extractFirstTag(serviceBlock, "h4 a") || "", "href");
+        const image = extractFirstImage(serviceBlock); 
+        const button = extractTextFromTag(serviceBlock, "button");
+        const price = button ? button.replace(/[^0-9.]/g, '') : '';
+
+        if (!title) return null;
+
+        return {
+          id: index,
+          name: title,
+          url: link || '#',
+          image: image?.src || '',
+          bookLabel: button || 'Book Now',
+          price: price,
+          amenities: [], // Can be enhanced later
+        } satisfies ServiceItem;
+      })
+      .filter(Boolean) as ServiceItem[],
+  };
+};
+
 export const parsePricingBlock = (html: string): PricingSectionData => {
 
   const attributes = parseShortcodeAttributes(html);
@@ -320,35 +354,57 @@ export const parsePricingBlock = (html: string): PricingSectionData => {
       .filter(Boolean) as PricingItem[],
   };
 };
-export const parseServiceBlock = (html: string): ServiceSectionData => {
-  const section = extractFirstBlockByClass(html, "section", "services-area") || html;
+
+export const parseTestimonialsBlock = (html: string): TestimonialsSectionData => {
+  // First try to parse as shortcode attributes
+  const attributes = parseShortcodeAttributes(html);
+
+  if (Object.keys(attributes).length > 0) {
+    // Parse from shortcode attributes
+    const testimonialIds = attributes.testimonial_ids
+      ? attributes.testimonial_ids.split(',').map(id => id.trim()).filter(Boolean)
+      : [];
+
+    return {
+      subtitle: attributes.subtitle || null,
+      title: attributes.title || null,
+      description: attributes.description || null,
+      backgroundImage: attributes.background_image
+        ? { src: attributes.background_image, alt: "" }
+        : null,
+      testimonialIds,
+      items: [], // Items will be populated from testimonialIds via API
+    };
+  }
+
+  // Fallback to HTML parsing
+  const section = extractFirstBlockByClass(html, "section", "testimonial-area") || html;
   const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
-  const serviceBlocks = extractBlocksByTag(section, "div", "single-services");
+  const itemBlocks = extractBlocksByTag(section, "div", "single-testimonial");
 
   return {
-    subtitle: titleBlock ? extractTextFromTag(titleBlock, "h5") : null,
+    subtitle: null,
     title: titleBlock ? extractTextFromTag(titleBlock, "h2") : null,
-    description: titleBlock ? extractTextFromTag(titleBlock, "p") : null,
-    items: serviceBlocks
-      .map((serviceBlock: string, index: number) => {
-        const title = extractTextFromTag(serviceBlock, "h4")?.trim().replace(/^["']|["']$/g, '');
-        const link = extractAttribute(extractFirstTag(serviceBlock, "h4 a") || "", "href");
-        const image = extractFirstImage(serviceBlock); 
-        const button = extractTextFromTag(serviceBlock, "button");
-        const price = button ? button.replace(/[^0-9.]/g, '') : '';
+    description: null,
+    backgroundImage: null,
+    testimonialIds: [],
+    items: itemBlocks
+      .map((itemBlock) => {
+        const name = extractTextFromTag(itemBlock, "h4");
+        const title = extractTextFromTag(itemBlock, "span") || null;
+        const content = extractTextFromTag(itemBlock, "p");
+        const image = extractFirstImage(itemBlock);
 
-        if (!title) return null;
+        if (!name || !content) return null;
 
         return {
-          id: index,
-          name: title,
-          url: link || '#',
-          image: image?.src || '',
-          bookLabel: button || 'Book Now',
-          price: price,
-          amenities: [], // Can be enhanced later
-        } satisfies ServiceItem;
+          name,
+          title,
+          content,
+          image,
+          rating: null,
+        };
       })
-      .filter(Boolean) as ServiceItem[],
+      .filter(Boolean) as any[], // Type assertion needed due to filter
   };
 };

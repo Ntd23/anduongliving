@@ -105,6 +105,10 @@ useSeoMeta({
           </ul>
         </div>
 
+        <div v-if="post.image" class="blog-details__featured-image">
+          <img :src="post.image" :alt="post.name" />
+        </div>
+
         <div class="ck-content details__body" v-html="safeContent" />
 
         <div v-if="post.tags?.length" class="post__tag">
@@ -211,6 +215,21 @@ useSeoMeta({
   padding-bottom: 1.5rem;
 }
 
+.blog-details__featured-image {
+  margin: 2rem 0;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  box-shadow: 0 24px 55px rgba(33, 29, 25, 0.08);
+}
+
+.blog-details__featured-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+}
+
 .details__title {
   margin: 0;
   color: #111111;
@@ -257,7 +276,24 @@ useSeoMeta({
   max-width: 100%;
   height: auto;
   margin: 1.75rem 0;
+  border-radius: 1rem;
 }
+
+.details__body:deep(p),
+.details__body:deep(ul),
+.details__body:deep(ol),
+.details__body:deep(h2),
+.details__body:deep(h3),
+.details__body:deep(h4) {
+  margin: 1.5rem 0;
+}
+
+.details__body:deep(figcaption) {
+  color: #7b6b5d;
+  font-size: 0.92rem;
+  margin-top: 0.6rem;
+}
+
 
 .details__body:deep(blockquote) {
   margin: 2rem 0;
@@ -280,7 +316,80 @@ useSeoMeta({
 .post__tag {
   margin-top: 2rem;
   padding-top: 1rem;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
 }
+
+.post__tag h5 {
+  margin: 0 0 0.85rem;
+  color: #2f241d;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.post__tag ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post__tag li {
+  margin: 0;
+}
+
+.post__tag a {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  background: #f8f1e6;
+  color: #5d5147;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.92rem;
+}
+
+.post__tag a:hover {
+  background: #efe1d1;
+}
+
+.avatar-img {
+  margin: 0 auto 1.2rem;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(124, 92, 59, 0.16);
+}
+
+.author-blog-avatar {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.avatar__info h5 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.avatar__info-social {
+  display: inline-flex;
+  gap: 0.7rem;
+}
+
+.avatar__info-social a {
+  color: #7c5c3b;
+}
+
+.avatar__wrap-content {
+  margin-top: 1.6rem;
+  color: #5b5248;
+  line-height: 1.8;
+}
+
 
 .post__tag h5 {
   margin: 0 0 1rem;
