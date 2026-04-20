@@ -18,17 +18,4 @@ deploy_production:
     - chmod 600 ~/.ssh/id_ed25519
     - ssh-keygen -lf ~/.ssh/id_ed25519
   script:
-    - >
-      ssh -i ~/.ssh/id_ed25519
-      -o IdentitiesOnly=yes
-      -o StrictHostKeyChecking=no
-      -o UserKnownHostsFile=/dev/null
-      "$DEPLOY_USER@$DEPLOY_HOST"
-      "export DEPLOY_PATH='${DEPLOY_PATH}';
-      export DEPLOY_BRANCH='${DEPLOY_BRANCH:-main}';
-      export NITRO_APP_NAME='${NITRO_APP_NAME:-anduongliving-nuxt}';
-      printf 'DEPLOY_PATH=<%s>\n' \"\$DEPLOY_PATH\";
-      ls -la \"\$DEPLOY_PATH\";
-      cd \"\$DEPLOY_PATH\";
-      chmod +x ./deploy.sh;
-      bash ./deploy.sh"
+    - ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOY_USER@$DEPLOY_HOST" "export DEPLOY_PATH='${DEPLOY_PATH}'; export DEPLOY_BRANCH='${DEPLOY_BRANCH:-main}'; export NITRO_APP_NAME='${NITRO_APP_NAME:-anduongliving-nuxt}'; printf 'DEPLOY_PATH=<%s>\n' \"\$DEPLOY_PATH\"; ls -la \"\$DEPLOY_PATH\"; cd \"\$DEPLOY_PATH\"; chmod +x ./deploy.sh; bash ./deploy.sh"
