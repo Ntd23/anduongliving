@@ -5,7 +5,7 @@ const DEV_PORT = Number(process.env.NUXT_DEV_PORT || 3000);
 const API_BASE_URL =
     process.env.NUXT_API_BASE_URL || "http://anduongliving.test/api";
 const API_KEY =
-    process.env.NUXT_API_KEY || "Xg4liH4fHPAh8AaFkBo5OoksJ3QxkIlJ";
+    process.env.NUXT_API_KEY || "6bpm0t8Kk5NVnmJqOH8J7s0RGMoKdJIe";
 const PUBLIC_SITE_URL =
     process.env.NUXT_PUBLIC_SITE_URL || `http://${DEV_HOST}:${DEV_PORT}`;
 

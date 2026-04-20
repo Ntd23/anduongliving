@@ -4,7 +4,8 @@ export type ShortcodeName =
   | "hero-story"
   | "newsletter"
   | "skill"
-  | "team";
+  | "team"
+  | "services";
 
 export type ShortcodeBlock = {
   type: "shortcode" | "html" | "text";
@@ -18,11 +19,29 @@ export type ShortcodeComponentName =
   | "HeroStory"
   | "Newsletter"
   | "Skill"
-  | "Team";
+  | "Team"
+  | "Services";
 
 export type ShortcodeImage = {
   src: string;
   alt: string;
+};
+
+export type ServiceItem = {
+  id: number;
+  name: string;
+  url: string;
+  image: string;
+  bookLabel: string;
+  price: string;
+  amenities: string[];
+};
+
+export type ServiceSectionData = {
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  items: ServiceItem[];
 };
 
 export type TeamSocialPlatform = "facebook" | "twitter" | "instagram" | "website";

@@ -21,6 +21,12 @@ export const shortcodeRegistry = [
     componentName: "About",
     parser: parseAboutBlock,
   },
+    {
+    name: "services",
+    aliases: ["services-area"],
+    componentName: "Services",
+    parser: parseServiceBlock,
+  },
   {
     name: "skill",
     aliases: ["skill-area"],
