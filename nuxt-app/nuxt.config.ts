@@ -1,8 +1,9 @@
 import { tr } from "@nuxt/ui/runtime/locale/index.js";
-import { resolveCmsProxyBaseUrl } from "./shared/cms-routing";
+import { buildDevOrigin, resolveCmsProxyBaseUrl } from "./shared/cms-routing";
 
 const DEV_HOST = process.env.NUXT_DEV_HOST || "127.0.0.1";
 const DEV_PORT = Number(process.env.NUXT_DEV_PORT || 3000);
+const DEV_ORIGIN = process.env.NUXT_DEV_ORIGIN || buildDevOrigin(DEV_HOST, DEV_PORT);
 const HMR_HOST = process.env.NUXT_HMR_HOST || DEV_HOST;
 const API_BASE_URL = process.env.NUXT_API_BASE_URL || "http://127.0.0.1/api";
 const API_KEY = process.env.NUXT_API_KEY || "";
@@ -51,12 +52,22 @@ export default defineNuxtConfig({
             __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: true,
         },
         server: {
+            origin: DEV_ORIGIN,
             allowedHosts: ALLOWED_HOSTS.length ? ALLOWED_HOSTS : true,
+            cors: {
+                origin: true,
+                credentials: true,
+            },
             hmr: {
                 protocol: "ws",
                 host: HMR_HOST,
                 clientPort: DEV_PORT,
             },
+        },
+    },
+    routeRules: {
+        "/api/cms/**": {
+            cors: true,
         },
     },
     modules: [...NUXT_MODULES],

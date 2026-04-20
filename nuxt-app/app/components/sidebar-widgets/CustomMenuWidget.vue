@@ -51,7 +51,6 @@ const resolveNodeLink = (node: SidebarMenuNode) => {
   const rawUrl = typeof node.url === "string" ? node.url.trim() : "";
   const internalPath = extractInternalPath(rawUrl, {
     siteUrl: normalizedSiteUrl.value,
-    currentOrigin: import.meta.client ? window.location.origin : null,
   });
 
   if (!rawUrl) {
@@ -255,7 +254,7 @@ const hasActiveDescendant = (node: SidebarMenuNode): boolean =>
 
 .sidebar-custom-menu__item {
   margin: 0;
-  border-bottom: 1px solid rgba(63, 53, 45, 0.08);
+  border-bottom: 1px solid rgba(56, 41, 30, 0.08);
 }
 
 .sidebar-custom-menu__item:last-child {
@@ -265,24 +264,21 @@ const hasActiveDescendant = (node: SidebarMenuNode): boolean =>
 .sidebar-custom-menu__link {
   display: block;
   padding: 0.85rem 0;
-  color: #3f352d;
+  color: var(--retreat-ink);
   font-size: 0.96rem;
   font-weight: 600;
-  letter-spacing: 0.03em;
+  line-height: 1.55;
   text-decoration: none;
-  transition:
-    color 0.2s ease,
-    transform 0.2s ease;
 }
 
 .sidebar-custom-menu__link:hover {
-  color: #8d7355;
-  transform: translateX(2px);
+  color: var(--retreat-clay);
+  transform: translateX(3px);
 }
 
 .sidebar-custom-menu__item--active > .sidebar-custom-menu__link,
 .sidebar-custom-menu__item--branch-active > .sidebar-custom-menu__link {
-  color: #7c5c3b;
+  color: var(--retreat-clay);
 }
 
 .sidebar-custom-menu__item--active > .sidebar-custom-menu__link {
@@ -290,8 +286,8 @@ const hasActiveDescendant = (node: SidebarMenuNode): boolean =>
 }
 
 .sidebar-custom-menu__list--nested {
-  margin-top: -0.2rem;
-  padding: 0 0 0.8rem 0.9rem;
+  margin-top: -0.1rem;
+  padding: 0 0 0.9rem 1rem;
 }
 
 .sidebar-custom-menu__item--child {
@@ -299,17 +295,30 @@ const hasActiveDescendant = (node: SidebarMenuNode): boolean =>
 }
 
 .sidebar-custom-menu__link--child {
-  padding: 0.4rem 0;
-  font-size: 0.9rem;
+  position: relative;
+  padding: 0.35rem 0 0.35rem 1rem;
+  font-size: 0.86rem;
   font-weight: 500;
+}
+
+.sidebar-custom-menu__link--child::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: rgba(167, 122, 84, 0.4);
+  transform: translateY(-50%);
 }
 
 .footer-custom-menu__title {
   margin: 0 0 1rem;
-  color: #fff3dc;
-  font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: 1.75rem;
-  line-height: 1.1;
+  color: #fff9f1;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
 }
 
 .footer-custom-menu__list {
@@ -323,21 +332,22 @@ const hasActiveDescendant = (node: SidebarMenuNode): boolean =>
 }
 
 .footer-custom-menu__link {
-  color: rgba(255, 243, 220, 0.86);
+  color: rgba(255, 249, 241, 0.82);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-decoration: none;
-  transition:
-    color 0.2s ease,
-    transform 0.2s ease;
+  text-transform: uppercase;
 }
 
 .footer-custom-menu__link:hover {
-  color: #d8b56b;
+  color: #d6c09b;
   transform: translateX(2px);
 }
 
 .footer-custom-menu__item--active > .footer-custom-menu__link,
 .footer-custom-menu__item--branch-active > .footer-custom-menu__link {
-  color: #fff7ea;
+  color: #fff9f1;
 }
 
 .footer-custom-menu__item--active > .footer-custom-menu__link {
@@ -350,7 +360,7 @@ const hasActiveDescendant = (node: SidebarMenuNode): boolean =>
 }
 
 .footer-custom-menu__link--child {
-  color: rgba(245, 234, 214, 0.78);
-  font-size: 0.94rem;
+  color: rgba(248, 244, 236, 0.66);
+  font-size: 0.74rem;
 }
 </style>

@@ -1,6 +1,6 @@
 @php($bgColor = $shortcode->background_color ?: '#f7f5f1')
 
-<div class="brand-area pt-60 pb-60" style="background-color: {{ $bgColor }}">
+<div class="shortcode-brands brand-area pt-60 pb-60" style="background-color: {{ $bgColor }}">
     <div class="container">
         <div class="row brand-active">
             @foreach($tabs as $tab)

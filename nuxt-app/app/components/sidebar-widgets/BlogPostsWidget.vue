@@ -6,6 +6,7 @@ import {
   type BlogPostSummary,
 } from "~/composables/useBlog";
 import { cmsAppRoutes } from "~~/shared/cms-routing";
+import { formatCmsDate } from "~/utils/locale-format";
 import type { SidebarWidgetManifest } from "~/utils/sidebar-widgets";
 
 const props = defineProps<{
@@ -37,11 +38,7 @@ const formatDate = (value?: string | null) => {
     return "";
   }
 
-  return new Intl.DateTimeFormat(locale.value, {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(value));
+  return formatCmsDate(value, locale.value, { monthStyle: "short" }) || "";
 };
 </script>
 
@@ -49,12 +46,24 @@ const formatDate = (value?: string | null) => {
   <SidebarWidgetCard :title="title" :description="description">
     <ul v-if="posts.length" class="sidebar-post-list">
       <li v-for="post in posts" :key="post.id" class="sidebar-post-list__item">
-        <NuxtLink :to="localePath(cmsAppRoutes.blog.post(post.slug))" class="sidebar-post-list__link">
-          {{ post.name }}
+        <NuxtLink :to="localePath(cmsAppRoutes.blog.post(post.slug))" class="sidebar-post-list__image-link">
+          <img
+            v-if="post.image"
+            :src="post.image"
+            :alt="post.name"
+            class="sidebar-post-list__image"
+          >
+          <div v-else class="sidebar-post-list__image-placeholder" aria-hidden="true" />
         </NuxtLink>
-        <small v-if="post.created_at" class="sidebar-post-list__date">
-          {{ formatDate(post.created_at) }}
-        </small>
+
+        <div class="sidebar-post-list__copy">
+          <p v-if="post.created_at" class="sidebar-post-list__date">
+            {{ formatDate(post.created_at) }}
+          </p>
+          <NuxtLink :to="localePath(cmsAppRoutes.blog.post(post.slug))" class="sidebar-post-list__link">
+            {{ post.name }}
+          </NuxtLink>
+        </div>
       </li>
     </ul>
     <p v-else class="sidebar-widget-empty">
@@ -65,40 +74,69 @@ const formatDate = (value?: string | null) => {
 
 <style scoped>
 .sidebar-post-list {
+  display: grid;
+  gap: 1rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .sidebar-post-list__item {
-  padding: 0.8rem 0;
-  border-bottom: 1px solid rgba(63, 53, 45, 0.08);
+  display: grid;
+  grid-template-columns: 5.2rem minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: center;
 }
 
-.sidebar-post-list__item:first-child {
-  padding-top: 0;
+.sidebar-post-list__image-link {
+  display: block;
 }
 
-.sidebar-post-list__item:last-child {
-  padding-bottom: 0;
-  border-bottom: 0;
+.sidebar-post-list__image,
+.sidebar-post-list__image-placeholder {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 1.25rem;
 }
 
-.sidebar-post-list__link {
-  display: inline-block;
-  color: #3f352d;
-  font-weight: 600;
-  text-decoration: none;
+.sidebar-post-list__image {
+  object-fit: cover;
+}
+
+.sidebar-post-list__image-placeholder {
+  background:
+    linear-gradient(135deg, rgba(167, 122, 84, 0.12), rgba(107, 113, 83, 0.12)),
+    #efe5d8;
+}
+
+.sidebar-post-list__copy {
+  min-width: 0;
 }
 
 .sidebar-post-list__date {
-  display: block;
-  margin-top: 0.35rem;
-  color: #7b6b5d;
+  margin: 0 0 0.35rem;
+  color: var(--retreat-clay);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.sidebar-post-list__link {
+  color: var(--retreat-ink);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 0.98;
+  text-decoration: none;
+}
+
+.sidebar-post-list__link:hover {
+  color: var(--retreat-clay);
 }
 
 .sidebar-widget-empty {
   margin: 0;
-  color: #7b6b5d;
+  color: var(--retreat-ink-soft);
 }
 </style>

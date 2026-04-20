@@ -1,4 +1,4 @@
-<section id="faq" class="faq-area pt-90 pb-90">
+<section id="faq" class="shortcode-faqs faq-area pt-90 pb-90">
     <div class="container">
         <div class="row">
             <div class="col-lg-6 col-md-6">

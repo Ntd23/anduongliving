@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import type { ThemeOptionsData } from "~/composables/useThemeOptions";
+import BlogSocialsWidget from "~/components/sidebar-widgets/BlogSocialsWidget.vue";
 import ContactInformationWidget from "~/components/sidebar-widgets/ContactInformationWidget.vue";
+import CoreSimpleMenuWidget from "~/components/sidebar-widgets/CoreSimpleMenuWidget.vue";
 import CustomMenuWidget from "~/components/sidebar-widgets/CustomMenuWidget.vue";
 import NewsletterWidget from "~/components/sidebar-widgets/NewsletterWidget.vue";
+import RoomContactWidget from "~/components/sidebar-widgets/RoomContactWidget.vue";
+import TextWidget from "~/components/sidebar-widgets/TextWidget.vue";
 import { useSidebarWidgets } from "~/composables/useSidebarWidgets";
 import type { SidebarWidgetManifest } from "~/utils/sidebar-widgets";
 
@@ -51,6 +55,34 @@ const hasWidgets = computed(() => widgets.value.length > 0);
           variant="footer"
         />
 
+        <CoreSimpleMenuWidget
+          v-else-if="widget.widget_id === 'CoreSimpleMenu'"
+          class="footer-widgets__item footer-widgets__item--native"
+          :widget="widget"
+          variant="footer"
+        />
+
+        <TextWidget
+          v-else-if="widget.widget_id === 'Text'"
+          class="footer-widgets__item footer-widgets__item--native"
+          :widget="widget"
+          variant="footer"
+        />
+
+        <BlogSocialsWidget
+          v-else-if="widget.widget_id === 'BlogSocialsWidget'"
+          class="footer-widgets__item footer-widgets__item--native"
+          :widget="widget"
+          variant="footer"
+        />
+
+        <RoomContactWidget
+          v-else-if="widget.widget_id === 'RoomContactWidget'"
+          class="footer-widgets__item footer-widgets__item--native"
+          :widget="widget"
+          variant="footer"
+        />
+
         <div
           v-else
           class="footer-widgets__item footer-widgets__item--fallback"
@@ -73,8 +105,8 @@ const hasWidgets = computed(() => widgets.value.length > 0);
 <style scoped>
 .footer-widgets {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.5rem;
 }
 
 .footer-widgets__item {
@@ -89,15 +121,15 @@ const hasWidgets = computed(() => widgets.value.length > 0);
 
 .footer-widgets__empty-title {
   margin: 0 0 0.5rem;
-  color: #fff3dc;
-  font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: 1.6rem;
+  color: #fff9f1;
+  font-family: var(--font-display);
+  font-size: 2rem;
 }
 
 .footer-widgets__empty-text {
   margin: 0;
-  color: rgba(245, 234, 214, 0.78);
-  line-height: 1.75;
+  color: rgba(248, 244, 236, 0.7);
+  line-height: 1.85;
 }
 
 .footer-widgets__item--fallback:deep(.widget),
@@ -110,18 +142,18 @@ const hasWidgets = computed(() => widgets.value.length > 0);
 .footer-widgets__item--fallback:deep(.footer-title),
 .footer-widgets__item--fallback:deep(h4),
 .footer-widgets__item--fallback:deep(h5) {
-  margin: 0 0 1rem;
-  color: #fff3dc;
-  font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: 1.75rem;
-  line-height: 1.1;
+  margin: 0 0 1.1rem;
+  color: #fff9f1;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
 }
 
 .footer-widgets__item--fallback:deep(p),
 .footer-widgets__item--fallback:deep(li),
 .footer-widgets__item--fallback:deep(span),
 .footer-widgets__item--fallback:deep(address) {
-  color: rgba(245, 234, 214, 0.78);
+  color: rgba(248, 244, 236, 0.7);
 }
 
 .footer-widgets__item--fallback:deep(ul) {
@@ -135,13 +167,12 @@ const hasWidgets = computed(() => widgets.value.length > 0);
 }
 
 .footer-widgets__item--fallback:deep(a) {
-  color: rgba(255, 243, 220, 0.86);
+  color: rgba(255, 249, 241, 0.86);
   text-decoration: none;
-  transition: color 0.2s ease;
 }
 
 .footer-widgets__item--fallback:deep(a:hover) {
-  color: #d8b56b;
+  color: #d6c09b;
 }
 
 .footer-widgets__item--fallback:deep(img) {
@@ -161,21 +192,21 @@ const hasWidgets = computed(() => widgets.value.length > 0);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border: 1px solid rgba(255, 243, 220, 0.16);
+  width: 2.8rem;
+  height: 2.8rem;
+  border: 1px solid rgba(255, 249, 241, 0.12);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 249, 241, 0.04);
 }
 
 .footer-widgets__item--fallback:deep(input),
 .footer-widgets__item--fallback:deep(textarea),
 .footer-widgets__item--fallback:deep(select) {
   width: 100%;
-  border: 1px solid rgba(255, 243, 220, 0.16);
-  background: rgba(255, 255, 255, 0.06);
-  padding: 0.85rem 1rem;
-  color: #fff3dc;
+  border: 1px solid rgba(255, 249, 241, 0.14);
+  background: rgba(255, 249, 241, 0.05);
+  padding: 0.95rem 1rem;
+  color: #fff9f1;
 }
 
 .footer-widgets__item--fallback:deep(.btn),
@@ -184,14 +215,22 @@ const hasWidgets = computed(() => widgets.value.length > 0);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 3rem;
+  min-height: 3.1rem;
   border: 0;
-  background: #b99247;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #8f7659 0%, #72634d 100%);
   padding: 0.8rem 1.4rem;
-  color: #fff;
-  font-size: 0.88rem;
+  color: #fffdf8;
+  font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
- </style>
+
+@media (max-width: 991px) {
+  .footer-widgets {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+</style>

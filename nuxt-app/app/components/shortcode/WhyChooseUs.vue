@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { parseSkillBlock, type ShortcodeBlock } from "~/utils/shortcode";
+import { parseWhyChooseUsBlock, type ShortcodeBlock } from "~/utils/shortcode";
+import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
   block: ShortcodeBlock;
 }>();
 
-const section = computed(() => parseSkillBlock(props.block.raw));
+const section = computed(() => parseWhyChooseUsBlock(props.block.raw));
+const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 const sectionStyle = computed(() =>
   section.value.backgroundColor ? { background: section.value.backgroundColor } : undefined,
 );
@@ -71,7 +73,7 @@ const sectionStyle = computed(() =>
   </section>
 
   <section v-else class="shortcode-skill">
-    <div v-html="block.raw" />
+    <div v-html="sanitizedHtml" />
   </section>
 </template>
 

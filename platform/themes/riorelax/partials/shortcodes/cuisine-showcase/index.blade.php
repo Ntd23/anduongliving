@@ -3,7 +3,7 @@
     $image2 = $shortcode->image_2 ? RvMedia::getImageUrl($shortcode->image_2) : null;
 @endphp
 
-<section class="cuisine">
+<section class="shortcode-cuisine-showcase cuisine">
     <style>
         /* ── SECTION ──────────────────────────────────────────── */
         .cuisine {

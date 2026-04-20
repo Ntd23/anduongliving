@@ -1,4 +1,4 @@
-<section id="blog" class="blog-area p-relative fix pt-90 pb-90">
+<section id="blog" class="shortcode-news blog-area p-relative fix pt-90 pb-90">
     @if ($bgImage = $shortcode->bg_image)
         <div class="animations-02">
             <img src="{{ RvMedia::getImageUrl($bgImage) }}" alt="{{ __('Background image') }}">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { parseTeamBlock, type ShortcodeBlock } from "~/utils/shortcode";
+import { parseTeamsBlock, type ShortcodeBlock } from "~/utils/shortcode";
+import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
   block: ShortcodeBlock;
@@ -12,7 +13,8 @@ const socialIcons = {
   website: "ph:globe-simple-fill",
 } as const;
 
-const section = computed(() => parseTeamBlock(props.block.raw));
+const section = computed(() => parseTeamsBlock(props.block.raw));
+const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 </script>
 
 <template>
@@ -70,7 +72,7 @@ const section = computed(() => parseTeamBlock(props.block.raw));
   </section>
 
   <section v-else class="shortcode-team">
-    <div v-html="block.raw" />
+    <div v-html="sanitizedHtml" />
   </section>
 </template>
 

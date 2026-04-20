@@ -1,4 +1,4 @@
-<section class="video-area pt-150 pb-150 p-relative"
+<section class="shortcode-intro-video video-area pt-150 pb-150 p-relative"
          @if ($backgroundImage = $shortcode->background_image)
              style="background-image:url('{{ RvMedia::getImageUrl($backgroundImage) }}'); background-repeat: no-repeat; background-position: center bottom; background-size:cover;"
          @endif

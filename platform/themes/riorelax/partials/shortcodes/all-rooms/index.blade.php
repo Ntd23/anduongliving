@@ -1,4 +1,4 @@
-<section class="services-area pt-20 pb-40">
+<section class="shortcode-all-rooms services-area pt-20 pb-40">
     <h3 class="mb-20">{{ __(':count rooms available', ['count' => $rooms->total()]) }}</h3>
 
     @if ($rooms->isNotEmpty())
@@ -16,4 +16,3 @@
         @endif
     @endif
 </section>
-

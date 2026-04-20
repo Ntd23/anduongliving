@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { normalizeBlogPostCollection, useBlogPosts } from "~/composables/useBlog";
+import { useBlogSeo } from "~/composables/useBlogSeo";
+import { cmsAppRoutes } from "~~/shared/cms-routing";
 
 const route = useRoute();
 const { locale } = useI18n();
@@ -31,13 +33,24 @@ const postsData = computed(() => normalizeBlogPostCollection(data.value));
 const posts = computed(() => postsData.value.items);
 const meta = computed(() => postsData.value.meta);
 const pageTitle = computed(() => "Blog");
+const seoTitle = computed(() =>
+  currentPage.value > 1 ? `Blog - Page ${currentPage.value}` : "Blog",
+);
 const breadcrumbs = computed(() => [
   { label: "Blog", to: null },
 ]);
 
-useSeoMeta({
-  title: pageTitle,
-  description: "Stories, updates, and retreat notes from Anduong Living.",
+useBlogSeo({
+  title: seoTitle,
+  description: computed(() => "Stories, updates, and retreat notes from Anduong Living."),
+  type: computed(() => "website"),
+  path: computed(() => {
+    if (currentPage.value > 1) {
+      return `${cmsAppRoutes.blog.index()}?page=${currentPage.value}`;
+    }
+
+    return cmsAppRoutes.blog.index();
+  }),
 });
 </script>
 
@@ -46,7 +59,7 @@ useSeoMeta({
 
   <BlogArchiveShell
     :title="pageTitle"
-    :posts="posts"
+    :posts="posts || []"
     empty-message="No posts found."
     :current-page="currentPage"
     :last-page="meta?.last_page"

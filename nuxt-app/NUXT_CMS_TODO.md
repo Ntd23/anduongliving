@@ -1,128 +1,82 @@
-﻿# Nuxt CMS - tráº¡ng thÃ¡i clone Botble Blade
+# Nuxt CMS status - clone Botble Blade
 
-TÃ i liá»‡u nÃ y chá»‘t tráº¡ng thÃ¡i hiá»‡n táº¡i giá»¯a `Botble Blade` vÃ  `Nuxt`.
+Tai lieu nay chot trang thai hien tai giua `Botble Blade` va `Nuxt`.
 
-NguyÃªn táº¯c Ä‘ang dÃ¹ng:
+Nguyen tac:
 
-- `Botble Blade` lÃ  spec
-- `Admin hiá»‡n cÃ³` lÃ  source of truth
-- `Nuxt` chá»‰ clone renderer/flow, khÃ´ng tá»± má»Ÿ thÃªm source config trong admin náº¿u site hiá»‡n táº¡i khÃ´ng dÃ¹ng tháº­t
+- `Botble Blade` la spec
+- `Admin hien co` la source of truth
+- `Nuxt` clone renderer va flow, khong tu mo them source config moi neu admin hien tai khong dung
 
 ---
 
-## 1. Menu
+## 1. Muc tieu da xong
 
-### ÄÃ£ xong
+### Menu
 
-- [x] `package menu` lÃ  source of truth cho Nuxt
-- [x] CÃ³ flow canonical cho `main-menu`
+- [x] `package menu` la source of truth cho Nuxt
+- [x] co flow canonical cho `main-menu`
 - [x] Nuxt fetch `main-menu` theo locale
-- [x] `main-menu` render Ä‘Ãºng nguá»“n dá»¯ liá»‡u theo layout:
+- [x] `main-menu` render dung theo layout:
   - `default` -> header ngang
   - `cms-full-menu` -> header ngang full-width
-  - `cms-side-menu` -> sidebar trÃ¡i dáº¡ng dá»c
-- [x] `cms-side-menu` láº¥y logo tháº­t / social links tháº­t tá»« theme options
-- [x] Äá»•i ngÃ´n ngá»¯ theo SSR sáº½ láº¥y láº¡i `main-menu` Ä‘Ãºng locale
+  - `cms-side-menu` -> sidebar trai dang doc
+- [x] `cms-side-menu` lay logo that / social links that tu theme options
+- [x] doi ngon ngu theo SSR se lay lai `main-menu` dung locale
+- [x] `menu-mobile-collapse` da co flow Nuxt rieng cho mobile
+- [x] `SidebarMenuDrawer` da co flow Nuxt cho offcanvas / drawer
 
-### ChÆ°a xong
+### Page / template / SEO
 
-- [x] `menu-mobile-collapse` Ä‘Ã£ cÃ³ flow Nuxt riÃªng cho mobile, dÃ¹ng `main-menu` + language switcher trong Ä‘Ãºng mobile header shell
-- [ ] `offcanvas-menu` cá»§a theme chÆ°a cÃ³ flow Nuxt tÆ°Æ¡ng Ä‘Æ°Æ¡ng mÃ  khÃ´ng sá»­a thÃªm admin/core
-- [x] `CustomMenuWidget` vÃ  `ContactInformationMenuWidget` á»Ÿ `footer_sidebar` Ä‘Ã£ Ä‘i qua renderer Nuxt riÃªng; cÃ¡c widget footer khÃ¡c váº«n fallback HTML
-
-### Káº¿t luáº­n
-
-- `main-menu` Ä‘Ã£ xong pháº§n data flow chÃ­nh
-- pháº§n fidelity theo Blade cho mobile/offcanvas váº«n chÆ°a xong
-
----
-
-## 2. Page / template
-
-### ÄÃ£ xong
-
-- [x] Nuxt hiá»ƒu cÃ¡c template admin Ä‘ang chá»n:
+- [x] Nuxt hieu cac template admin dang chon:
   - `default`
   - `side-menu`
   - `full-menu`
   - `full-width`
   - `blog-sidebar`
-- [x] Mapping template Ä‘i qua `app/utils/page-template.ts`
-- [x] Homepage canonical cháº¡y qua `homepage_id`
-- [x] `/`, `/en`, `/ja` khÃ´ng cÃ²n redirect cá»©ng sang slug ká»¹ thuáº­t
-- [x] SEO page/homepage Ä‘Ã£ cÃ³ flow backend + Nuxt riÃªng
-- [x] ÄÃ£ gom config/path/url CMS vá» `shared/cms-routing.ts` Ä‘á»ƒ trÃ¡nh hard-code ráº£i rÃ¡c vÃ  sá»­a dá»©t Ä‘iá»ƒm case client navigation gá»i sai origin `/api/cms/*`
-- [x] `header-top` cÆ¡ báº£n Ä‘Ã£ Ä‘Æ°á»£c clone á»Ÿ cÃ¡c layout dÃ¹ng header ngang
-- [x] Header button (`header_button_label` / `header_button_url`) Ä‘Ã£ Ä‘i qua theme options vÃ  render á»Ÿ header ngang non-full-width
-- [x] ÄÃ£ bá» `LanguageSwitcher` floating khá»i app root, chuyá»ƒn vá» flow gáº§n Blade hÆ¡n
-- [x] `breadcrumbs` Ä‘Ã£ cÃ³ component Nuxt riÃªng, Ä‘á»c:
-  - `page metadata` (`breadcrumb`, `breadcrumb_background`)
-  - `theme options` fallback (`breadcrumb_background_image`)
-- [x] `footer` Ä‘Ã£ cÃ³ flow Nuxt riÃªng, Ä‘á»c:
-  - `theme options` (`background_footer`)
-  - widget area `footer_sidebar`
+- [x] mapping template di qua `app/utils/page-template.ts`
+- [x] homepage canonical chay qua `homepage_id`
+- [x] `/`, `/en`, `/ja` khong con redirect cung sang slug ky thuat
+- [x] SEO page/homepage da co flow backend + Nuxt rieng
+- [x] da gom config/path/url CMS ve `shared/cms-routing.ts`
+- [x] `header-top` co flow Nuxt co ban
+- [x] header button (`header_button_label` / `header_button_url`) da di qua theme options
+- [x] `breadcrumbs` da co component Nuxt rieng
+- [x] `footer` da co flow Nuxt rieng va dung `footer_sidebar`
 
-### ChÆ°a xong
+### Shortcode
 
-- [ ] `full-menu` váº«n thiáº¿u offcanvas/menu mobile parity
-- [ ] `side-menu` váº«n thiáº¿u mobile collapse + account block cá»§a Blade
-- [x] Homepage sticky bottom menu behavior cá»§a Blade Ä‘Ã£ clone theo theme hiá»‡n táº¡i
+- [x] shortcode da parse qua registry/parser architecture
+- [x] naming shortcode da chuyen ve canonical name theo Blade
+- [x] Blade shortcode wrappers mo ho da duoc them `shortcode-*` class rieng
+- [x] Nuxt shortcode registry da cover du `34/34` shortcode dang register trong Blade
+- [x] tat ca shortcode Blade da co entry trong:
+  - `app/utils/shortcode/types.ts`
+  - `app/utils/shortcode/registry.ts`
+  - `app/components/shortcode/*`
+- [x] da tach rieng cac block truoc day dung chung renderer:
+  - `featured-rooms`
+  - `room-list`
+  - `all-rooms`
+  - `services`
+  - `feature-area`
 
----
+### Blog / sidebar widgets
 
-## 3. Shortcode
-
-### ÄÃ£ xong
-
-- [x] Shortcode Ä‘Ã£ parse qua registry/parser architecture
-- [x] CÃ¡c shortcode chÃ­nh Ä‘Ã£ cÃ³ component Nuxt riÃªng
-- [x] CÃ³ thá»ƒ chá»‰nh UI shortcode trá»±c tiáº¿p bÃªn Nuxt mÃ  khÃ´ng cáº§n sá»­a HTML admin
-- [x] `Newsletter` shortcode Ä‘Ã£ dÃ¹ng composable submit chung, khÃ´ng cÃ²n nhÃ©t logic submit riÃªng trong component
-
-### CÃ²n pháº£i lÃ m
-
-- [ ] Tiáº¿p tá»¥c chuyá»ƒn cÃ¡c shortcode cÃ²n thiáº¿u sang component Nuxt riÃªng náº¿u muá»‘n UI á»•n Ä‘á»‹nh hÆ¡n
-- [ ] Giáº£m thÃªm fallback HTML backend cho cÃ¡c block quan trá»ng
-
----
-
-## 4. Blog vÃ  `blog_sidebar`
-
-### ÄÃ£ xong
-
-- [x] `blog_sidebar` Ä‘Ã£ ná»‘i tháº­t tá»« backend sang Nuxt
-- [x] Sidebar khÃ´ng cÃ²n `v-html` nguyÃªn khá»‘i ná»¯a; giá» render theo tá»«ng widget manifest
-- [x] Backend widget API tráº£ `items` theo Ä‘Ãºng `position`, cÃ³ `rendered_html` fallback cho widget chÆ°a native
-- [x] 6 widget Ä‘Ã£ Nuxt-native hÃ³a:
-  - `BlogSearchWidget`
-  - `BlogPostsWidget`
-  - `BlogCategoriesWidget`
-  - `BlogTagsWidget`
-  - `NewsletterWidget`
-  - `CheckAvailabilityForm`
-- [x] `CustomMenuWidget` trong pháº¡m vi `blog_sidebar` Ä‘Ã£ native
-- [x] CÃ¡c widget chÆ°a native váº«n fallback qua `rendered_html`, giá»¯ Ä‘Ãºng thá»© tá»± admin
-- [x] CÃ³ route blog tá»‘i thiá»ƒu phÃ­a Nuxt:
+- [x] `blog_sidebar` da noi that tu backend sang Nuxt
+- [x] sidebar khong con `v-html` nguyen khoi nua; render theo manifest widget
+- [x] backend widget API tra `items` theo dung `position`, co `rendered_html` fallback
+- [x] co route blog toi thieu phia Nuxt:
   - `/blog`
   - `/blog/search`
   - `/blog/category/[slug]`
   - `/blog/tag/[slug]`
   - `/blog/[slug]`
-- [x] Blog API Ä‘Ã£ há»— trá»£ locale theo flow hiá»‡n táº¡i
-- [x] ÄÃ£ sá»­a case locale máº·c Ä‘á»‹nh `vi` Ä‘á»ƒ khÃ´ng filter sai vÃ o báº£ng translations lÃ m `/blog` rá»—ng
+- [x] blog API da ho tro locale theo flow hien tai
+- [x] pagination co ban da co cho `/blog`, category, tag, search
+- [x] blog archive, search shell, blog detail, native sidebar widgets da duoc re-skin theo visual system moi
 
-### ChÆ°a xong / cÃ²n giá»›i háº¡n
-
-- [ ] `CheckAvailabilityForm` má»›i native pháº§n UI, káº¿t quáº£ váº«n redirect sang flow room search hiá»‡n táº¡i cá»§a Botble
-- [ ] `NewsletterWidget` váº«n táº­n dá»¥ng endpoint Botble, chÆ°a cÃ³ proxy/form contract riÃªng cá»§a Nuxt
-- [x] ÄÃ£ cÃ³ pagination UI cÆ¡ báº£n cho `/blog`, category, tag, search pages
-- [ ] ÄÃ£ kéo archive card/pagination, blog detail body/navigation/author vÃ  blog breadcrumbs hero shell vá» gáº§n Blade theme; cÃ²n thiáº¿u parity hoÃ n chá»‰nh cho search shell vÃ  má»™t sá»‘ chi tiáº¿t blog detail
-
----
-
-## 5. Audit nhanh `blog_sidebar`
-
-### ÄÃ£ native hÃ³a
+### Native widgets da xong
 
 - [x] `BlogSearchWidget`
 - [x] `BlogPostsWidget`
@@ -131,86 +85,106 @@ NguyÃªn táº¯c Ä‘ang dÃ¹ng:
 - [x] `NewsletterWidget`
 - [x] `CheckAvailabilityForm`
 - [x] `CustomMenuWidget`
+- [x] `ContactInformationMenuWidget`
+- [x] `BlogSocialsWidget`
+- [x] `RoomContactWidget`
+- [x] `CoreSimpleMenu`
+- [x] `Text`
 
-### CÃ²n fallback / cáº§n rÃ  thÃªm
+### Footer widgets
 
-- [x] `BlogSocialsWidget` -> fallback HTML, rá»§i ro tháº¥p
-- [x] `RoomContactWidget` -> fallback HTML, rá»§i ro tháº¥p
-- [x] `CoreSimpleMenu` -> fallback HTML, tÆ°Æ¡ng Ä‘á»‘i an toÃ n náº¿u chá»‰ lÃ  menu tÄ©nh
-- [x] `ContactInformationMenuWidget` -> Ä‘Ã£ cÃ³ renderer Nuxt riÃªng cho footer/sidebar cÆ¡ báº£n
-- [ ] `Text` -> an toÃ n náº¿u text tÄ©nh, khÃ´ng an toÃ n náº¿u admin nhÃ©t shortcode/form Ä‘á»™ng
-
----
-
-## 6. Viá»‡c cáº§n lÃ m tiáº¿p
-
-## Má»©c Æ°u tiÃªn 1 - clone tiáº¿p shell/layout cá»§a Blade
-
-### 1. HoÃ n thiá»‡n header shell
-
-- [x] ÄÃ£ cÃ³ `header-top` cÆ¡ báº£n cho Nuxt
-- [ ] `header-top` váº«n thiáº¿u currency switcher
-- [ ] `header-top` váº«n thiáº¿u account/customer block
-- [x] `header` Ä‘Ã£ clone homepage bottom sticky behavior theo `platform/themes/riorelax/partials/header.blade.php`
-- [x] `menu-mobile-collapse` Ä‘Ã£ Ä‘Æ°á»£c clone á»Ÿ má»©c `Menu + Languages + Contact`, khÃ´ng cÃ²n Ä‘á»ƒ language switcher trÃ´i ngoÃ i flow mobile
-- [ ] Mobile shell váº«n chÆ°a cÃ³ `Currencies` vÃ  `Account` parity vÃ¬ Nuxt chÆ°a cÃ³ source/flow public tÆ°Æ¡ng á»©ng
-
-### 2. HoÃ n thiá»‡n cÃ¡c layout cÃ²n thiáº¿u fidelity
-
-- [x] ÄÃ£ cÃ³ `breadcrumbs` cho cÃ¡c layout Ä‘ang dÃ¹ng Blade breadcrumbs
-- [x] ÄÃ£ cÃ³ `footer` / `footer_sidebar` cho cÃ¡c layout page thÆ°á»ng
-- [x] ÄÃ£ rà spacing/container cơ bản cho `default`, `full-menu`, `blog-sidebar`, `side-menu` sau khi gắn breadcrumbs/footer
-
-### 3. Má»Ÿ rá»™ng menu/widget ngoÃ i `blog_sidebar`
-
-- [ ] `footer_sidebar` Ä‘Ã£ render theo tá»«ng widget, hiá»‡n native `CustomMenuWidget` + `ContactInformationMenuWidget`; cÃ¡c widget cÃ²n láº¡i váº«n fallback HTML
-- [ ] Náº¿u cáº§n thá»‘ng nháº¥t kiáº¿n trÃºc hÆ¡n ná»¯a, cÃ¢n nháº¯c gom `CustomMenuWidget` sang shared renderer cho cáº£ sidebar/footer
-
-## Má»©c Æ°u tiÃªn 2 - hoÃ n thiá»‡n blog UX
-
-### 4. HoÃ n thiá»‡n blog pages
-
-- [x] ÄÃ£ cÃ³ pagination cÆ¡ báº£n cho `/blog`, category, tag
-- [x] Search UX cÆ¡ báº£n Ä‘Ã£ chuyá»ƒn sang flow paginated qua filters API
-- [ ] SEO riÃªng hÆ¡n cho category/tag/search pages náº¿u cáº§n
-- [ ] RÃ  route slug locale Ä‘á»ƒ Ä‘áº£m báº£o click tá»« widget luÃ´n Ä‘i Ä‘Ãºng Nuxt path mong muá»‘n
-
-### 5. HoÃ n thiá»‡n `blog_sidebar`
-
-- [x] Remap UI cÆ¡ báº£n cho `ContactInformationMenuWidget` á»Ÿ footer/sidebar
-- [ ] RÃ  `CoreSimpleMenu` / `Text` náº¿u admin dÃ¹ng ná»™i dung Ä‘á»™ng
+- [x] `footer_sidebar` da render theo tung widget
+- [x] `CustomMenuWidget` da native
+- [x] `ContactInformationMenuWidget` da native
+- [x] `NewsletterWidget` da native
+- [x] `CoreSimpleMenu` da native
+- [x] `Text` da native
+- [x] `BlogSocialsWidget` da native
+- [x] `RoomContactWidget` da native
 
 ---
 
-## 7. Thá»© tá»± lÃ m Ä‘á» xuáº¥t tá»« bÃ¢y giá»
+## 2. Trang thai tong quan
 
-1. Pagination + UX hoÃ n chá»‰nh cho blog pages
-2. Native hÃ³a thÃªm cÃ¡c widget cÃ²n láº¡i trong `footer_sidebar` náº¿u muá»‘n bá» thÃªm fallback HTML
-3. RÃ  láº¡i cÃ¡c widget fallback cÃ²n láº¡i (`Text`, `CoreSimpleMenu`, `BlogSocialsWidget`, `RoomContactWidget`)
+### Shortcode parity
+
+- `100%`
+
+### CMS clone tong the tren Nuxt
+
+- khoang `90-92%`
+
+Phan con lai khong nam o data flow chinh nua. Chu yeu la:
+
+- QA toan site
+- polish UI/fidelity
+- mot so block header/account/currency neu muon clone sat Blade hon
 
 ---
 
-## 8. Káº¿t luáº­n ngáº¯n
+## 3. Phan con lai chua xong
 
-### Page
+### QA toan site
 
-- kiáº¿n trÃºc dá»¯ liá»‡u Ä‘Ã£ khÃ¡ á»•n
-- shell/layout Ä‘Ã£ tiáº¿n gáº§n Blade hÆ¡n nhá» `header-top`, `breadcrumbs`, `footer`
-- cÃ²n thiáº¿u mobile header parity vÃ  layout fidelity đặc thù
+- [ ] ra soat tat ca page that theo template:
+  - `default`
+  - `full-menu`
+  - `side-menu`
+  - `full-width`
+  - `blog-sidebar`
+- [ ] test `vi / en / ja`
+- [ ] test desktop + mobile
+- [ ] bat cac loi edge case khi admin doi du lieu manh:
+  - page content
+  - menu nodes
+  - widget data
+  - shortcode attributes
 
-### Main menu
+### Header fidelity theo Blade
 
-- Ä‘Ã£ xong pháº§n data flow chÃ­nh
-- chÆ°a xong pháº§n fidelity theo Blade cho mobile/offcanvas
+- [ ] `header-top` van chua co `currency switcher`
+- [ ] `header-top` van chua co `account/customer block`
+- [ ] `side-menu` van chua co du mobile/account parity nhu Blade
 
-### Blog / blog sidebar
+Luu y:
+- cac muc nay khong phai bug data flow
+- day la phan fidelity / feature parity them
+- neu admin/site hien tai khong co source public cho account/currency thi can quyet dinh ro co clone tiep hay khong
 
-- Ä‘Ã£ xong pháº§n kiáº¿n trÃºc chÃ­nh
-- Ä‘Ã£ cÃ³ route Nuxt vÃ  nhÃ³m widget native quan trá»ng
-- váº«n cÃ²n má»™t sá»‘ widget fallback HTML vÃ  pháº§n UX cáº§n polish thÃªm
+### UI polish
 
-### Viá»‡c nÃªn lÃ m tiáº¿p ngay
+- [ ] can mot pass polish cuoi de canh spacing, typography, image treatment tren cac page that
+- [ ] can doi chieu lai voi cac page Blade quan trong neu muon fidelity cao hon
 
-- Æ°u tiÃªn rÃ  láº¡i spacing/container, sau Ä‘Ã³ hoÃ n thiá»‡n blog UX vÃ  footer widget fidelity
+### Kien truc bo sung (optional, khong con blocker)
 
+- [ ] neu muon bo han detect theo class HTML, co the mo rong page API de tra `shortcode_blocks` manifest canonical
+- [ ] muc nay la hardening, khong con blocker cho viec render shortcode hien tai
 
+---
+
+## 4. Ket luan ngan
+
+### Da xong
+
+- menu flow chinh
+- page template flow
+- homepage canonical
+- SEO page/homepage/blog co ban
+- blog routes va blog sidebar flow
+- footer flow
+- shortcode parity theo Blade
+- native hoa tat ca widget chinh dang dung
+
+### Chua xong
+
+- QA pass toan site
+- header/account/currency fidelity
+- side-menu mobile/account parity
+- pass polish UI cuoi
+
+### Viec nen lam tiep ngay
+
+1. QA pass theo route that + locale + mobile
+2. fix tung loi page that phat hien trong QA
+3. neu can fidelity cao hon nua, lam them header account/currency va side-menu parity

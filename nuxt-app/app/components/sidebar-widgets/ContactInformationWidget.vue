@@ -155,15 +155,15 @@ const brandName = computed(() => normalizeText(props.themeOptions?.site_title) |
 .sidebar-contact-widget__label,
 .footer-contact-widget__label {
   display: inline-block;
-  margin-bottom: 0.2rem;
-  font-size: 0.75rem;
+  margin-bottom: 0.32rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .sidebar-contact-widget__label {
-  color: #8d7355;
+  color: var(--retreat-clay);
 }
 
 .sidebar-contact-widget__value,
@@ -174,7 +174,7 @@ const brandName = computed(() => normalizeText(props.themeOptions?.site_title) |
 }
 
 .sidebar-contact-widget__value {
-  color: #3f352d;
+  color: var(--retreat-ink);
 }
 
 .sidebar-contact-widget__value--link {
@@ -182,7 +182,7 @@ const brandName = computed(() => normalizeText(props.themeOptions?.site_title) |
 }
 
 .sidebar-contact-widget__value--link:hover {
-  color: #7c5c3b;
+  color: var(--retreat-clay);
 }
 
 .footer-contact-widget__brand {
@@ -197,27 +197,27 @@ const brandName = computed(() => normalizeText(props.themeOptions?.site_title) |
 }
 
 .footer-contact-widget__brand-text {
-  color: #fff3dc;
-  font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: 1.75rem;
-  line-height: 1.1;
+  color: #fff9f1;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
 }
 
 .footer-contact-widget__label {
-  color: rgba(216, 181, 107, 0.92);
+  color: rgba(214, 192, 155, 0.88);
 }
 
 .footer-contact-widget__value {
-  color: rgba(245, 234, 214, 0.78);
+  color: rgba(248, 244, 236, 0.7);
 }
 
 .footer-contact-widget__value--link {
-  color: rgba(255, 243, 220, 0.86);
+  color: rgba(255, 249, 241, 0.86);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .footer-contact-widget__value--link:hover {
-  color: #d8b56b;
+  color: #d6c09b;
 }
 </style>

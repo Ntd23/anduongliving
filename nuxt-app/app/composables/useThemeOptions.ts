@@ -1,8 +1,4 @@
-import {
-  cmsProxyRoutes,
-  resolveCmsLocale,
-  resolveCmsProxyRequestUrl,
-} from "~~/shared/cms-routing";
+import { cmsProxyRoutes, resolveCmsLocale, resolveCmsProxyRequestUrl } from "~~/shared/cms-routing";
 
 export type ThemeSocialLink = {
   name?: string | null;
@@ -33,18 +29,27 @@ export type ThemeOptionsData = {
   social_links: ThemeSocialLink[];
 };
 
-export const useThemeOptions = async (locale?: string): Promise<ThemeOptionsData> => {
-  const config = useRuntimeConfig();
+const toThemeOptions = (value?: ThemeOptionsData | null): ThemeOptionsData => ({
+  social_links: value?.social_links || [],
+  ...(value || {}),
+});
+
+const fetchThemeOptions = async (
+  cmsProxyBaseUrl: string,
+  locale?: string,
+): Promise<ThemeOptionsData> => {
   const response = await $fetch<{ data?: ThemeOptionsData }>(cmsProxyRoutes.theme.options(), {
     baseURL: resolveCmsProxyRequestUrl("/", {
-      cmsProxyBaseUrl: config.public.cmsProxyBaseUrl,
+      cmsProxyBaseUrl,
       client: import.meta.client,
     }),
     query: locale ? { lang: resolveCmsLocale(locale) } : undefined,
   });
 
-  return {
-    social_links: response.data?.social_links || [],
-    ...response.data,
-  };
+  return toThemeOptions(response.data);
+};
+
+export const useThemeOptions = async (locale?: string): Promise<ThemeOptionsData> => {
+  const config = useRuntimeConfig();
+  return fetchThemeOptions(config.public.cmsProxyBaseUrl, resolveCmsLocale(locale));
 };

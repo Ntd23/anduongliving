@@ -1,71 +1,65 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   layoutName?: string | null;
 }>();
+
+const isSideMenu = computed(() => props.layoutName === 'cms-side-menu');
+const isFullMenu = computed(() => props.layoutName === 'cms-full-menu');
+const isBlogSidebar = computed(() => props.layoutName === 'cms-blog-sidebar');
+
+const layoutClass = computed(() => {
+  switch (props.layoutName) {
+    case 'cms-side-menu':
+      return 'cms-layout--side-menu';
+    case 'cms-full-menu':
+      return 'cms-layout--full-menu';
+    case 'cms-full-width':
+      return 'cms-layout--full-width';
+    case 'cms-blog-sidebar':
+      return 'cms-layout--blog-sidebar';
+    default:
+      return 'cms-layout--default';
+  }
+});
 </script>
 
 <template>
-  <div
-    v-if="layoutName === 'cms-side-menu'"
-    class="cms-layout cms-layout--side-menu"
-  >
-    <aside class="cms-layout__sidebar">
+  <div :class="['cms-layout', layoutClass]">
+    <!-- Side-menu sidebar (only for side-menu layout) -->
+    <aside v-if="isSideMenu" class="cms-layout__sidebar">
       <MainNavigation variant="side" />
     </aside>
 
-    <section class="cms-layout__content">
-      <slot />
-    </section>
-  </div>
+    <!-- Standard header (all non-side-menu layouts) -->
+    <template v-if="!isSideMenu">
+      <HeaderTopBar :full-width="isFullMenu" />
+      <MainNavigation variant="header" :full-width="isFullMenu" />
+    </template>
 
-  <div
-    v-else-if="layoutName === 'cms-full-menu'"
-    class="cms-layout cms-layout--full-menu"
-  >
-    <HeaderTopBar full-width />
-    <MainNavigation variant="header" full-width />
-    <slot />
-  </div>
-
-  <div
-    v-else-if="layoutName === 'cms-full-width'"
-    class="cms-layout cms-layout--full-width"
-  >
-    <HeaderTopBar />
-    <MainNavigation variant="header" />
-    <slot />
-  </div>
-
-  <div
-    v-else-if="layoutName === 'cms-blog-sidebar'"
-    class="cms-layout cms-layout--blog-sidebar"
-  >
-    <HeaderTopBar />
-    <MainNavigation variant="header" />
-    <div class="cms-blog-sidebar__shell">
+    <!--
+      Content body – the <slot /> lives here unconditionally.
+      When layoutName changes, only the class and the optional aside toggle;
+      the slot mount-point is never destroyed / re-created.
+    -->
+    <div
+      class="cms-layout__body"
+      :class="{ 'cms-layout__body--blog': isBlogSidebar }"
+    >
       <slot />
 
-      <aside class="cms-blog-sidebar__aside">
+      <aside v-if="isBlogSidebar" class="cms-blog-sidebar__aside">
         <BlogSidebarWidgets />
       </aside>
     </div>
   </div>
-
-  <div
-    v-else
-    class="cms-layout cms-layout--default"
-  >
-    <HeaderTopBar />
-    <MainNavigation variant="header" />
-    <slot />
-  </div>
 </template>
 
 <style scoped>
+/* ─── Default & Full-Menu ─── */
 .cms-layout--default,
 .cms-layout--full-menu {
   min-height: 100vh;
-  background: linear-gradient(180deg, #fffdf8 0%, #f7efe4 100%);
+  background: linear-gradient(180deg, #fcf9f3 0%, #f6efe5 55%, #f8f4ed 100%);
 }
 
 .cms-layout--default :deep(main),
@@ -73,9 +67,10 @@ defineProps<{
   min-height: 100vh;
 }
 
+/* ─── Full-Width ─── */
 .cms-layout--full-width {
   min-height: 100vh;
-  background: linear-gradient(180deg, #fffdf9 0%, #f8f3eb 100%);
+  background: linear-gradient(180deg, #fdfaf4 0%, #f4ede3 100%);
 }
 
 .cms-layout--full-width :deep(.page-hero) {
@@ -87,50 +82,52 @@ defineProps<{
   width: 100%;
 }
 
+/* ─── Side-Menu ─── */
 .cms-layout--side-menu {
   display: grid;
   min-height: 100vh;
-  background: #f7f3ec;
+  background: #f5eee4;
 }
 
 .cms-layout__sidebar {
-  border-right: 1px solid rgba(63, 53, 45, 0.08);
-  background: linear-gradient(180deg, #faf5ee 0%, #f3ebdf 100%);
+  border-right: 1px solid rgba(50, 35, 25, 0.08);
+  background: linear-gradient(180deg, rgba(250, 246, 239, 0.98), rgba(242, 233, 220, 0.96));
 }
 
-.cms-layout__content {
+.cms-layout--side-menu .cms-layout__body {
   min-width: 0;
-  background: #fffdf8;
+  background: #fcf8f2;
 }
 
-.cms-layout__content :deep(main) {
+.cms-layout--side-menu .cms-layout__body :deep(main) {
   min-height: 100vh;
 }
 
-.cms-layout__content :deep(.cms-breadcrumbs) {
+.cms-layout--side-menu .cms-layout__body :deep(.cms-breadcrumbs) {
   border-bottom: 1px solid rgba(63, 53, 45, 0.06);
 }
 
-.cms-layout__content :deep(.page-shell) {
+.cms-layout--side-menu .cms-layout__body :deep(.page-shell) {
   padding-inline: clamp(1rem, 3vw, 2.25rem);
 }
 
-.cms-layout__content :deep(.cms-content),
-.cms-layout__content :deep(.cms-footer) {
+.cms-layout--side-menu .cms-layout__body :deep(.cms-content),
+.cms-layout--side-menu .cms-layout__body :deep(.cms-footer) {
   min-width: 0;
 }
 
+/* ─── Blog Sidebar ─── */
 .cms-layout--blog-sidebar {
   min-height: 100vh;
-  background: linear-gradient(180deg, #fffdf8 0%, #f5efe6 100%);
+  background: linear-gradient(180deg, #fcf9f3 0%, #f3ece2 100%);
 }
 
-.cms-blog-sidebar__shell {
+.cms-layout__body--blog {
   display: grid;
-  gap: 2.5rem;
+  gap: 3rem;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1rem 4.5rem;
+  padding: 0 1.25rem 5rem;
 }
 
 .cms-blog-sidebar__aside {
@@ -161,6 +158,7 @@ defineProps<{
   margin-top: 1rem;
 }
 
+/* ─── Desktop (≥ 992px) ─── */
 @media (min-width: 992px) {
   .cms-layout--side-menu {
     grid-template-columns: minmax(240px, 19rem) minmax(0, 1fr);
@@ -173,13 +171,14 @@ defineProps<{
     overflow-y: auto;
   }
 
-  .cms-layout__content :deep(.page-shell) {
+  .cms-layout--side-menu .cms-layout__body :deep(.page-shell) {
     padding-inline: clamp(1.5rem, 3vw, 3rem);
   }
 }
 
+/* ─── Blog Sidebar Desktop (≥ 1100px) ─── */
 @media (min-width: 1100px) {
-  .cms-blog-sidebar__shell {
+  .cms-layout__body--blog {
     grid-template-columns: minmax(0, 1fr) minmax(280px, 22rem);
     align-items: start;
   }
@@ -191,6 +190,7 @@ defineProps<{
   }
 }
 
+/* ─── Blog Sidebar Mobile (< 1100px) ─── */
 @media (max-width: 1099px) {
   .cms-layout--blog-sidebar :deep(.cms-breadcrumbs),
   .cms-layout--blog-sidebar :deep(.page-shell),
@@ -200,6 +200,7 @@ defineProps<{
   }
 }
 
+/* ─── Side-Menu Mobile (< 992px) ─── */
 @media (max-width: 991px) {
   .cms-layout--side-menu {
     grid-template-columns: minmax(0, 1fr);

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { normalizeBlogPostCollection, useBlogCategory, useFilteredBlogPosts } from "~/composables/useBlog";
 import { cmsAppRoutes } from "~~/shared/cms-routing";
+import { useBlogSeo } from "~/composables/useBlogSeo";
 
 const route = useRoute();
 const { locale } = useI18n();
@@ -49,9 +50,17 @@ const breadcrumbs = computed(() => [
   { label: category.value?.name || "Category", to: null },
 ]);
 
-useSeoMeta({
-  title: computed(() => category.value?.name || "Blog Category"),
+useBlogSeo({
+  title: computed(() => {
+    const label = category.value?.name || "Blog Category";
+    return currentPage.value > 1 ? `${label} - Page ${currentPage.value}` : label;
+  }),
   description: computed(() => category.value?.description || "Browse posts in this category."),
+  type: computed(() => "website"),
+  path: computed(() => {
+    const base = cmsAppRoutes.blog.category(slug.value);
+    return currentPage.value > 1 ? `${base}?page=${currentPage.value}` : base;
+  }),
 });
 </script>
 
@@ -60,7 +69,7 @@ useSeoMeta({
 
   <BlogArchiveShell
     :title="category?.name || 'Blog Category'"
-    :posts="posts"
+    :posts="posts || []"
     empty-message="No posts found in this category."
     :current-page="currentPage"
     :last-page="meta?.last_page"

@@ -50,53 +50,50 @@ const showFooter = computed(() => Boolean(page.value && layoutUsesFooter(layoutN
 usePageSeo(page);
 
 definePageMeta({
-  layout: false,
-  key: (route) => route.fullPath,
+  layout: "cms-page",
 });
 </script>
 
 <template>
-  <CmsPageShell :layout-name="layoutName">
-    <main>
-      <CmsBreadcrumbs v-if="page && showBreadcrumbs" :page="page" />
+  <main>
+    <CmsBreadcrumbs v-if="page && showBreadcrumbs" :page="page" />
 
-      <section v-if="showPlainPageHero" class="page-shell">
-        <header class="page-hero py-10">
-          <div class="container page-hero__inner">
-            <h1 class="page-hero__title">
-              {{ page.name }}
-            </h1>
-            <p v-if="page.description" class="page-hero__description">
-              {{ page.description }}
-            </p>
-          </div>
-        </header>
-      </section>
-
-      <section
-        v-if="page && hasBlocks"
-        class="cms-content"
-        :class="{ 'cms-content--with-breadcrumbs': showBreadcrumbs }"
-      >
-        <ShortcodeBlockRenderer
-          v-for="(block, index) in blocks"
-          :key="`${index}-${block.type}-${block.name || 'block'}`"
-          :block="block"
-        />
-      </section>
-
-      <section v-else-if="!page" class="py-20 text-center">
-        <div class="container mx-auto px-4">
-          <h1 class="text-3xl font-semibold">Homepage not configured</h1>
-          <p class="mt-3 text-gray-600">
-            {{ homepageError || "Please choose a homepage in admin first." }}
+    <section v-if="showPlainPageHero" class="page-shell">
+      <header class="page-hero py-10">
+        <div class="container page-hero__inner">
+          <h1 class="page-hero__title">
+            {{ page.name }}
+          </h1>
+          <p v-if="page.description" class="page-hero__description">
+            {{ page.description }}
           </p>
         </div>
-      </section>
+      </header>
+    </section>
 
-      <CmsFooter v-if="showFooter" />
-    </main>
-  </CmsPageShell>
+    <section
+      v-if="page && hasBlocks"
+      class="cms-content"
+      :class="{ 'cms-content--with-breadcrumbs': showBreadcrumbs }"
+    >
+      <ShortcodeBlockRenderer
+        v-for="(block, index) in blocks"
+        :key="`${index}-${block.type}-${block.name || 'block'}`"
+        :block="block"
+      />
+    </section>
+
+    <section v-else-if="!page" class="py-20 text-center">
+      <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-semibold">Homepage not configured</h1>
+        <p class="mt-3 text-gray-600">
+          {{ homepageError || "Please choose a homepage in admin first." }}
+        </p>
+      </div>
+    </section>
+
+    <CmsFooter v-if="showFooter" />
+  </main>
 </template>
 
 <style scoped>

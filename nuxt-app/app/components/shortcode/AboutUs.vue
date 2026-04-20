@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { parseAboutBlock, type ShortcodeBlock } from "~/utils/shortcode";
+import { parseAboutUsBlock, type ShortcodeBlock } from "~/utils/shortcode";
+import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
   block: ShortcodeBlock;
 }>();
 
-const section = computed(() => parseAboutBlock(props.block.raw));
+const section = computed(() => parseAboutUsBlock(props.block.raw));
+const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 const descriptionLines = computed(() =>
   (section.value.description || "")
     .split(/\n{2,}/)
@@ -101,7 +103,7 @@ const descriptionLines = computed(() =>
   </section>
 
   <section v-else class="shortcode-about">
-    <div v-html="block.raw" />
+    <div v-html="sanitizedHtml" />
   </section>
 </template>
 

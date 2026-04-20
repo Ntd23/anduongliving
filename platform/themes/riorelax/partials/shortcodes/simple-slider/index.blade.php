@@ -1,4 +1,4 @@
-<section id="home" class="slider-area slider-showcase-area fix p-relative">
+<section id="home" class="shortcode-simple-slider slider-area slider-showcase-area fix p-relative">
     <style>
         .header-three .menu-area:not(.sticky-menu),
         .header-three .menu-area:not(.sticky-menu) .second-menu,

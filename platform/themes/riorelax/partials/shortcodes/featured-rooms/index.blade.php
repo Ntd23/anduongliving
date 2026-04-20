@@ -1,4 +1,4 @@
-<section class="services-area pt-90 pb-90">
+<section class="shortcode-featured-rooms services-area pt-90 pb-90">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-xl-12">

@@ -9,6 +9,8 @@
         <BlogSidebarWidgets />
       </aside>
     </div>
+
+    <CmsFooter />
   </div>
 </template>
 
@@ -34,8 +36,7 @@
   display: contents;
 }
 
-.cms-layout--blog-sidebar :deep(.cms-breadcrumbs),
-.cms-layout--blog-sidebar :deep(.cms-footer) {
+.cms-layout--blog-sidebar :deep(.cms-breadcrumbs) {
   grid-column: 1 / -1;
 }
 
@@ -54,10 +55,6 @@
   padding-bottom: 2rem;
 }
 
-.cms-layout--blog-sidebar :deep(.cms-footer) {
-  margin-top: 1rem;
-}
-
 @media (min-width: 1100px) {
   .cms-blog-sidebar__shell {
     grid-template-columns: minmax(0, 1fr) minmax(280px, 22rem);
@@ -74,8 +71,7 @@
 @media (max-width: 1099px) {
   .cms-layout--blog-sidebar :deep(.cms-breadcrumbs),
   .cms-layout--blog-sidebar :deep(.page-shell),
-  .cms-layout--blog-sidebar :deep(.cms-content),
-  .cms-layout--blog-sidebar :deep(.cms-footer) {
+  .cms-layout--blog-sidebar :deep(.cms-content) {
     grid-column: 1;
   }
 }

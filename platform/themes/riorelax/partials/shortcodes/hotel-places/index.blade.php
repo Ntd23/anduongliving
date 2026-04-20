@@ -1,4 +1,4 @@
-<section class="hotel-place-area p-relative fix pt-40 pb-40">
+<section class="shortcode-hotel-places hotel-place-area p-relative fix pt-40 pb-40">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-12">

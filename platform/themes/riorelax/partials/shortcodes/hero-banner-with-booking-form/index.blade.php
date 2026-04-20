@@ -1,6 +1,6 @@
 @php($bgColor = $shortcode->background_color ?: '#101010')
 
-<section class="slider-area fix p-relative">
+<section class="shortcode-hero-banner-with-booking-form slider-area fix p-relative">
     <div class="slider-active" style="background: {{ $bgColor }};">
         <div class="single-slider slider-bg d-flex align-items-center"
              @if ($bgImage = $shortcode->background_image)

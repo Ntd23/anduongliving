@@ -10,7 +10,7 @@
 .btn-primary-lift-sm:hover,
 .btn-primary-elevated:hover {
   background-color: var(--color-primary) !important;
-  filter: brightness(1.15);
+  filter: brightness(1.06);
 }
 
 .btn-primary {
@@ -61,18 +61,18 @@
    Primary Button — shimmer + glow (NO translate)
    =========================== */
 .btn-primary-elevated {
-  box-shadow: 0 8px 16px rgba(0, 124, 195, 0.25);
+  box-shadow: 0 14px 30px rgba(72, 64, 50, 0.12);
   transition: all 0.35s ease;
 }
 
 .btn-primary-elevated:hover {
-  box-shadow: 0 8px 28px rgba(0, 124, 195, 0.45), 0 0 0 3px rgba(0, 124, 195, 0.1);
+  box-shadow: 0 18px 38px rgba(72, 64, 50, 0.18), 0 0 0 3px rgba(167, 122, 84, 0.08);
 }
 
 .btn-primary-lift {
   position: relative;
   overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0, 124, 195, 0.2);
+  box-shadow: 0 14px 30px rgba(72, 64, 50, 0.12);
   transition: all 0.35s ease;
 }
 
@@ -95,9 +95,9 @@
 
 .btn-primary-lift:hover {
   box-shadow:
-    0 8px 28px rgba(0, 124, 195, 0.4),
-    0 0 0 3px rgba(0, 124, 195, 0.12);
-  filter: brightness(1.1);
+    0 18px 42px rgba(72, 64, 50, 0.16),
+    0 0 0 3px rgba(167, 122, 84, 0.08);
+  filter: brightness(1.04);
 }
 
 .btn-primary-lift:hover::before {
@@ -107,7 +107,7 @@
 .btn-primary-lift-sm {
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 124, 195, 0.2);
+  box-shadow: 0 10px 24px rgba(72, 64, 50, 0.1);
   transition: all 0.35s ease;
 }
 
@@ -129,9 +129,9 @@
 
 .btn-primary-lift-sm:hover {
   box-shadow:
-    0 6px 22px rgba(0, 124, 195, 0.35),
-    0 0 0 2px rgba(0, 124, 195, 0.1);
-  filter: brightness(1.08);
+    0 14px 30px rgba(72, 64, 50, 0.14),
+    0 0 0 2px rgba(167, 122, 84, 0.08);
+  filter: brightness(1.04);
 }
 
 .btn-primary-lift-sm:hover::before {
@@ -149,7 +149,7 @@
   gap: 0.75rem;
   overflow: hidden;
   border-radius: 9999px;
-  background: linear-gradient(135deg, var(--color-primary), #17306c);
+  background: linear-gradient(180deg, #8f7659 0%, #72634d 100%);
   padding: 0.8rem 1.4rem;
   color: #fff;
   font-family: var(--font-tech);
@@ -157,7 +157,7 @@
   font-weight: 700;
   letter-spacing: 0.01em;
   text-decoration: none;
-  box-shadow: 0 14px 32px rgba(0, 124, 195, 0.26);
+  box-shadow: 0 18px 38px rgba(62, 43, 31, 0.14);
   transition: box-shadow 0.25s ease, filter 0.25s ease;
 }
 
@@ -179,10 +179,10 @@
 }
 
 .btn-shared-cta:hover {
-  filter: brightness(1.08);
+  filter: brightness(1.04);
   box-shadow:
-    0 18px 38px rgba(0, 124, 195, 0.34),
-    0 0 0 3px rgba(0, 124, 195, 0.12);
+    0 24px 48px rgba(62, 43, 31, 0.18),
+    0 0 0 3px rgba(167, 122, 84, 0.08);
 }
 
 .btn-shared-cta:hover::before {
@@ -253,7 +253,7 @@
 .btn-glass:hover {
   background: rgba(255, 255, 255, 0.85);
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(0, 124, 195, 0.08);
+  box-shadow: 0 0 0 3px rgba(167, 122, 84, 0.08);
 }
 
 .dark .btn-glass:hover {
@@ -286,20 +286,20 @@
   background: var(--color-primary);
   color: #fff;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(0, 124, 195, 0.15);
+  box-shadow: 0 0 0 4px rgba(167, 122, 84, 0.12);
 }
 
 .btn-icon-circle-primary {
   background: var(--color-primary);
   color: #fff;
-  box-shadow: 0 6px 14px rgba(0, 124, 195, 0.25);
+  box-shadow: 0 12px 28px rgba(72, 64, 50, 0.14);
 }
 
 .btn-icon-circle-primary:hover {
-  filter: brightness(1.15);
+  filter: brightness(1.05);
   box-shadow:
-    0 6px 20px rgba(0, 124, 195, 0.4),
-    0 0 0 4px rgba(0, 124, 195, 0.12);
+    0 16px 34px rgba(72, 64, 50, 0.18),
+    0 0 0 4px rgba(167, 122, 84, 0.08);
 }
 
 /* ===========================
