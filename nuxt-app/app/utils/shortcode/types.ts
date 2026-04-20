@@ -3,8 +3,10 @@ export type ShortcodeName =
   | "feature"
   | "hero-story"
   | "newsletter"
+  | "pricing"
   | "skill"
-  | "team";
+  | "team"
+  | "services";
 
 export type ShortcodeBlock = {
   type: "shortcode" | "html" | "text";
@@ -17,12 +19,31 @@ export type ShortcodeComponentName =
   | "Feature"
   | "HeroStory"
   | "Newsletter"
+  | "Pricing"
   | "Skill"
-  | "Team";
+  | "Team"
+  | "Services";
 
 export type ShortcodeImage = {
   src: string;
   alt: string;
+};
+
+export type ServiceItem = {
+  id: number;
+  name: string;
+  url: string;
+  image: string;
+  bookLabel: string;
+  price: string;
+  amenities: string[];
+};
+
+export type ServiceSectionData = {
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  items: ServiceItem[];
 };
 
 export type TeamSocialPlatform = "facebook" | "twitter" | "instagram" | "website";
@@ -90,6 +111,9 @@ export type FeatureSectionData = {
   backgroundColor: string | null;
   backgroundImage: ShortcodeImage | null;
   image: ShortcodeImage | null;
+  secondaryImage: ShortcodeImage | null;
+  quote: string | null;
+  quoteAuthor: string | null;
   subtitle: string | null;
   title: string | null;
   description: string | null;
@@ -108,6 +132,28 @@ export type NewsletterSectionData = {
   action: string | null;
   placeholder: string;
   buttonLabel: string;
+};
+
+export type PricingItem = {
+  title: string;
+  description: string | null;
+  price: string;
+  currency: string;
+  period: string;
+  features: string[];
+  buttonLabel: string;
+  buttonUrl: string;
+  isPopular: boolean;
+};
+
+export type PricingSectionData = {
+  backgroundColor: string | null;
+  backgroundImage1: ShortcodeImage | null;
+  backgroundImage2: ShortcodeImage | null;
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  items: PricingItem[];
 };
 
 export type ShortcodeDefinition = {

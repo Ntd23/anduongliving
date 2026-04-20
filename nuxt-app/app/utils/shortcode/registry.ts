@@ -3,6 +3,7 @@ import {
   parseFeatureBlock,
   parseHeroStoryBlock,
   parseNewsletterBlock,
+  parsePricingBlock,
   parseSkillBlock,
   parseTeamBlock,
 } from "./parsers";
@@ -21,6 +22,12 @@ export const shortcodeRegistry = [
     componentName: "About",
     parser: parseAboutBlock,
   },
+    {
+    name: "services",
+    aliases: ["services-area"],
+    componentName: "Services",
+    parser: parseServiceBlock,
+  },
   {
     name: "skill",
     aliases: ["skill-area"],
@@ -38,6 +45,12 @@ export const shortcodeRegistry = [
     aliases: ["newslater-area"],
     componentName: "Newsletter",
     parser: parseNewsletterBlock,
+  },
+  {
+    name: "pricing",
+    aliases: ["pricing-area"],
+    componentName: "Pricing",
+    parser: parsePricingBlock,
   },
   {
     name: "team",
