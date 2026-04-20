@@ -4,7 +4,7 @@
     $image2  = $shortcode->image_2 ? RvMedia::getImageUrl($shortcode->image_2) : null;
 @endphp
 
-<section class="story" @if($bgImage) style="background-image:url('{{ $bgImage }}')" @endif>
+<section class="shortcode-special-story-showcase story" @if($bgImage) style="background-image:url('{{ $bgImage }}')" @endif>
     <style>
         /* ── SECTION ──────────────────────────────────────────── */
         .story {

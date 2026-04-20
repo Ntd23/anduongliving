@@ -39,6 +39,7 @@ export type BlogPostSummary = {
 export type BlogPost = BlogPostSummary & {
   content?: string | null;
   views?: number | null;
+  related_posts?: BlogPostSummary[] | null;
   author?: {
     name: string;
     avatar_url?: string | null;
@@ -79,11 +80,7 @@ const fetchCmsBlog = async <T>(
   query?: Record<string, string | number | undefined>,
 ): Promise<T> => {
   const config = useRuntimeConfig();
-  const response = await $fetch<{
-    data?: T;
-    meta?: BlogCollectionMeta;
-    links?: Record<string, string | null>;
-  }>(endpoint, {
+  const response = await $fetch<any>(endpoint, {
     baseURL: resolveCmsProxyRequestUrl("/", {
       cmsProxyBaseUrl: config.public.cmsProxyBaseUrl,
       client: import.meta.client,
@@ -94,22 +91,38 @@ const fetchCmsBlog = async <T>(
     },
   });
 
-  if (response.data === undefined) {
+  if (response === undefined || response === null) {
     throw createError({
       statusCode: 404,
       statusMessage: "Blog data not found",
     });
   }
 
-  if (response.meta || response.links) {
-    return {
-      data: response.data,
-      meta: response.meta,
-      links: response.links,
-    } as T;
+  // Some endpoints return wrapped payloads, some return payload directly.
+  // Handle both shapes to avoid false 404s during client-side navigation.
+  if (typeof response === "object" && !Array.isArray(response)) {
+    const wrapped = response as {
+      data?: unknown;
+      meta?: BlogCollectionMeta;
+      links?: Record<string, string | null>;
+    };
+
+    if (Object.prototype.hasOwnProperty.call(wrapped, "data")) {
+      if (wrapped.meta || wrapped.links) {
+        return {
+          data: wrapped.data,
+          meta: wrapped.meta,
+          links: wrapped.links,
+        } as T;
+      }
+
+      return wrapped.data as T;
+    }
+
+    return response as T;
   }
 
-  return response.data;
+  return response as T;
 };
 
 export const useBlogPosts = (params?: {
@@ -218,8 +231,10 @@ export const normalizeBlogPostCollection = (
     return { items: payload };
   }
 
+  const items = Array.isArray(payload.data) ? payload.data : [];
+
   return {
-    items: payload.data || [],
+    items,
     meta: payload.meta,
   };
 };

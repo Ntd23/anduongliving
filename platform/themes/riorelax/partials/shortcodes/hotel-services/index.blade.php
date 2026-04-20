@@ -1,4 +1,4 @@
-<section class="hotel-service-area pt-40 pb-40 p-relative">
+<section class="shortcode-hotel-services hotel-service-area pt-40 pb-40 p-relative">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-12">

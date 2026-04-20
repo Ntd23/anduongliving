@@ -5,7 +5,7 @@
     $image3  = $shortcode->image_3 ? RvMedia::getImageUrl($shortcode->image_3) : null;
 @endphp
 
-<section class="pickup" @if($bgImage) style="background-image:url('{{ $bgImage }}')" @endif>
+<section class="shortcode-pickup-gallery-showcase pickup" @if($bgImage) style="background-image:url('{{ $bgImage }}')" @endif>
     <style>
         /* ── SECTION ──────────────────────────────────────────── */
         .pickup {

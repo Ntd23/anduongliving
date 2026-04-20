@@ -10,7 +10,7 @@
     }
 @endphp
 
-<section class="loc" @if($bgImage) style="background-image: url('{{ $bgImage }}')" @endif>
+<section class="shortcode-location-tourism-showcase loc" @if($bgImage) style="background-image: url('{{ $bgImage }}')" @endif>
     <style>
         .loc {
             position: relative;

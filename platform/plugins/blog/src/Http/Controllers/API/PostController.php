@@ -252,15 +252,74 @@ class PostController extends BaseApiController
             $post = $this->translatePost($post, $languageCode);
         }
 
-        $relatedPosts = get_related_posts($post->id, 2)
-            ->map(fn (Post $relatedPost) => $languageCode ? $this->translatePost($relatedPost, $languageCode) : $relatedPost)
+        $previousPost = Post::query()
+            ->where('status', BaseStatusEnum::PUBLISHED)
+            ->where('id', '!=', $post->id)
+            ->with(['categories', 'tags', 'author', 'slugable']);
+
+        $this->applyTranslationFilter($previousPost, 'posts_translations', 'posts_id', $languageCode);
+
+        $previousPost = $previousPost
+            ->where(function (Builder $builder) use ($post): void {
+                $builder
+                    ->where('created_at', '<', $post->created_at)
+                    ->orWhere(function (Builder $subBuilder) use ($post): void {
+                        $subBuilder
+                            ->where('created_at', '=', $post->created_at)
+                            ->where('id', '<', $post->id);
+                    });
+            })
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->first();
+
+        if ($previousPost && $languageCode) {
+            $previousPost = $this->translatePost($previousPost, $languageCode);
+        }
+
+        $nextPost = Post::query()
+            ->where('status', BaseStatusEnum::PUBLISHED)
+            ->where('id', '!=', $post->id)
+            ->with(['categories', 'tags', 'author', 'slugable']);
+
+        $this->applyTranslationFilter($nextPost, 'posts_translations', 'posts_id', $languageCode);
+
+        $nextPost = $nextPost
+            ->where(function (Builder $builder) use ($post): void {
+                $builder
+                    ->where('created_at', '>', $post->created_at)
+                    ->orWhere(function (Builder $subBuilder) use ($post): void {
+                        $subBuilder
+                            ->where('created_at', '=', $post->created_at)
+                            ->where('id', '>', $post->id);
+                    });
+            })
+            ->orderBy('created_at')
+            ->orderBy('id')
+            ->first();
+
+        if ($nextPost && $languageCode) {
+            $nextPost = $this->translatePost($nextPost, $languageCode);
+        }
+
+        $relatedPosts = get_related_posts($post->id, 4)
+            ->map(function (Post $relatedPost) use ($languageCode): Post {
+                $relatedPost->loadMissing(['categories', 'tags', 'author', 'slugable']);
+
+                if ($languageCode) {
+                    $relatedPost = $this->translatePost($relatedPost, $languageCode);
+                }
+
+                return $relatedPost;
+            })
             ->values();
 
         $resource = (new PostResource($post))->toArray($request);
         $resource['navigation'] = [
-            'previous' => isset($relatedPosts[0]) ? ListPostResource::make($relatedPosts[0])->resolve($request) : null,
-            'next' => isset($relatedPosts[1]) ? ListPostResource::make($relatedPosts[1])->resolve($request) : null,
+            'previous' => $previousPost ? ListPostResource::make($previousPost)->resolve($request) : null,
+            'next' => $nextPost ? ListPostResource::make($nextPost)->resolve($request) : null,
         ];
+        $resource['related_posts'] = ListPostResource::collection($relatedPosts)->resolve($request);
 
         return $this
             ->httpResponse()

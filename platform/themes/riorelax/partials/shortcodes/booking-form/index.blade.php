@@ -1,4 +1,4 @@
-<section class="booking pt-90 pb-90 p-relative fix">
+<section class="shortcode-booking-form booking pt-90 pb-90 p-relative fix">
     @if ($shapeImage = $shortcode->shape_image)
         <div class="animations-01">
             <img src="{{ RvMedia::getImageUrl($shapeImage) }}" alt="{{ __('Shape image') }}">
@@ -88,4 +88,3 @@
         </div>
     </div>
 </section>
-

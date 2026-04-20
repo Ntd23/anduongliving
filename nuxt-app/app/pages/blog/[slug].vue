@@ -5,20 +5,25 @@ import {
   cmsAppRoutes,
   sanitizeCmsHtmlContent,
 } from "~~/shared/cms-routing";
+import {
+  formatCmsDate,
+  formatCmsInteger,
+  normalizeUiLocale,
+} from "~/utils/locale-format";
+import { useBlogSeo } from "~/composables/useBlogSeo";
 
 const route = useRoute();
 const { locale } = useI18n();
 const localePath = useLocalePath();
-const routeFullPath = computed(() => route.fullPath);
 const runtimeConfig = useRuntimeConfig();
 
 const slug = computed(() => String(route.params.slug || ""));
-const asyncKey = computed(() => `blog-post-${slug.value}-${locale.value}-${routeFullPath.value}`);
+const asyncKey = computed(() => `blog-post-${slug.value}-${locale.value}`);
 
 const { data, error } = await useAsyncData(
   asyncKey,
   () => useBlogPost(slug.value, locale.value),
-  { watch: [slug, locale, routeFullPath] },
+  { watch: [slug, locale] },
 );
 
 if (error.value) {
@@ -27,7 +32,7 @@ if (error.value) {
 
 definePageMeta({
   layout: "cms-blog-sidebar",
-  key: (route) => route.fullPath,
+  key: (currentRoute) => currentRoute.fullPath,
 });
 
 const post = computed(() => data.value);
@@ -40,21 +45,20 @@ const breadcrumbs = computed(() => [
   { label: post.value?.name || "Blog Post", to: null },
 ]);
 
-const formattedDate = computed(() => {
-  if (!post.value?.created_at) {
-    return null;
-  }
+const localeCode = computed(() => normalizeUiLocale(locale.value));
+const formatBlogDate = (input?: string | null, monthStyle?: "short" | "long") =>
+  formatCmsDate(input, localeCode.value, { monthStyle });
 
-  return new Intl.DateTimeFormat(locale.value, {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(post.value.created_at));
-});
+const formattedDate = computed(() => formatBlogDate(post.value?.created_at, "long"));
 
 const viewCount = computed(() => {
   const value = Number(post.value?.views || 0);
-  return Number.isFinite(value) ? value.toLocaleString(locale.value) : "0";
+
+  if (!Number.isFinite(value)) {
+    return "0";
+  }
+
+  return formatCmsInteger(value, localeCode.value);
 });
 
 const socialIcons: Record<string, string> = {
@@ -68,6 +72,7 @@ const socialIcons: Record<string, string> = {
 const resolvePostLink = (entry?: BlogPostSummary | null) =>
   entry ? localePath(cmsAppRoutes.blog.post(entry.slug)) : undefined;
 
+const relatedPosts = computed(() => post.value?.related_posts || []);
 const safeContent = computed(() =>
   sanitizeCmsHtmlContent(post.value?.content, runtimeConfig.public.siteUrl),
 );
@@ -75,12 +80,11 @@ const safeAuthorBio = computed(() =>
   sanitizeCmsHtmlContent(post.value?.author?.bio, runtimeConfig.public.siteUrl),
 );
 
-useSeoMeta({
+useBlogSeo({
   title: computed(() => post.value?.name || "Blog Post"),
   description: computed(() => post.value?.description || ""),
-  ogTitle: computed(() => post.value?.name || "Blog Post"),
-  ogDescription: computed(() => post.value?.description || ""),
-  ogImage: computed(() => post.value?.image || undefined),
+  image: computed(() => post.value?.image || undefined),
+  type: computed(() => "article"),
 });
 </script>
 
@@ -92,93 +96,157 @@ useSeoMeta({
   />
 
   <main v-if="post" class="blog-post-detail">
-    <article class="blog-details-wrap">
-      <div class="details__content pb-30">
-        <h1 class="details__title">
+    <article class="blog-post-detail__article">
+      <header class="blog-post-detail__hero cms-quiet-surface">
+        <p class="cms-shell-eyebrow blog-post-detail__eyebrow">
+          {{ firstCategory?.name || "Journal" }}
+        </p>
+
+        <h1 class="blog-post-detail__title">
           {{ post.name }}
         </h1>
 
-        <div class="meta-info">
-          <ul>
-            <li><span class="meta-info__icon">◔</span>{{ viewCount }}</li>
-            <li v-if="formattedDate"><span class="meta-info__icon">◷</span>{{ formattedDate }}</li>
-          </ul>
-        </div>
+        <p v-if="post.description" class="blog-post-detail__lede">
+          {{ post.description }}
+        </p>
 
-        <div v-if="post.image" class="blog-details__featured-image">
-          <img :src="post.image" :alt="post.name" />
-        </div>
+        <ul class="blog-post-detail__meta">
+          <li class="blog-post-detail__meta-item">
+            <Icon name="ph:eye-bold" />
+            <span>{{ viewCount }} views</span>
+          </li>
+          <li v-if="formattedDate" class="blog-post-detail__meta-item">
+            <Icon name="ph:calendar-blank-bold" />
+            <span>{{ formattedDate }}</span>
+          </li>
+        </ul>
+      </header>
 
-        <div class="ck-content details__body" v-html="safeContent" />
-
-        <div v-if="post.tags?.length" class="post__tag">
-          <h5>Related Tags</h5>
-          <ul>
-            <li v-for="tag in post.tags" :key="tag.id">
-              <NuxtLink :to="localePath(cmsAppRoutes.blog.tag(tag.slug))">
-                {{ tag.name }}
-              </NuxtLink>
-            </li>
-          </ul>
-        </div>
+      <div class="blog-post-detail__body-shell">
+        <div class="ck-content blog-post-detail__body" v-html="safeContent" />
       </div>
 
-      <div
-        class="posts_navigation pt-35 pb-100"
-        :class="{ 'posts_navigation--empty': !post.navigation?.previous && !post.navigation?.next }"
+      <section v-if="post.tags?.length" class="blog-post-detail__tags cms-quiet-surface">
+        <div class="blog-post-detail__section-heading">
+          <p class="cms-shell-eyebrow blog-post-detail__section-eyebrow">
+            Filed Under
+          </p>
+          <h2 class="blog-post-detail__section-title">
+            Related Tags
+          </h2>
+        </div>
+
+        <ul class="blog-post-detail__tag-list">
+          <li v-for="tag in post.tags" :key="tag.id">
+            <NuxtLink :to="localePath(cmsAppRoutes.blog.tag(tag.slug))" class="blog-post-detail__tag-link">
+              {{ tag.name }}
+            </NuxtLink>
+          </li>
+        </ul>
+      </section>
+
+      <section v-if="relatedPosts.length" class="blog-post-detail__related">
+        <div class="blog-post-detail__section-heading">
+          <p class="cms-shell-eyebrow blog-post-detail__section-eyebrow">
+            Continue Reading
+          </p>
+          <h2 class="blog-post-detail__section-title">
+            Related Stories
+          </h2>
+        </div>
+
+        <div class="blog-post-detail__related-grid">
+          <article
+            v-for="entry in relatedPosts"
+            :key="entry.id"
+            class="blog-post-detail__related-card cms-quiet-surface"
+          >
+            <NuxtLink :to="resolvePostLink(entry)" class="blog-post-detail__related-media">
+              <img
+                v-if="entry.image"
+                :src="entry.image"
+                :alt="entry.name"
+                class="blog-post-detail__related-image"
+              >
+              <div v-else class="blog-post-detail__related-image blog-post-detail__related-image--placeholder" />
+            </NuxtLink>
+
+            <div class="blog-post-detail__related-body">
+              <p v-if="entry.created_at" class="blog-post-detail__related-date">
+                {{ formatBlogDate(entry.created_at, "short") }}
+              </p>
+              <h3 class="blog-post-detail__related-name">
+                <NuxtLink :to="resolvePostLink(entry)">
+                  {{ entry.name }}
+                </NuxtLink>
+              </h3>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <nav
+        class="blog-post-detail__navigation"
+        :class="{ 'blog-post-detail__navigation--empty': !post.navigation?.previous && !post.navigation?.next }"
       >
-        <div class="posts_navigation__row">
-          <div v-if="post.navigation?.previous" class="prev-link">
-            <span>Prev Post</span>
-            <h4>
+        <div class="blog-post-detail__navigation-grid">
+          <div v-if="post.navigation?.previous" class="blog-post-detail__navigation-card cms-quiet-surface">
+            <span class="blog-post-detail__navigation-label">Previous Story</span>
+            <h3 class="blog-post-detail__navigation-title">
               <NuxtLink :to="resolvePostLink(post.navigation.previous)">
                 {{ post.navigation.previous?.name }}
               </NuxtLink>
-            </h4>
+            </h3>
           </div>
-          <div v-else class="prev-link prev-link--placeholder" />
+          <div v-else class="blog-post-detail__navigation-card blog-post-detail__navigation-card--placeholder" />
 
           <NuxtLink
             v-if="firstCategory"
             :to="localePath(cmsAppRoutes.blog.category(firstCategory.slug))"
-            class="blog-filter"
+            class="blog-post-detail__navigation-filter"
             :aria-label="firstCategory.name"
           >
-            <span class="blog-filter__glyph">
+            <span class="blog-post-detail__navigation-filter-grid">
               <span />
               <span />
               <span />
               <span />
             </span>
           </NuxtLink>
-          <div v-else class="blog-filter blog-filter--placeholder" aria-hidden="true" />
+          <div v-else class="blog-post-detail__navigation-filter blog-post-detail__navigation-filter--placeholder" aria-hidden="true" />
 
-          <div v-if="post.navigation?.next" class="next-link">
-            <span>Next Post</span>
-            <h4>
+          <div v-if="post.navigation?.next" class="blog-post-detail__navigation-card cms-quiet-surface blog-post-detail__navigation-card--next">
+            <span class="blog-post-detail__navigation-label">Next Story</span>
+            <h3 class="blog-post-detail__navigation-title">
               <NuxtLink :to="resolvePostLink(post.navigation.next)">
                 {{ post.navigation.next?.name }}
               </NuxtLink>
-            </h4>
+            </h3>
           </div>
-          <div v-else class="next-link next-link--placeholder" />
+          <div v-else class="blog-post-detail__navigation-card blog-post-detail__navigation-card--placeholder" />
         </div>
-      </div>
+      </nav>
 
-      <div v-if="post.author" class="avatar__wrap text-center mb-45">
-        <div class="avatar-img">
+      <section v-if="post.author" class="blog-post-detail__author cms-quiet-surface">
+        <div class="blog-post-detail__author-avatar-wrap">
           <img
             v-if="post.author.avatar_url"
-            class="author-blog-avatar"
+            class="blog-post-detail__author-avatar"
             :src="post.author.avatar_url"
             :alt="post.author.name"
           >
+          <div v-else class="blog-post-detail__author-avatar blog-post-detail__author-avatar--placeholder" />
         </div>
 
-        <div class="avatar__info">
-          <h5>{{ post.author.name }}</h5>
+        <div class="blog-post-detail__author-copy">
+          <p class="cms-shell-eyebrow blog-post-detail__author-eyebrow">
+            Written By
+          </p>
+          <h2 class="blog-post-detail__author-name">
+            {{ post.author.name }}
+          </h2>
 
-          <div v-if="post.author.socials?.length" class="avatar__info-social">
+          <div v-if="post.author.socials?.length" class="blog-post-detail__author-social">
             <a
               v-for="social in post.author.socials"
               :key="social.name"
@@ -190,14 +258,14 @@ useSeoMeta({
               <Icon :name="socialIcons[social.name] || 'ph:link-bold'" />
             </a>
           </div>
-        </div>
 
-        <div
-          v-if="safeAuthorBio"
-          class="avatar__wrap-content"
-          v-html="safeAuthorBio"
-        />
-      </div>
+          <div
+            v-if="safeAuthorBio"
+            class="blog-post-detail__author-bio"
+            v-html="safeAuthorBio"
+          />
+        </div>
+      </section>
     </article>
   </main>
 </template>
@@ -207,354 +275,460 @@ useSeoMeta({
   min-width: 0;
 }
 
-.blog-details-wrap {
+.blog-post-detail__article {
   min-width: 0;
 }
 
-.details__content {
-  padding-bottom: 1.5rem;
+.blog-post-detail__hero {
+  padding: clamp(1.8rem, 4vw, 3rem);
+  border-radius: var(--retreat-radius-card);
 }
 
-.blog-details__featured-image {
-  margin: 2rem 0;
-  overflow: hidden;
-  border-radius: 1.5rem;
-  box-shadow: 0 24px 55px rgba(33, 29, 25, 0.08);
+.blog-post-detail__eyebrow {
+  margin-bottom: 1.1rem;
 }
 
-.blog-details__featured-image img {
-  display: block;
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  aspect-ratio: 16 / 9;
-}
-
-.details__title {
+.blog-post-detail__title {
   margin: 0;
-  color: #111111;
-  font-size: clamp(2rem, 3vw, 3rem);
-  line-height: 1.12;
+  color: var(--retreat-ink);
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 5.4rem);
+  font-weight: 600;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
 }
 
-.meta-info {
-  margin: 1rem 0 1.6rem;
-  padding: 0.95rem 0;
-  border-top: 1px solid rgba(17, 17, 17, 0.08);
-  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+.blog-post-detail__lede {
+  max-width: 44rem;
+  margin: 1.25rem 0 0;
+  color: var(--retreat-ink-soft);
+  font-size: 1.03rem;
+  line-height: 1.95;
 }
 
-.meta-info ul {
+.blog-post-detail__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.25rem;
-  margin: 0;
+  gap: 0.8rem 1.5rem;
+  margin: 1.4rem 0 0;
   padding: 0;
   list-style: none;
 }
 
-.meta-info li {
+.blog-post-detail__meta-item {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  color: #6c6257;
-  font-size: 0.92rem;
+  gap: 0.55rem;
+  color: var(--retreat-ink-soft);
+  font-size: 0.88rem;
+  line-height: 1.6;
 }
 
-.meta-info__icon {
-  color: #7c5c3b;
-  font-size: 0.8rem;
+.blog-post-detail__meta-item :deep(svg) {
+  color: var(--retreat-clay);
+  font-size: 1rem;
 }
 
-.details__body {
-  color: #5b5248;
-  line-height: 1.9;
+.blog-post-detail__body-shell {
+  margin-top: 2.4rem;
 }
 
-.details__body:deep(img) {
+.blog-post-detail__body {
+  color: var(--retreat-ink-soft);
+  font-size: 1rem;
+  line-height: 1.95;
+}
+
+.blog-post-detail__body:deep(> *:first-child) {
+  margin-top: 0;
+}
+
+.blog-post-detail__body:deep(> *:last-child) {
+  margin-bottom: 0;
+}
+
+.blog-post-detail__body:deep(h2),
+.blog-post-detail__body:deep(h3),
+.blog-post-detail__body:deep(h4) {
+  margin: 2.7rem 0 1rem;
+  color: var(--retreat-ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+}
+
+.blog-post-detail__body:deep(h2) {
+  font-size: clamp(2.35rem, 4vw, 3.7rem);
+}
+
+.blog-post-detail__body:deep(h3) {
+  font-size: clamp(2rem, 3vw, 3rem);
+}
+
+.blog-post-detail__body:deep(h4) {
+  font-size: clamp(1.7rem, 2.3vw, 2.35rem);
+}
+
+.blog-post-detail__body:deep(p),
+.blog-post-detail__body:deep(ul),
+.blog-post-detail__body:deep(ol) {
+  margin: 1rem 0;
+}
+
+.blog-post-detail__body:deep(img) {
   display: block;
   max-width: 100%;
   height: auto;
-  margin: 1.75rem 0;
-  border-radius: 1rem;
-}
-
-.details__body:deep(p),
-.details__body:deep(ul),
-.details__body:deep(ol),
-.details__body:deep(h2),
-.details__body:deep(h3),
-.details__body:deep(h4) {
-  margin: 1.5rem 0;
-}
-
-.details__body:deep(figcaption) {
-  color: #7b6b5d;
-  font-size: 0.92rem;
-  margin-top: 0.6rem;
-}
-
-
-.details__body:deep(blockquote) {
   margin: 2rem 0;
-  padding: 2.25rem;
-  background: #111111;
-  color: #fff;
+  border-radius: 1.6rem;
 }
 
-.details__body:deep(blockquote p),
-.details__body:deep(blockquote cite) {
-  color: inherit;
+.blog-post-detail__body:deep(figure) {
+  margin: 2rem 0;
 }
 
-.details__body:deep(h2),
-.details__body:deep(h3),
-.details__body:deep(h4) {
-  color: #111111;
+.blog-post-detail__body:deep(blockquote) {
+  margin: 2.6rem 0;
+  padding: clamp(1.8rem, 4vw, 2.6rem);
+  border-left: 3px solid rgba(167, 122, 84, 0.45);
+  border-radius: 1.6rem;
+  background: linear-gradient(180deg, rgba(255, 251, 246, 0.98), rgba(243, 234, 222, 0.92));
+  color: var(--retreat-ink);
+  box-shadow: 0 22px 50px rgba(35, 22, 13, 0.06);
 }
 
-.post__tag {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(17, 17, 17, 0.08);
-}
-
-.post__tag h5 {
-  margin: 0 0 0.85rem;
-  color: #2f241d;
-  font-size: 1rem;
-  letter-spacing: 0.02em;
-}
-
-.post__tag ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+.blog-post-detail__body:deep(blockquote p) {
   margin: 0;
-  padding: 0;
-  list-style: none;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3vw, 2.6rem);
+  line-height: 1.1;
 }
 
-.post__tag li {
-  margin: 0;
-}
-
-.post__tag a {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.6rem 1rem;
-  background: #f8f1e6;
-  color: #5d5147;
-  border-radius: 999px;
-  text-decoration: none;
-  font-size: 0.92rem;
-}
-
-.post__tag a:hover {
-  background: #efe1d1;
-}
-
-.avatar-img {
-  margin: 0 auto 1.2rem;
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2px solid rgba(124, 92, 59, 0.16);
-}
-
-.author-blog-avatar {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-}
-
-.avatar__info h5 {
-  margin: 0 0 0.5rem;
-  font-size: 1.05rem;
-}
-
-.avatar__info-social {
-  display: inline-flex;
-  gap: 0.7rem;
-}
-
-.avatar__info-social a {
-  color: #7c5c3b;
-}
-
-.avatar__wrap-content {
-  margin-top: 1.6rem;
-  color: #5b5248;
-  line-height: 1.8;
-}
-
-
-.post__tag h5 {
-  margin: 0 0 1rem;
-  color: #111111;
-  font-size: 1.55rem;
-}
-
-.post__tag ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.post__tag a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2rem;
-  border: 1px solid rgba(17, 17, 17, 0.12);
-  padding: 0.35rem 0.75rem;
-  color: #6c6257;
-  font-size: 0.76rem;
-  letter-spacing: 0.04em;
-  text-decoration: none;
+.blog-post-detail__body:deep(blockquote cite) {
+  display: inline-block;
+  margin-top: 0.9rem;
+  color: var(--retreat-ink-soft);
+  font-size: 0.82rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
-.posts_navigation {
-  padding-top: 2rem;
-  padding-bottom: 4rem;
+.blog-post-detail__section-heading {
+  margin-bottom: 1.35rem;
 }
 
-.posts_navigation--empty {
-  padding-bottom: 2rem;
+.blog-post-detail__section-eyebrow {
+  margin-bottom: 0.8rem;
 }
 
-.posts_navigation__row {
+.blog-post-detail__section-title {
+  margin: 0;
+  color: var(--retreat-ink);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
+  line-height: 0.98;
+}
+
+.blog-post-detail__tags {
+  margin-top: 2.6rem;
+  padding: 1.8rem;
+  border-radius: var(--retreat-radius-card);
+}
+
+.blog-post-detail__tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-post-detail__tag-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--retreat-ink);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.blog-post-detail__tag-link:hover {
+  background: rgba(167, 122, 84, 0.14);
+  color: var(--retreat-clay);
+}
+
+.blog-post-detail__related {
+  margin-top: 3rem;
+}
+
+.blog-post-detail__related-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.blog-post-detail__related-card {
+  overflow: hidden;
+  border-radius: var(--retreat-radius-card);
+}
+
+.blog-post-detail__related-media {
+  display: block;
+}
+
+.blog-post-detail__related-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  object-fit: cover;
+}
+
+.blog-post-detail__related-image--placeholder {
+  background:
+    linear-gradient(135deg, rgba(167, 122, 84, 0.12), rgba(107, 113, 83, 0.12)),
+    #efe5d8;
+}
+
+.blog-post-detail__related-body {
+  padding: 1.2rem 1.2rem 1.35rem;
+}
+
+.blog-post-detail__related-date {
+  margin: 0 0 0.45rem;
+  color: var(--retreat-clay);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.blog-post-detail__related-name {
+  margin: 0;
+  color: var(--retreat-ink);
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.blog-post-detail__related-name a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.blog-post-detail__related-name a:hover {
+  color: var(--retreat-clay);
+}
+
+.blog-post-detail__navigation {
+  margin-top: 3rem;
+}
+
+.blog-post-detail__navigation--empty {
+  display: none;
+}
+
+.blog-post-detail__navigation-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.2rem;
 }
 
-.prev-link span,
-.next-link span {
-  display: block;
-  margin-bottom: 0.45rem;
-  color: #9d9387;
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
+.blog-post-detail__navigation-card {
+  min-height: 100%;
+  padding: 1.4rem 1.5rem;
+  border-radius: var(--retreat-radius-soft);
+}
+
+.blog-post-detail__navigation-card--placeholder {
+  visibility: hidden;
+}
+
+.blog-post-detail__navigation-card--next {
+  text-align: right;
+}
+
+.blog-post-detail__navigation-label {
+  display: inline-block;
+  margin-bottom: 0.65rem;
+  color: var(--retreat-clay);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
-.prev-link h4,
-.next-link h4 {
+.blog-post-detail__navigation-title {
   margin: 0;
-  color: #111111;
-  font-size: 1.45rem;
-  line-height: 1.2;
+  color: var(--retreat-ink);
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-weight: 600;
+  line-height: 1;
 }
 
-.prev-link h4 a,
-.next-link h4 a {
+.blog-post-detail__navigation-title a {
   color: inherit;
   text-decoration: none;
 }
 
-.next-link {
-  text-align: right;
+.blog-post-detail__navigation-title a:hover {
+  color: var(--retreat-clay);
 }
 
-.blog-filter,
-.blog-filter--placeholder {
+.blog-post-detail__navigation-filter,
+.blog-post-detail__navigation-filter--placeholder {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 4rem;
-  height: 4rem;
+  width: 4.5rem;
+  height: 4.5rem;
   border-radius: 999px;
-  background: #e2fbfb;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 20px 40px rgba(35, 22, 13, 0.07);
 }
 
-.blog-filter__glyph {
+.blog-post-detail__navigation-filter-grid {
   display: grid;
-  grid-template-columns: repeat(2, 0.35rem);
-  gap: 0.25rem;
+  grid-template-columns: repeat(2, 0.38rem);
+  gap: 0.26rem;
 }
 
-.blog-filter__glyph span {
-  width: 0.35rem;
-  height: 0.35rem;
+.blog-post-detail__navigation-filter-grid span {
+  width: 0.38rem;
+  height: 0.38rem;
   border-radius: 999px;
-  background: #58d7dc;
+  background: var(--retreat-clay);
 }
 
-.avatar__wrap {
-  border: 1px solid rgba(17, 17, 17, 0.08);
-  background: #fbfbfb;
-  padding: 2.5rem 2rem;
+.blog-post-detail__author {
+  display: grid;
+  gap: 1.4rem;
+  margin-top: 3rem;
+  padding: clamp(1.7rem, 4vw, 2.5rem);
+  border-radius: var(--retreat-radius-card);
 }
 
-.avatar-img {
+.blog-post-detail__author-avatar-wrap {
   display: flex;
   justify-content: center;
-  margin-bottom: 1rem;
 }
 
-.author-blog-avatar {
-  width: 120px;
-  height: 120px;
+.blog-post-detail__author-avatar {
+  width: 7.5rem;
+  height: 7.5rem;
+  border-radius: 999px;
   object-fit: cover;
+  box-shadow: 0 20px 40px rgba(35, 22, 13, 0.12);
 }
 
-.avatar__info h5 {
+.blog-post-detail__author-avatar--placeholder {
+  background:
+    linear-gradient(135deg, rgba(167, 122, 84, 0.12), rgba(107, 113, 83, 0.12)),
+    #efe5d8;
+}
+
+.blog-post-detail__author-copy {
+  text-align: center;
+}
+
+.blog-post-detail__author-eyebrow {
+  justify-content: center;
+  margin-bottom: 0.8rem;
+}
+
+.blog-post-detail__author-name {
   margin: 0;
-  color: #111111;
-  font-size: 2rem;
-  line-height: 1.15;
+  color: var(--retreat-ink);
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 600;
+  line-height: 0.96;
 }
 
-.avatar__info-social {
+.blog-post-detail__author-social {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
+  gap: 0.65rem;
+  margin-top: 1rem;
 }
 
-.avatar__info-social a {
+.blog-post-detail__author-social a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.6rem;
-  height: 1.6rem;
-  color: #7c5c3b;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--retreat-clay);
   text-decoration: none;
 }
 
-.avatar__wrap-content {
-  max-width: 34rem;
-  margin: 1rem auto 0;
-  color: #6c6257;
-  line-height: 1.85;
+.blog-post-detail__author-social a:hover {
+  color: var(--retreat-olive);
+  transform: translateY(-1px);
 }
 
-.avatar__wrap-content:deep(p) {
+.blog-post-detail__author-bio {
+  max-width: 42rem;
+  margin: 1.15rem auto 0;
+  color: var(--retreat-ink-soft);
+  line-height: 1.9;
+}
+
+.blog-post-detail__author-bio:deep(p) {
   margin: 0;
 }
 
 @media (max-width: 767px) {
-  .posts_navigation__row {
+  .blog-post-detail__navigation-grid {
     grid-template-columns: 1fr;
-    justify-items: start;
   }
 
-  .next-link {
+  .blog-post-detail__navigation-card--next {
     text-align: left;
   }
 
-  .blog-filter,
-  .blog-filter--placeholder {
+  .blog-post-detail__navigation-filter,
+  .blog-post-detail__navigation-filter--placeholder {
     order: -1;
+    margin-inline: auto;
+  }
+}
+
+@media (min-width: 992px) {
+  .blog-post-detail__author {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .blog-post-detail__author-copy {
+    text-align: left;
+  }
+
+  .blog-post-detail__author-eyebrow {
+    justify-content: flex-start;
+  }
+
+  .blog-post-detail__author-social {
+    justify-content: flex-start;
+  }
+
+  .blog-post-detail__author-bio {
+    margin-inline: 0;
   }
 }
 </style>

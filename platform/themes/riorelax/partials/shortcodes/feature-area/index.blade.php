@@ -1,6 +1,6 @@
 @php($bgColor = $shortcode->background_color ?: '#f7f5f1')
 
-<section class="feature-area2 p-relative fix" style="background: {{ $bgColor }}">
+<section class="shortcode-feature-area feature-area2 p-relative fix" style="background: {{ $bgColor }}">
     @if ($bgImage = $shortcode->background_image)
         <div class="animations-02">
             <img src="{{ RvMedia::getImageUrl($bgImage) }}" alt="{{ __('Background image') }}">

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { parseNewsletterBlock, type ShortcodeBlock } from "~/utils/shortcode";
 import { useNewsletterSubscribe } from "~/composables/useNewsletterSubscribe";
+import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
   block: ShortcodeBlock;
 }>();
 
 const section = computed(() => parseNewsletterBlock(props.block.raw));
+const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 const { email, pending, feedback, submit } = useNewsletterSubscribe(
   computed(() => section.value.action),
 );
@@ -75,7 +77,7 @@ const submitNewsletter = () => submit();
   </section>
 
   <section v-else class="shortcode-newsletter">
-    <div v-html="block.raw" />
+    <div v-html="sanitizedHtml" />
   </section>
 </template>
 

@@ -1,4 +1,4 @@
-<section class="pt-100 pb-90 p-relative">
+<section class="shortcode-service-list pt-100 pb-90 p-relative">
     @if ($bgImage = $shortcode->background_image)
         <div class="animations-01">
             <img src="{{ RvMedia::getImageUrl($bgImage) }}" alt="{{ __('Background image') }}">

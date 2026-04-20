@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import {
-  parseFeatureBlock,
-  type FeatureSectionData,
+  parseFeatureAreaBlock,
+  type FeatureAreaSectionData,
   type ShortcodeBlock,
 } from "~/utils/shortcode";
+import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
   block: ShortcodeBlock;
 }>();
 
-const section = computed<FeatureSectionData>(() => parseFeatureBlock(props.block.raw));
+const section = computed<FeatureAreaSectionData>(() => parseFeatureAreaBlock(props.block.raw));
+const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 
 const sectionStyle = computed(() =>
   section.value.backgroundColor
@@ -96,7 +98,7 @@ const sectionStyle = computed(() =>
       <div
         v-else
         class="feature-fallback"
-        v-html="block.raw"
+        v-html="sanitizedHtml"
       ></div>
     </div>
   </section>

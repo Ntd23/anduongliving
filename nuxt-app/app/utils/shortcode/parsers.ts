@@ -19,24 +19,214 @@ import {
   parseShortcodeAttributes,
 } from "./core";
 import type {
-  AboutSectionData,
-  FeatureSectionData,
+  AboutUsSectionData,
+  BrandsSectionData,
+  BrandItem,
+  AvailabilityBookingFormSectionData,
+  BookingFormSectionData,
+  BookingSelectOption,
+  CheckAvailabilityFormSectionData,
+  CuisineShowcaseSectionData,
+  FaqItem,
+  FaqsSectionData,
+  FeatureAreaSectionData,
+  FeaturedAmenitiesSectionData,
+  FeaturedRoomsSectionData,
+  FeatureGridItem,
+  ForestFacilityShowcaseSectionData,
+  GalleriesSectionData,
+  GalleryFilter,
+  GalleryItem,
   HeroStorySectionData,
+  HeroBannerWithBookingFormSectionData,
+  HotelPlacesSectionData,
+  HotelServicesSectionData,
+  IntroVideoSectionData,
+  LocationTourismShowcaseSectionData,
+  LogoShowcaseBannerSectionData,
+  NewsSectionData,
   NewsletterSectionData,
-  ServiceDetailsData,
-  BookingSectionData,
-  BookingRoomOption,
+  OnsenSpaGalleryItem,
+  OnsenSpaGallerySectionData,
+  PickupGalleryShowcaseSectionData,
   PricingItem,
   PricingSectionData,
+  RoomMosaicShowcaseCard,
+  RoomMosaicShowcaseSectionData,
+  ServiceItem,
   SkillItem,
-  SkillSectionData,
+  SimpleSliderSectionData,
+  SimpleSliderSlide,
+  SpecialStoryShowcaseCard,
+  SpecialStoryShowcaseNavEntry,
+  SpecialStoryShowcaseSectionData,
+  SpaCollageShowcaseSectionData,
+  ShortcodeAction,
+  TeamsSectionData,
   TeamMember,
-  TeamSectionData,
   TeamSocialLink,
+  TestimonialItem,
   TestimonialsSectionData,
+  UserProfileMetric,
+  UserProfileSectionData,
+  WhyChooseUsSectionData,
 } from "./types";
 
-export const parseTeamBlock = (html: string): TeamSectionData => {
+export const parseGenericShortcodeBlock = (html: string) => html;
+
+const unwrapOuterTag = (html: string) => {
+  const startIndex = html.indexOf(">");
+  const endIndex = html.lastIndexOf("</");
+
+  if (startIndex === -1 || endIndex === -1 || endIndex <= startIndex) {
+    return html;
+  }
+
+  return html.slice(startIndex + 1, endIndex);
+};
+
+const buildAction = (link?: { raw: string; url: string }): ShortcodeAction | null => {
+  if (!link?.url) {
+    return null;
+  }
+
+  const label = normalizeText(link.raw);
+
+  if (!label) {
+    return null;
+  }
+
+  return {
+    href: link.url,
+    label,
+  };
+};
+
+const extractInnerDivTexts = (html: string) => {
+  const innerHtml = unwrapOuterTag(html);
+  const lines: string[] = [];
+  const pattern = /<div\b[^>]*>([\s\S]*?)<\/div>/gi;
+  let match: RegExpExecArray | null;
+
+  while ((match = pattern.exec(innerHtml))) {
+    const value = normalizeText(match[1] || "");
+
+    if (value) {
+      lines.push(value);
+    }
+  }
+
+  return lines;
+};
+
+const clampInteger = (value: string | null, fallback: number | null = null) => {
+  if (!value) {
+    return fallback;
+  }
+
+  const parsed = Number.parseInt(value, 10);
+  return Number.isNaN(parsed) ? fallback : parsed;
+};
+
+const extractInputByName = (html: string, name: string) => {
+  const pattern = new RegExp(
+    `<input\\b[^>]*name\\s*=\\s*(['"])${name}\\1[^>]*>`,
+    "i",
+  );
+
+  return pattern.exec(html)?.[0] || null;
+};
+
+const extractSelectByName = (html: string, name: string) => {
+  const pattern = new RegExp(
+    `<select\\b[^>]*name\\s*=\\s*(['"])${name}\\1[^>]*>[\\s\\S]*?<\\/select>`,
+    "i",
+  );
+
+  return pattern.exec(html)?.[0] || null;
+};
+
+const extractSelectOptions = (selectHtml: string | null): BookingSelectOption[] => {
+  if (!selectHtml) {
+    return [];
+  }
+
+  const pattern = /<option\b([^>]*)value=(['"])(.*?)\2([^>]*)>([\s\S]*?)<\/option>/gi;
+  const options: BookingSelectOption[] = [];
+  let match: RegExpExecArray | null;
+
+  while ((match = pattern.exec(selectHtml))) {
+    const rawAttributes = `${match[1] || ""} ${match[4] || ""}`;
+    options.push({
+      value: normalizeText(match[3] || ""),
+      label: normalizeText(match[5] || ""),
+      selected: /selected/i.test(rawAttributes),
+    });
+  }
+
+  return options;
+};
+
+const parseAvailabilityBookingForm = (html: string): AvailabilityBookingFormSectionData | null => {
+  const formTag = extractFirstTag(html, "form");
+
+  if (!formTag) {
+    return null;
+  }
+
+  const titleBlock = extractFirstBlockByClass(formTag, "div", "section-title");
+  const startInput = extractInputByName(formTag, "start_date");
+  const endInput = extractInputByName(formTag, "end_date");
+  const adultsInput = extractInputByName(formTag, "adults");
+  const childrenInput = extractInputByName(formTag, "children");
+  const roomsInput = extractInputByName(formTag, "rooms");
+
+  return {
+    title: titleBlock ? extractTextFromTag(titleBlock, "h2") : null,
+    actionUrl: extractAttribute(formTag, "action"),
+    dateFormat:
+      extractAttribute(startInput || "", "data-date-format") ||
+      extractAttribute(endInput || "", "data-date-format"),
+    submitLabel: extractTextFromTag(formTag, "button"),
+    startDate: extractAttribute(startInput || "", "value"),
+    endDate: extractAttribute(endInput || "", "value"),
+    minAdults: clampInteger(extractAttribute(adultsInput || "", "min"), 1),
+    maxAdults: clampInteger(extractAttribute(adultsInput || "", "max"), 10),
+    defaultAdults: clampInteger(extractAttribute(adultsInput || "", "value"), 1),
+    defaultChildren: clampInteger(extractAttribute(childrenInput || "", "value"), 0),
+    defaultRooms: clampInteger(extractAttribute(roomsInput || "", "value"), 1),
+  };
+};
+
+const parseFeatureGridItem = (html: string): FeatureGridItem | null => {
+  const titleLink = extractLinks(extractFirstTag(html, "h3") || "")[0];
+  const actionLink = extractLinks(html).find((link) => !titleLink || link.url !== titleLink.url);
+  const title =
+    extractTextFromTag(html, "h3") ||
+    extractTextFromTag(html, "h2") ||
+    extractTextFromTag(html, "h4");
+
+  if (!title) {
+    return null;
+  }
+
+  return {
+    title,
+    description: extractTextFromTag(html, "p"),
+    image:
+      extractFirstImage(extractFirstBlockByClass(html, "div", "services-08-thumb") || "") ||
+      extractFirstImage(extractFirstBlockByClass(html, "figure", "gallery-image") || "") ||
+      extractFirstImage(html),
+    href: titleLink?.url || actionLink?.url || null,
+    actionLabel: actionLink ? normalizeText(actionLink.raw) : null,
+    price: extractTextFromTag(html, "div", "service-price"),
+    meta:
+      extractTextFromTag(html, "div", "date-home") ||
+      extractTextFromTag(html, "p", "blog-item-custom-truncate"),
+  };
+};
+
+export const parseTeamsBlock = (html: string): TeamsSectionData => {
   const section = extractFirstBlockByClass(html, "section", "team-area") || html;
   const memberBlocks = extractBlocksByTag(section, "div", "single-team");
 
@@ -73,7 +263,7 @@ export const parseTeamBlock = (html: string): TeamSectionData => {
   };
 };
 
-export const parseAboutBlock = (html: string): AboutSectionData => {
+export const parseAboutUsBlock = (html: string): AboutUsSectionData => {
   const section = extractFirstBlockByClass(html, "section", "about-area") || html;
   const mediaBlock = extractFirstBlockByClass(section, "div", "s-about-img");
   const titleBlock = extractFirstBlockByClass(section, "div", "about-title");
@@ -103,7 +293,7 @@ export const parseAboutBlock = (html: string): AboutSectionData => {
   };
 };
 
-export const parseSkillBlock = (html: string): SkillSectionData => {
+export const parseWhyChooseUsBlock = (html: string): WhyChooseUsSectionData => {
   const section = extractFirstBlockByClass(html, "section", "skill-area") || html;
   const titleBlock = extractFirstBlockByClass(section, "div", "skills-title");
   const leftColumn = extractFirstNthBlockByClass(section, "div", "skills-content", 0) || section;
@@ -173,7 +363,497 @@ export const parseHeroStoryBlock = (html: string): HeroStorySectionData => {
   };
 };
 
-export const parseFeatureBlock = (html: string): FeatureSectionData => {
+export const parseSimpleSliderBlock = (html: string): SimpleSliderSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "slider-showcase-area") || html;
+  const slides = extractBlocksByTag(section, "div", "slider-showcase-slide");
+
+  return {
+    slides: slides
+      .map((slide) => {
+        const mediaLink = extractLinks(slide)[0];
+        const mediaBlock =
+          extractFirstBlockByClass(slide, "a", "slider-showcase-media") ||
+          extractFirstBlockByClass(slide, "div", "slider-showcase-media") ||
+          slide;
+
+        return {
+          image: extractFirstImage(mediaBlock),
+          caption: extractTextFromTag(slide, "p", "slider-showcase-caption"),
+          href: mediaLink?.url || null,
+        } satisfies SimpleSliderSlide;
+      })
+      .filter((slide) => slide.image?.src || slide.caption) as SimpleSliderSlide[],
+  };
+};
+
+export const parseLogoShowcaseBannerBlock = (html: string): LogoShowcaseBannerSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "logo-showcase-banner") || html;
+  const topBlock = extractFirstBlockByClass(section, "div", "logo-showcase-banner__top");
+  const bottomBlock = extractFirstBlockByClass(section, "div", "logo-showcase-banner__bottom");
+  const logoBlock = extractFirstBlockByClass(section, "div", "logo-showcase-banner__center") || section;
+
+  return {
+    backgroundImage: extractStyleImage(section),
+    logoImage: extractFirstImage(logoBlock),
+    topLines: topBlock ? extractParagraphTexts(topBlock) : [],
+    bottomLines: bottomBlock ? extractParagraphTexts(bottomBlock) : [],
+  };
+};
+
+export const parseRoomMosaicShowcaseBlock = (html: string): RoomMosaicShowcaseSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "room-mosaic-showcase") || html;
+  const heroBlock = extractFirstBlockByClass(section, "div", "room-mosaic-showcase__hero") || section;
+  const descriptionBlock = extractFirstBlockByClass(section, "div", "room-mosaic-showcase__description");
+  const mainImageBlock = extractFirstBlockByClass(section, "div", "room-mosaic-showcase__main");
+  const sideTextBlock = extractFirstBlockByClass(section, "div", "room-mosaic-showcase__side-text");
+  const ctaBlock = extractFirstBlockByClass(section, "div", "room-mosaic-showcase__cta");
+  const actionLink = extractLinks(ctaBlock || "")[0];
+
+  return {
+    backgroundImage: extractStyleImage(heroBlock),
+    subtitle: extractTextFromTag(section, "p", "room-mosaic-showcase__subtitle"),
+    title: extractTextFromTag(section, "h2", "room-mosaic-showcase__title"),
+    description: descriptionBlock ? normalizeText(descriptionBlock) : null,
+    mainImage: mainImageBlock ? extractFirstImage(mainImageBlock) : null,
+    cards: extractBlocksByTag(section, "div", "room-mosaic-showcase__card")
+      .map((cardBlock) => ({
+        title: extractTextFromTag(cardBlock, "div", "room-mosaic-showcase__card-title"),
+        image: extractFirstImage(cardBlock),
+      }) satisfies RoomMosaicShowcaseCard)
+      .filter((card) => card.title || card.image?.src),
+    sideTextLines: sideTextBlock ? extractInnerDivTexts(sideTextBlock) : [],
+    roomItems: extractBlocksByTag(section, "div", "room-mosaic-showcase__room-item")
+      .map((item) => normalizeText(item))
+      .filter(Boolean),
+    ctaTitle: extractTextFromTag(section, "h3", "room-mosaic-showcase__cta-title"),
+    action: buildAction(actionLink),
+  };
+};
+
+export const parseOnsenSpaGalleryBlock = (html: string): OnsenSpaGallerySectionData => {
+  const section = extractFirstBlockByClass(html, "section", "onsen-spa-gallery") || html;
+  const footerBlock = extractFirstBlockByClass(section, "div", "onsen-spa-gallery__footer");
+
+  return {
+    backgroundImage: extractStyleImage(section),
+    backgroundTitle: extractTextFromTag(section, "div", "onsen-spa-gallery__bg-title"),
+    subtitle: extractTextFromTag(section, "div", "onsen-spa-gallery__subtitle"),
+    items: extractBlocksByTag(section, "div", "onsen-spa-gallery__item")
+      .map((itemBlock) => ({
+        title: extractTextFromTag(itemBlock, "div", "onsen-spa-gallery__item-title"),
+        image: extractFirstImage(itemBlock),
+      }) satisfies OnsenSpaGalleryItem)
+      .filter((item) => item.title || item.image?.src),
+    sectionLabel: extractTextFromTag(section, "div", "onsen-spa-gallery__label"),
+    actions: extractLinks(footerBlock || "")
+      .map((link) => buildAction(link))
+      .filter(Boolean) as ShortcodeAction[],
+  };
+};
+
+export const parsePickupGalleryShowcaseBlock = (html: string): PickupGalleryShowcaseSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "pickup") || html;
+  const galleryBlocks = extractBlocksByTag(section, "div", "pickup__gallery-item");
+  const actionLink = extractLinks(extractFirstBlockByClass(section, "div", "pickup__info") || "")[0];
+
+  return {
+    backgroundImage: extractStyleImage(section),
+    pretitle: extractTextFromTag(section, "span", "pickup__pretitle"),
+    title: extractTextFromTag(section, "h2", "pickup__title"),
+    galleryImages: galleryBlocks
+      .map((block) => extractStyleImage(block))
+      .filter((image): image is NonNullable<typeof image> => Boolean(image?.src)),
+    description: extractTextFromTag(section, "p", "pickup__desc"),
+    sectionLabel: extractTextFromTag(section, "span", "pickup__label"),
+    action: buildAction(actionLink),
+  };
+};
+
+export const parseSpecialStoryShowcaseBlock = (html: string): SpecialStoryShowcaseSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "story") || html;
+  const actionLink = extractLinks(section).find((link) => link.raw.includes("story__btn"));
+
+  return {
+    backgroundImage: extractStyleImage(section),
+    decorativeText: extractTextFromTag(section, "span", "story__deco"),
+    sectionLabel: extractTextFromTag(section, "span", "story__label"),
+    description: extractTextFromTag(section, "p", "story__desc"),
+    cards: extractBlocksByTag(section, "div", "story__card")
+      .map((cardBlock) => ({
+        title: extractTextFromTag(cardBlock, "span", "story__card-title"),
+        image: extractFirstImage(cardBlock),
+      }) satisfies SpecialStoryShowcaseCard)
+      .filter((card) => card.title || card.image?.src),
+    navEntries: extractBlocksByTag(section, "div", "story__nav-item")
+      .map((navBlock) => ({
+        text: extractTextFromTag(navBlock, "span", "story__nav-text"),
+        badgeTop: extractTextFromTag(navBlock, "span", "story__nav-badge-top"),
+        badgeVolume: extractTextFromTag(navBlock, "span", "story__nav-badge-vol"),
+      }) satisfies SpecialStoryShowcaseNavEntry)
+      .filter((entry) => entry.text || entry.badgeTop || entry.badgeVolume),
+    action: buildAction(actionLink),
+  };
+};
+
+export const parseForestFacilityShowcaseBlock = (html: string): ForestFacilityShowcaseSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "shortcode-forest-facility-showcase") || html;
+  const imagesBlock = extractFirstBlockByClass(section, "div", "rfs__images");
+  const infoBlock = extractFirstBlockByClass(section, "div", "rfs__info");
+  const actionLink = extractLinks(infoBlock || "")[0];
+
+  return {
+    leftImage: extractFirstImage(extractFirstBlockByClass(imagesBlock || "", "div", "rfs__img-left") || ""),
+    rightImages: extractBlocksByTag(imagesBlock || "", "div", "rfs__img-right-item")
+      .map((block) => extractStyleImage(block))
+      .filter((image): image is NonNullable<typeof image> => Boolean(image?.src)),
+    title: extractTextFromTag(section, "h2", "rfs__heading"),
+    description: extractTextFromTag(section, "p", "rfs__desc"),
+    sectionLabel: extractTextFromTag(section, "div", "rfs__label"),
+    action: buildAction(actionLink),
+  };
+};
+
+export const parseLocationTourismShowcaseBlock = (html: string): LocationTourismShowcaseSectionData => {
+  const section =
+    extractFirstBlockByClass(html, "section", "shortcode-location-tourism-showcase") || html;
+  const infoColumns = extractBlocksByTag(section, "div", "loc__col");
+  const accessBlock = infoColumns[0] || "";
+  const tourismBlock = infoColumns[1] || "";
+
+  return {
+    backgroundImage: extractStyleImage(section),
+    mapImage: extractFirstImage(extractFirstBlockByClass(section, "div", "loc__map") || ""),
+    gridImages: extractBlocksByTag(section, "div", "loc__grid-item")
+      .map((block) => extractStyleImage(block))
+      .filter((image): image is NonNullable<typeof image> => Boolean(image?.src)),
+    decorativeText: extractTextFromTag(section, "div", "loc__deco"),
+    title: extractTextFromTag(section, "h2", "loc__title"),
+    access: {
+      description: extractTextFromTag(accessBlock, "p", "loc__desc"),
+      label: extractTextFromTag(accessBlock, "div", "loc__col-label"),
+      action: buildAction(extractLinks(accessBlock)[0]),
+    },
+    tourism: {
+      description: extractTextFromTag(tourismBlock, "p", "loc__desc"),
+      label: extractTextFromTag(tourismBlock, "div", "loc__col-label"),
+      action: buildAction(extractLinks(tourismBlock)[0]),
+    },
+  };
+};
+
+export const parseCuisineShowcaseBlock = (html: string): CuisineShowcaseSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "shortcode-cuisine-showcase") || html;
+  const footerBlock = extractFirstBlockByClass(section, "div", "cuisine__footer");
+
+  return {
+    title: extractTextFromTag(section, "h2", "cuisine__title"),
+    description: extractTextFromTag(section, "p", "cuisine__desc"),
+    images: extractBlocksByTag(section, "div", "cuisine__img")
+      .map((block) => extractFirstImage(block))
+      .filter((image): image is NonNullable<typeof image> => Boolean(image?.src)),
+    sectionLabel: extractTextFromTag(section, "span", "cuisine__label"),
+    action: buildAction(extractLinks(footerBlock || "")[0]),
+  };
+};
+
+export const parseSpaCollageShowcaseBlock = (html: string): SpaCollageShowcaseSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "spa-collage-showcase") || html;
+  const leftBlock = extractFirstBlockByClass(section, "div", "spa-collage-showcase__left");
+  const rightBlock = extractFirstBlockByClass(section, "div", "spa-collage-showcase__right");
+
+  return {
+    leftPanelImage: extractStyleImage(leftBlock || ""),
+    rightPanelImage: extractStyleImage(rightBlock || ""),
+    bottomImages: extractBlocksByTag(section, "div", "spa-collage-showcase__bottom-item")
+      .map((block) => extractStyleImage(block))
+      .filter((image): image is NonNullable<typeof image> => Boolean(image?.src)),
+    title: extractTextFromTag(section, "h2", "spa-collage-showcase__title"),
+    subtitle: extractTextFromTag(section, "div", "spa-collage-showcase__subtitle"),
+    description: extractTextFromTag(section, "div", "spa-collage-showcase__description"),
+  };
+};
+
+export const parseHeroBannerWithBookingFormBlock = (html: string): HeroBannerWithBookingFormSectionData => {
+  const section =
+    extractFirstBlockByClass(html, "section", "shortcode-hero-banner-with-booking-form") || html;
+  const sliderBlock = extractFirstBlockByClass(section, "div", "single-slider") || section;
+  const contentBlock = extractFirstBlockByClass(section, "div", "slider-content");
+  const actionLink = extractLinks(extractFirstBlockByClass(section, "div", "slider-btn") || "")[0];
+  const bookingBlock = extractFirstBlockByClass(section, "div", "booking-area2");
+
+  return {
+    backgroundColor: extractStyleValue(extractFirstBlockByClass(section, "div", "slider-active") || "", "background"),
+    backgroundImage: extractStyleImage(sliderBlock),
+    title: extractTextFromTag(contentBlock || "", "h2"),
+    description: extractTextFromTag(contentBlock || "", "p"),
+    action: buildAction(actionLink),
+    bookingForm: bookingBlock ? parseAvailabilityBookingForm(bookingBlock) : null,
+  };
+};
+
+export const parseCheckAvailabilityFormBlock = (html: string): CheckAvailabilityFormSectionData => {
+  const section =
+    extractFirstBlockByClass(html, "div", "shortcode-check-availability-form") || html;
+
+  return {
+    bookingForm: parseAvailabilityBookingForm(section),
+  };
+};
+
+export const parseBookingFormBlock = (html: string): BookingFormSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "shortcode-booking-form") || html;
+  const formTag = extractFirstTag(section, "form");
+  const hiddenToken = extractInputByName(formTag || "", "_token");
+
+  return {
+    shapeImage: extractFirstImage(extractFirstBlockByClass(section, "div", "animations-01") || ""),
+    image: extractFirstImage(extractFirstBlockByClass(section, "div", "booking-img") || ""),
+    subtitle: extractTextFromTag(section, "h5"),
+    title: extractTextFromTag(section, "h2"),
+    actionUrl: extractAttribute(formTag || "", "action"),
+    method: (extractAttribute(formTag || "", "method") || "post").toUpperCase(),
+    csrfToken: extractAttribute(hiddenToken || "", "value"),
+    dateFormat:
+      extractAttribute(extractInputByName(formTag || "", "start_date") || "", "data-date-format") ||
+      extractAttribute(extractInputByName(formTag || "", "end_date") || "", "data-date-format"),
+    startDate: extractAttribute(extractInputByName(formTag || "", "start_date") || "", "value"),
+    endDate: extractAttribute(extractInputByName(formTag || "", "end_date") || "", "value"),
+    submitLabel: extractTextFromTag(formTag || "", "button"),
+    roomOptions: extractSelectOptions(extractSelectByName(formTag || "", "room_id")),
+    adultOptions: extractSelectOptions(extractSelectByName(formTag || "", "adults")),
+  };
+};
+
+export const parseFeaturedAmenitiesBlock = (html: string): FeaturedAmenitiesSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "shortcode-featured-amenities") || html;
+  const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
+
+  return {
+    backgroundColor: extractStyleValue(section, "background-color"),
+    backgroundImage: extractFirstImage(extractFirstBlockByClass(section, "div", "animations-01") || ""),
+    subtitle: extractTextFromTag(titleBlock || "", "h5"),
+    title: extractTextFromTag(titleBlock || "", "h2"),
+    description: extractTextFromTag(titleBlock || "", "p"),
+    items: extractBlocksByTag(section, "div", "services-08-item")
+      .map(parseFeatureGridItem)
+      .filter(Boolean) as FeatureGridItem[],
+  };
+};
+
+export const parseServiceListBlock = (html: string): ServiceListSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "shortcode-service-list") || html;
+
+  return {
+    backgroundImage: extractFirstImage(extractFirstBlockByClass(section, "div", "animations-01") || ""),
+    items: extractBlocksByTag(section, "div", "services-08-item")
+      .map(parseFeatureGridItem)
+      .filter(Boolean) as FeatureGridItem[],
+  };
+};
+
+export const parseHotelPlacesBlock = (html: string): HotelPlacesSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "shortcode-hotel-places") || html;
+  const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
+
+  return {
+    subtitle: extractTextFromTag(titleBlock || "", "h5"),
+    title: extractTextFromTag(titleBlock || "", "h2"),
+    description: extractTextFromTag(titleBlock || "", "p"),
+    items: extractBlocksByTag(section, "div", "bsingle__post")
+      .map(parseFeatureGridItem)
+      .filter(Boolean) as FeatureGridItem[],
+  };
+};
+
+export const parseHotelServicesBlock = (html: string): HotelServicesSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "shortcode-hotel-services") || html;
+  const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
+
+  return {
+    subtitle: extractTextFromTag(titleBlock || "", "h5"),
+    title: extractTextFromTag(titleBlock || "", "h2"),
+    description: extractTextFromTag(titleBlock || "", "p"),
+    items: extractBlocksByTag(section, "div", "services-08-item")
+      .map(parseFeatureGridItem)
+      .filter(Boolean) as FeatureGridItem[],
+  };
+};
+
+export const parseNewsBlock = (html: string): NewsSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "shortcode-news") || html;
+  const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
+
+  return {
+    backgroundImage: extractFirstImage(extractFirstBlockByClass(section, "div", "animations-02") || ""),
+    subtitle: extractTextFromTag(titleBlock || "", "h5"),
+    title: extractTextFromTag(titleBlock || "", "h2"),
+    description: extractTextFromTag(titleBlock || "", "p"),
+    items: extractBlocksByTag(section, "div", "bsingle__post")
+      .map(parseFeatureGridItem)
+      .filter(Boolean) as FeatureGridItem[],
+  };
+};
+
+export const parseTestimonialsBlock = (html: string): TestimonialsSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "shortcode-testimonials") || html;
+  const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
+
+  return {
+    backgroundImage: extractStyleImage(section),
+    subtitle: extractTextFromTag(titleBlock || "", "h5"),
+    title: extractTextFromTag(titleBlock || "", "h2"),
+    description: extractTextFromTag(titleBlock || "", "p"),
+    items: extractBlocksByTag(section, "div", "single-testimonial")
+      .map((block) => {
+        const name = extractTextFromTag(block, "h6");
+
+        if (!name) {
+          return null;
+        }
+
+        return {
+          name,
+          image: extractFirstImage(extractFirstBlockByClass(block, "div", "testi-author") || ""),
+          content: extractTextFromTag(block, "p"),
+        } satisfies TestimonialItem;
+      })
+      .filter(Boolean) as TestimonialItem[],
+  };
+};
+
+export const parseGalleriesBlock = (html: string): GalleriesSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "shortcode-galleries") || html;
+  const filters = extractBlocksByTag(section, "button")
+    .map((button) => {
+      const value = extractAttribute(button, "data-filter");
+      const label = normalizeText(button);
+
+      if (!label || !value) {
+        return null;
+      }
+
+      return {
+        label,
+        value,
+      } satisfies GalleryFilter;
+    })
+    .filter(Boolean) as GalleryFilter[];
+
+  return {
+    filters,
+    items: extractBlocksByTag(section, "div", "grid-item")
+      .map((block) => {
+        const link = extractLinks(block)[0];
+        const className = extractAttribute(block, "class");
+        const filter =
+          className
+            ?.split(/\s+/)
+            .find((value) => value && value !== "grid-item") || null;
+
+        return {
+          title: extractAttribute(link?.raw || "", "title"),
+          image: extractFirstImage(block),
+          href: link?.url || null,
+          filter,
+        } satisfies GalleryItem;
+      })
+      .filter((item) => item.image?.src || item.href) as GalleryItem[],
+  };
+};
+
+export const parseFaqsBlock = (html: string): FaqsSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "shortcode-faqs") || html;
+
+  return {
+    items: extractBlocksByTag(section, "div", "card")
+      .map((block) => {
+        const button = extractFirstTag(block, "button", "faq-btn");
+        const question = normalizeText(button || "");
+
+        if (!question) {
+          return null;
+        }
+
+        const target = extractAttribute(button || "", "data-bs-target") || "";
+        const sortNumber = (target.match(/collapse(\d+)/i)?.[1] || "").trim();
+
+        return {
+          id: sortNumber || question,
+          question,
+          answer: extractTextFromTag(block, "div", "card-body"),
+        } satisfies FaqItem;
+      })
+      .filter(Boolean)
+      .sort((a, b) => Number.parseInt(a.id, 10) - Number.parseInt(b.id, 10)) as FaqItem[],
+  };
+};
+
+export const parseBrandsBlock = (html: string): BrandsSectionData => {
+  const section = extractFirstBlockByClass(html, "div", "shortcode-brands") || html;
+
+  return {
+    backgroundColor: extractStyleValue(section, "background-color"),
+    items: extractBlocksByTag(section, "div", "single-brand")
+      .map((block) => {
+        const link = extractLinks(block)[0];
+        const image = extractFirstImage(block);
+
+        if (!image?.src) {
+          return null;
+        }
+
+        return {
+          name: image.alt || null,
+          image,
+          href: link?.url || null,
+        } satisfies BrandItem;
+      })
+      .filter(Boolean) as BrandItem[],
+  };
+};
+
+export const parseIntroVideoBlock = (html: string): IntroVideoSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "shortcode-intro-video") || html;
+  const videoBlock = extractFirstBlockByClass(section, "div", "s-video-content");
+  const videoLink = extractLinks(videoBlock || "")[0];
+
+  return {
+    backgroundImage: extractStyleImage(section),
+    buttonIcon: extractFirstImage(videoBlock || ""),
+    videoUrl: videoLink?.url || null,
+    title: extractTextFromTag(section, "h2"),
+  };
+};
+
+export const parseUserProfileBlock = (html: string): UserProfileSectionData => {
+  const section = extractFirstBlockByClass(html, "div", "shortcode-user-profile") || html;
+
+  return {
+    metrics: extractBlocksByTag(section, "div", "skill mb-30")
+      .map((block) => {
+        const title = extractTextFromTag(block, "div", "skill-name");
+        const percentage = clampInteger(
+          extractAttribute(extractFirstTag(block, "div", "skill-per") || "", "id"),
+          null,
+        );
+
+        if (!title || percentage === null) {
+          return null;
+        }
+
+        return {
+          title,
+          percentage: Math.min(Math.max(percentage, 0), 100),
+        } satisfies UserProfileMetric;
+      })
+      .filter(Boolean) as UserProfileMetric[],
+    images: extractBlocksByTag(section, "figure", "image")
+      .map((block) => extractFirstImage(block))
+      .filter((image): image is NonNullable<typeof image> => Boolean(image?.src)),
+  };
+};
+
+export const parseFeatureAreaBlock = (html: string): FeatureAreaSectionData => {
   const section = extractFirstBlockByClass(html, "section", "feature-area2") || html;
   const titleBlock = extractFirstBlockByClass(section, "div", "feature-title");
   const contentBlock = extractFirstBlockByClass(section, "div", "feature-content");
@@ -201,6 +881,16 @@ export const parseFeatureBlock = (html: string): FeatureSectionData => {
           label: normalizeText(actionLink.raw),
         }
       : null,
+  };
+};
+
+export const parseServicesBlock = (html: string): FeatureAreaSectionData => {
+  const section = parseFeatureAreaBlock(html);
+
+  return {
+    ...section,
+    backgroundColor: section.backgroundColor || "#f7f5f1",
+    secondaryImage: null,
   };
 };
 
@@ -357,150 +1047,54 @@ export const parsePricingBlock = (html: string): PricingSectionData => {
       .filter(Boolean) as PricingItem[],
   };
 };
-
-export const parseTestimonialsBlock = (html: string): TestimonialsSectionData => {
-  // First try to parse as shortcode attributes
-  const attributes = parseShortcodeAttributes(html);
-
-  if (Object.keys(attributes).length > 0) {
-    // Parse from shortcode attributes
-    const testimonialIds = attributes.testimonial_ids
-      ? attributes.testimonial_ids.split(',').map(id => id.trim()).filter(Boolean)
-      : [];
-
-    return {
-      subtitle: attributes.subtitle || null,
-      title: attributes.title || null,
-      description: attributes.description || null,
-      backgroundImage: attributes.background_image
-        ? { src: attributes.background_image, alt: "" }
-        : null,
-      testimonialIds,
-      items: [], // Items will be populated from testimonialIds via API
-    };
-  }
-
-  // Fallback to HTML parsing
-  const section = extractFirstBlockByClass(html, "section", "testimonial-area") || html;
+const parseRoomsListingSection = (html: string, sectionClass: string): FeaturedRoomsSectionData => {
+  const section = extractFirstBlockByClass(html, "section", sectionClass)
+    || extractFirstBlockByClass(html, "section", "services-area")
+    || html;
   const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
-  const itemBlocks = extractBlocksByTag(section, "div", "single-testimonial");
+  const serviceBlocks = extractBlocksByTag(section, "div", "single-services");
+  const paginationBlock = extractFirstBlockByClass(section, "div", "text-center mt-30");
 
   return {
-    subtitle: null,
+    countLabel: extractTextFromTag(section, "h3"),
+    paginationHtml: paginationBlock ? paginationBlock.trim() : null,
+    subtitle: titleBlock ? extractTextFromTag(titleBlock, "h5") : null,
     title: titleBlock ? extractTextFromTag(titleBlock, "h2") : null,
-    description: null,
-    backgroundImage: null,
-    testimonialIds: [],
-    items: itemBlocks
-      .map((itemBlock) => {
-        const name = extractTextFromTag(itemBlock, "h4");
-        const title = extractTextFromTag(itemBlock, "span") || null;
-        const content = extractTextFromTag(itemBlock, "p");
-        const image = extractFirstImage(itemBlock);
+    description: titleBlock ? extractTextFromTag(titleBlock, "p") : null,
+    items: serviceBlocks
+      .map((serviceBlock: string, index: number) => {
+        const title = extractTextFromTag(serviceBlock, "h4")?.trim().replace(/^["']|["']$/g, '');
+        const link = extractAttribute(extractFirstTag(serviceBlock, "h4 a") || "", "href");
+        const image = extractFirstImage(serviceBlock); 
+        const description = extractFirstParagraphText(serviceBlock);
+        const button = extractTextFromTag(serviceBlock, "button");
+        const price = button ? button.replace(/[^0-9.]/g, '') : '';
+        const amenityImages = extractBlocksByTag(serviceBlock, "li")
+          .map((amenityBlock) => extractFirstImage(amenityBlock)?.alt || null)
+          .filter((amenity): amenity is string => Boolean(amenity));
 
-        if (!name || !content) return null;
+        if (!title) return null;
 
         return {
-          name,
-          title,
-          content,
-          image,
-          rating: null,
-        };
+          id: index,
+          name: title,
+          url: link || '#',
+          image: image?.src || '',
+          description,
+          bookLabel: button || 'Book Now',
+          price: price,
+          amenities: amenityImages,
+        } satisfies ServiceItem;
       })
       .filter(Boolean) as any[], // Type assertion needed due to filter
   };
 };
-export const parseServiceDetailsBlock = (html: string): ServiceDetailsData => {
-  // Lấy section chứa dữ liệu. Dùng id hoặc class bao ngoài cùng, nếu không có helper theo id thì dùng chính html gốc
-  const section = html; 
 
-  // Lấy các khối text chính
-  const titleBlock = extractFirstBlockByClass(section, "div", "section-title") || section;
-  const subtitle = extractTextFromTag(titleBlock, "h5");
-  const title = extractTextFromTag(titleBlock, "h2");
-  const description = extractTextFromTag(titleBlock, "p");
+export const parseFeaturedRoomsBlock = (html: string): FeaturedRoomsSectionData =>
+  parseRoomsListingSection(html, "shortcode-featured-rooms");
 
-  // Xử lý background image
-  const animationsBlock = extractFirstBlockByClass(section, "div", "animations-01");
-  const bgImgMatch = animationsBlock ? animationsBlock.match(/<img[^>]+src="([^">]+)"/) : null;
-  const bgImageUrl = bgImgMatch ? bgImgMatch[1] : null;
+export const parseRoomListBlock = (html: string): FeaturedRoomsSectionData =>
+  parseRoomsListingSection(html, "shortcode-room-list");
 
-  // Lấy danh sách item
-  const itemBlocks = extractBlocksByTag(section, "div", "services-08-item");
-
-  return {
-    bgImageUrl,
-    subtitle,
-    title,
-    description,
-    items: itemBlocks
-      .map((itemBlock) => {
-        const itemTitle = extractTextFromTag(itemBlock, "h3");
-
-        // Parse ảnh icon
-        const iconBlock = extractFirstBlockByClass(itemBlock, "div", "services-icon2") || "";
-        const iconImgUrl = iconBlock.match(/<img[^>]+src="([^">]+)"/)?.[1] || "";
-        const iconImgAlt = iconBlock.match(/<img[^>]+alt="([^">]+)"/)?.[1] || itemTitle || "";
-
-        // Parse ảnh thumb
-        const thumbBlock = extractFirstBlockByClass(itemBlock, "div", "services-08-thumb") || "";
-        const thumbImgUrl = thumbBlock.match(/<img[^>]+src="([^">]+)"/)?.[1] || "";
-        const thumbImgAlt = thumbBlock.match(/<img[^>]+alt="([^">]+)"/)?.[1] || itemTitle || "";
-
-        if (!itemTitle) return null;
-
-        return { 
-          title: itemTitle, 
-          iconImgUrl, 
-          iconImgAlt, 
-          thumbImgUrl, 
-          thumbImgAlt 
-        };
-      })
-      .filter(Boolean) as ServiceDetailItem[],
-  };
-};
-export const parseBookingBlock = (html: string): BookingSectionData => {
-  const section = extractFirstBlockByClass(html, "section", "booking") || html;
-
-  // 1. Lấy Title & Subtitle
-  const titleBlock = extractFirstBlockByClass(section, "div", "section-title") || section;
-  const subtitle = extractTextFromTag(titleBlock, "h5");
-  const title = extractTextFromTag(titleBlock, "h2");
-  const description = extractTextFromTag(titleBlock, "p");
-  // 2. Lấy Form Action URL
-  const actionMatch = section.match(/<form[^>]+action="([^">]+)"/);
-  const actionUrl = actionMatch ? actionMatch[1] : null;
-
-  // 3. Lấy Ảnh
-  const imgBlock = extractFirstBlockByClass(section, "div", "booking-img") || "";
-  const imageSrc = imgBlock.match(/<img[^>]+src="([^">]+)"/)?.[1] || null;
-  const imageAlt = imgBlock.match(/<img[^>]+alt="([^">]+)"/)?.[1] || "Booking Image";
-
-  // 4. Lấy danh sách tuỳ chọn Phòng
-  const rooms: BookingRoomOption[] = [];
-  const roomSelectMatch = section.match(/<select[^>]+name="room_id"[^>]*>([\s\S]*?)<\/select>/);
-  
-  if (roomSelectMatch) {
-    const optionsHtml = roomSelectMatch[1] || "";
-    const optionRegex = /<option[^>]+value="([^"]+)"[^>]*>([^<]+)<\/option>/g;
-    let match;
-    while ((match = optionRegex.exec(optionsHtml)) !== null) {
-      rooms.push({
-        value: match[1],
-        label: match[2].trim(),
-      });
-    }
-  }
-
-  return {
-    subtitle,
-    title,
-    description,
-    actionUrl,
-    imageSrc,
-    imageAlt,
-    rooms,
-  };
-};
+export const parseAllRoomsBlock = (html: string): FeaturedRoomsSectionData =>
+  parseRoomsListingSection(html, "shortcode-all-rooms");

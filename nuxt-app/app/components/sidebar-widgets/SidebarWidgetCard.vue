@@ -1,6 +1,9 @@
 <template>
-  <article class="sidebar-widget-card">
+  <article class="sidebar-widget-card cms-quiet-surface">
     <header v-if="title || description" class="sidebar-widget-card__header">
+      <span class="sidebar-widget-card__kicker">
+        Journal
+      </span>
       <h2 v-if="title" class="sidebar-widget-card__title">
         {{ title }}
       </h2>
@@ -24,27 +27,52 @@ defineProps<{
 
 <style scoped>
 .sidebar-widget-card {
-  border: 1px solid rgba(63, 53, 45, 0.08);
-  background: rgba(255, 251, 246, 0.96);
-  padding: 1.5rem;
-  box-shadow: 0 16px 40px rgba(63, 53, 45, 0.06);
+  padding: 1.8rem;
+  border-radius: var(--retreat-radius-card);
 }
 
 .sidebar-widget-card__header {
-  margin-bottom: 1rem;
+  margin-bottom: 1.35rem;
+}
+
+.sidebar-widget-card__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+  color: var(--retreat-clay);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.sidebar-widget-card__kicker::before {
+  content: "";
+  width: 1.8rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.65;
 }
 
 .sidebar-widget-card__title {
   margin: 0;
-  color: #2f241d;
-  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-  font-size: 1.35rem;
-  line-height: 1.2;
+  color: var(--retreat-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.45rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
 }
 
 .sidebar-widget-card__description {
-  margin: 0.65rem 0 0;
-  color: #6b5d51;
-  line-height: 1.65;
+  margin: 0.7rem 0 0;
+  color: var(--retreat-ink-soft);
+  font-size: 0.95rem;
+  line-height: 1.85;
+}
+
+.sidebar-widget-card__body {
+  min-width: 0;
 }
 </style>

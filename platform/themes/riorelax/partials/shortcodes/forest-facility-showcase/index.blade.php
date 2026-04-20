@@ -4,7 +4,7 @@
     $rightImage2 = $shortcode->right_image_2 ? RvMedia::getImageUrl($shortcode->right_image_2) : null;
 @endphp
 
-<section class="rfs">
+<section class="shortcode-forest-facility-showcase rfs">
     <style>
         /* ── SECTION: single cell, 3 layers stacked ──────────── */
         .rfs {

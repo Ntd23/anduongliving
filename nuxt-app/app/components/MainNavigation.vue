@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import MobileMenuCollapse from "~/components/menu/MobileMenuCollapse.vue";
+import SidebarMenuDrawer from "~/components/menu/SidebarMenuDrawer.vue";
 import { useMenu } from "~/composables/useMenu";
 import { useThemeOptions, type ThemeSocialLink } from "~/composables/useThemeOptions";
-import { CMS_MAIN_MENU_TOKEN, cmsAppRoutes, normalizePath } from "~~/shared/cms-routing";
+import { CMS_MAIN_MENU_TOKEN, cmsAppRoutes } from "~~/shared/cms-routing";
 
 const props = withDefaults(
   defineProps<{
@@ -21,6 +22,7 @@ const route = useRoute();
 
 const activeLocale = computed(() => locale.value);
 const mobileMenuOpen = ref(false);
+const sidebarMenuOpen = ref(false);
 
 const { data, error } = await useAsyncData(
   () => `main-menu-${activeLocale.value}`,
@@ -62,23 +64,11 @@ const headerButtonUrl = computed(() => themeOptions.value?.header_button_url?.tr
 const showHeaderButton = computed(() =>
   props.variant === "header" && !props.fullWidth && !!headerButtonLabel.value && !!headerButtonUrl.value,
 );
-const isHomepageRoute = computed(() => normalizePath(route.path) === normalizePath(localePath("/")));
-const headerStickyEnabled = computed(() => {
-  const value = themeOptions.value?.header_sticky_enabled;
-
-  if (typeof value === "boolean") {
-    return value;
-  }
-
-  return value !== "no";
-});
-const useBottomStickyHomepageHeader = computed(() =>
-  props.variant === "header" && isHomepageRoute.value && headerStickyEnabled.value,
-);
 const wrapperClass = computed(() =>
   props.fullWidth ? "main-navigation__inner main-navigation__inner--fluid" : "container main-navigation__inner",
 );
-const showMobileToggle = computed(() => props.variant === "header");
+const showMobileToggle = computed(() => props.variant === "header" || props.variant === "side");
+const showOffcanvasTrigger = computed(() => props.variant === "header" && props.fullWidth);
 
 const socialIconMap: Record<string, string> = {
   facebook: "ph:facebook-logo-fill",
@@ -122,6 +112,7 @@ watch(
   () => route.fullPath,
   () => {
     mobileMenuOpen.value = false;
+    sidebarMenuOpen.value = false;
   },
 );
 </script>
@@ -132,25 +123,26 @@ watch(
     :class="{
       'main-navigation--side': variant === 'side',
       'main-navigation--header': variant === 'header',
-      'main-navigation--bottom-home': useBottomStickyHomepageHeader,
       'main-navigation--full-width': fullWidth,
     }"
   >
     <div :class="wrapperClass">
-      <NuxtLink :to="brandHref" class="main-navigation__brand">
-        <img
-          v-if="brandLogo"
-          :src="brandLogo"
-          :alt="brandLabel"
-          class="main-navigation__brand-logo"
-        >
-        <span
-          v-else
-          class="main-navigation__brand-text"
-        >
-          {{ brandLabel }}
-        </span>
-      </NuxtLink>
+      <div class="main-navigation__brand-block">
+        <NuxtLink :to="brandHref" class="main-navigation__brand">
+          <img
+            v-if="brandLogo"
+            :src="brandLogo"
+            :alt="brandLabel"
+            class="main-navigation__brand-logo"
+          >
+          <span
+            v-else
+            class="main-navigation__brand-text"
+          >
+            {{ brandLabel }}
+          </span>
+        </NuxtLink>
+      </div>
 
       <p v-if="menuError" class="main-navigation__error">
         {{ menuError }}
@@ -174,24 +166,37 @@ watch(
         </ul>
       </nav>
 
-      <a
-        v-if="showHeaderButton"
-        :href="headerButtonUrl"
-        class="main-navigation__action"
-      >
-        {{ headerButtonLabel }}
-      </a>
+      <div class="main-navigation__actions">
+        <a
+          v-if="showHeaderButton"
+          :href="headerButtonUrl"
+          class="main-navigation__action"
+        >
+          {{ headerButtonLabel }}
+        </a>
 
-      <button
-        v-if="showMobileToggle"
-        type="button"
-        class="main-navigation__mobile-toggle"
-        aria-label="Open mobile menu"
-        :aria-expanded="mobileMenuOpen ? 'true' : 'false'"
-        @click="mobileMenuOpen = !mobileMenuOpen"
-      >
-        <Icon :name="mobileMenuOpen ? 'ph:x' : 'ph:list'" />
-      </button>
+        <button
+          v-if="showOffcanvasTrigger"
+          type="button"
+          class="main-navigation__offcanvas-trigger"
+          aria-label="Open sidebar menu"
+          :aria-expanded="sidebarMenuOpen ? 'true' : 'false'"
+          @click="sidebarMenuOpen = true"
+        >
+          <Icon name="ph:dots-nine-bold" />
+        </button>
+
+        <button
+          v-if="showMobileToggle"
+          type="button"
+          class="main-navigation__mobile-toggle"
+          aria-label="Open mobile menu"
+          :aria-expanded="mobileMenuOpen ? 'true' : 'false'"
+          @click="mobileMenuOpen = !mobileMenuOpen"
+        >
+          <Icon :name="mobileMenuOpen ? 'ph:x' : 'ph:list'" />
+        </button>
+      </div>
 
       <div
         v-if="variant === 'side'"
@@ -239,6 +244,11 @@ watch(
       :email="themeOptions?.email || null"
       :social-links="socialLinks"
     />
+
+    <SidebarMenuDrawer
+      v-if="showOffcanvasTrigger"
+      v-model:open="sidebarMenuOpen"
+    />
   </header>
 </template>
 
@@ -247,22 +257,17 @@ watch(
   position: sticky;
   top: 0;
   z-index: 30;
-  border-bottom: 1px solid rgba(63, 53, 45, 0.08);
+  border-bottom: 1px solid rgba(50, 35, 25, 0.08);
   background:
-    linear-gradient(180deg, rgba(255, 250, 244, 0.96), rgba(252, 245, 236, 0.92));
-  backdrop-filter: blur(14px);
-}
-
-.main-navigation--bottom-home {
-  border-bottom: 0;
+    linear-gradient(180deg, rgba(252, 248, 241, 0.96), rgba(250, 244, 235, 0.92));
+  backdrop-filter: blur(16px);
 }
 
 .main-navigation__inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  min-height: 5rem;
+  gap: 1.75rem;
+  min-height: 5.85rem;
 }
 
 .main-navigation__inner--fluid {
@@ -270,23 +275,25 @@ watch(
   padding-inline: 2rem;
 }
 
+.main-navigation__brand-block {
+  flex: 0 0 auto;
+}
+
 .main-navigation__brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.9rem;
-  color: #2e241d;
-  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-  font-size: 1.4rem;
-  letter-spacing: 0.08em;
+  color: var(--retreat-ink);
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  line-height: 0.9;
   text-decoration: none;
-  text-transform: uppercase;
 }
 
 .main-navigation__brand-logo {
   display: block;
   width: auto;
-  max-width: 8.5rem;
-  max-height: 4.5rem;
+  max-width: 9.75rem;
+  max-height: 5rem;
   object-fit: contain;
 }
 
@@ -296,22 +303,31 @@ watch(
 
 .main-navigation__nav {
   flex: 1 1 auto;
+  min-width: 0;
 }
 
 .main-navigation__list {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 1.4rem;
+  justify-content: center;
+  gap: 1.85rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+.main-navigation__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.9rem;
+  flex: 0 0 auto;
+}
+
 .main-navigation__error {
   margin: 0;
   color: #8b3a2f;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 600;
 }
 
@@ -319,46 +335,42 @@ watch(
   display: none;
   align-items: center;
   justify-content: center;
-  min-height: 3rem;
-  padding: 0.85rem 1.5rem;
-  background: #b99247;
-  color: #fff;
-  font-size: 0.9rem;
+  min-height: 3.2rem;
+  padding: 0.9rem 1.55rem;
+  border: 1px solid rgba(93, 68, 47, 0.14);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #8f7659 0%, #72634d 100%);
+  color: #fffdf8;
+  font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.18em;
   text-decoration: none;
   text-transform: uppercase;
-  transition: background-color 0.2s ease;
+  box-shadow: 0 18px 40px rgba(62, 43, 31, 0.14);
 }
 
 .main-navigation__action:hover {
-  background: #8a6526;
+  background: linear-gradient(180deg, #a17f5c 0%, #7d6950 100%);
 }
 
-.main-navigation__mobile-toggle {
+.main-navigation__mobile-toggle,
+.main-navigation__offcanvas-trigger {
   display: none;
   align-items: center;
   justify-content: center;
-  width: 2.9rem;
-  height: 2.9rem;
-  border: 1px solid rgba(63, 53, 45, 0.12);
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid rgba(50, 35, 25, 0.1);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
-  color: #3f352d;
-  font-size: 1.3rem;
+  background: rgba(255, 252, 247, 0.86);
+  color: var(--retreat-ink);
+  font-size: 1.15rem;
 }
 
-.main-navigation--bottom-home .main-navigation__brand,
-.main-navigation--bottom-home .main-navigation__error,
-.main-navigation--bottom-home :deep(.menu-tree-item__link),
-.main-navigation--bottom-home :deep(.menu-tree-item__toggle) {
-  color: #fff7ef;
-}
-
-.main-navigation--bottom-home .main-navigation__mobile-toggle {
-  border-color: rgba(255, 247, 239, 0.16);
-  background: rgba(255, 247, 239, 0.08);
-  color: #fff7ef;
+.main-navigation__mobile-toggle:hover,
+.main-navigation__offcanvas-trigger:hover {
+  border-color: rgba(167, 122, 84, 0.28);
+  color: var(--retreat-clay);
 }
 
 .main-navigation--side {
@@ -367,7 +379,8 @@ watch(
   height: 100%;
   min-height: 100%;
   border-bottom: 0;
-  background: linear-gradient(180deg, #faf5ee 0%, #f3ebdf 100%);
+  background:
+    linear-gradient(180deg, rgba(250, 246, 239, 0.98), rgba(243, 234, 220, 0.96));
   backdrop-filter: none;
 }
 
@@ -376,24 +389,22 @@ watch(
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  gap: 2rem;
+  gap: 2.5rem;
   min-height: 100%;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.75rem 2rem;
 }
 
 .main-navigation--side .main-navigation__brand {
-  display: grid;
-  gap: 0.9rem;
-  font-size: 1.6rem;
-  line-height: 1.15;
+  font-size: 2.25rem;
 }
 
 .main-navigation--side .main-navigation__brand-logo {
-  max-width: 10rem;
-  max-height: 5rem;
+  max-width: 10.5rem;
+  max-height: 5.25rem;
 }
 
-.main-navigation--side .main-navigation__nav {
+.main-navigation--side .main-navigation__nav,
+.main-navigation--side .main-navigation__list {
   width: 100%;
 }
 
@@ -401,44 +412,39 @@ watch(
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  gap: 0.5rem;
-  width: 100%;
+  gap: 0.45rem;
 }
 
 .main-navigation__meta {
   margin-top: auto;
   width: 100%;
-  padding-top: 1.25rem;
-  border-top: 1px solid rgba(63, 53, 45, 0.08);
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(50, 35, 25, 0.08);
 }
 
 .main-navigation__socials {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.85rem;
 }
 
 .main-navigation__social-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border: 1px solid rgba(63, 53, 45, 0.1);
+  width: 2.85rem;
+  height: 2.85rem;
+  border: 1px solid rgba(50, 35, 25, 0.1);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 252, 247, 0.74);
   color: #6e5843;
   text-decoration: none;
-  transition:
-    transform 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
 }
 
 .main-navigation__social-link:hover {
+  border-color: rgba(167, 122, 84, 0.26);
+  color: var(--retreat-clay);
   transform: translateY(-1px);
-  color: #7c5c3b;
-  border-color: rgba(124, 92, 59, 0.25);
 }
 
 .main-navigation__social-icon,
@@ -458,53 +464,21 @@ watch(
 }
 
 @media (min-width: 992px) {
-  .main-navigation__action {
+  .main-navigation--full-width .main-navigation__offcanvas-trigger {
     display: inline-flex;
   }
 
-  .main-navigation--bottom-home {
-    position: fixed;
-    top: auto;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    z-index: 40;
-    background: rgba(0, 0, 0, 0.9);
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(0);
-  }
-
-  .main-navigation--bottom-home .main-navigation__inner,
-  .main-navigation--bottom-home .main-navigation__inner--fluid {
-    background: transparent;
-  }
-
-  .main-navigation--bottom-home .main-navigation__inner {
-    min-height: auto;
-    padding-top: 0.75rem;
-    padding-bottom: 1.125rem;
-  }
-
-  .main-navigation--bottom-home .main-navigation__list {
-    justify-content: center;
-  }
-
-  .main-navigation--bottom-home.main-navigation--full-width .main-navigation__list {
-    justify-content: flex-end;
-  }
-
-  .main-navigation--bottom-home .main-navigation__action {
-    background: rgba(185, 146, 71, 0.95);
+  .main-navigation__action {
+    display: inline-flex;
   }
 }
 
 @media (max-width: 991px) {
   .main-navigation__inner {
-    flex-direction: row;
-    align-items: center;
     justify-content: space-between;
-    padding-top: 0.8rem;
-    padding-bottom: 0.8rem;
+    min-height: 5rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
   }
 
   .main-navigation--header .main-navigation__nav,
@@ -512,7 +486,28 @@ watch(
     display: none;
   }
 
+  .main-navigation--header .main-navigation__offcanvas-trigger {
+    display: none;
+  }
+
   .main-navigation--header .main-navigation__mobile-toggle {
+    display: inline-flex;
+  }
+
+  .main-navigation--side .main-navigation__inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    min-height: auto;
+    gap: 1rem;
+  }
+
+  .main-navigation--side .main-navigation__nav,
+  .main-navigation--side .main-navigation__meta {
+    display: none;
+  }
+
+  .main-navigation--side .main-navigation__mobile-toggle {
     display: inline-flex;
   }
 
@@ -520,20 +515,17 @@ watch(
     padding-inline: 1rem;
   }
 
-  .main-navigation--header .main-navigation__brand-logo {
-    max-width: 7.5rem;
-    max-height: 3.75rem;
+  .main-navigation__brand-logo {
+    max-width: 7.6rem;
+    max-height: 3.9rem;
+  }
+
+  .main-navigation--side .main-navigation__brand {
+    font-size: 1.8rem;
   }
 
   .main-navigation--side .main-navigation__inner {
     padding: 1.25rem 1rem;
-    min-height: auto;
-  }
-
-  .main-navigation--side .main-navigation__list {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
   }
 }
 </style>

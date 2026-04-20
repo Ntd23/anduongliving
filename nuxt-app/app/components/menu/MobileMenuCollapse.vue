@@ -149,8 +149,8 @@ onBeforeUnmount(() => {
 
         <div class="mobile-menu-collapse__body">
           <section class="mobile-menu-collapse__section">
-            <div class="mobile-menu-collapse__title">
-              <span>Menu</span>
+            <div class="mobile-menu-collapse__eyebrow">
+              Navigation
             </div>
 
             <p v-if="menuError" class="mobile-menu-collapse__message mobile-menu-collapse__message--error">
@@ -172,8 +172,8 @@ onBeforeUnmount(() => {
           </section>
 
           <section v-if="hasLanguages" class="mobile-menu-collapse__section">
-            <div class="mobile-menu-collapse__title">
-              <span>Languages</span>
+            <div class="mobile-menu-collapse__eyebrow">
+              Languages
             </div>
 
             <ul class="mobile-menu-collapse__plain-list">
@@ -191,8 +191,8 @@ onBeforeUnmount(() => {
           </section>
 
           <section v-if="hasContact || hasSocialLinks" class="mobile-menu-collapse__section">
-            <div class="mobile-menu-collapse__title">
-              <span>Contact</span>
+            <div class="mobile-menu-collapse__eyebrow">
+              Contact
             </div>
 
             <div v-if="hasContact" class="mobile-menu-collapse__contact">
@@ -251,21 +251,23 @@ onBeforeUnmount(() => {
   inset: 0;
   z-index: 58;
   border: 0;
-  background: rgba(13, 9, 7, 0.48);
-  backdrop-filter: blur(2px);
+  background: rgba(16, 11, 8, 0.48);
+  backdrop-filter: blur(3px);
 }
 
 .mobile-menu-collapse {
   position: fixed;
-  top: 5rem;
-  left: 0;
+  top: 0;
   right: 0;
+  bottom: 0;
   z-index: 59;
-  max-height: calc(100vh - 5rem);
+  width: min(26rem, 100vw);
   overflow-y: auto;
-  border-top: 1px solid rgba(63, 53, 45, 0.08);
-  background: linear-gradient(180deg, #fffaf2 0%, #f6ede1 100%);
-  box-shadow: 0 18px 44px rgba(34, 22, 14, 0.16);
+  border-left: 1px solid rgba(255, 249, 241, 0.08);
+  background:
+    linear-gradient(180deg, rgba(22, 15, 11, 0.98), rgba(35, 24, 18, 0.98));
+  color: rgba(255, 249, 241, 0.92);
+  box-shadow: -24px 0 60px rgba(16, 11, 8, 0.2);
 }
 
 .mobile-menu-collapse__header {
@@ -273,114 +275,112 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1rem;
-  border-bottom: 1px solid rgba(63, 53, 45, 0.08);
+  padding: 1.3rem 1.2rem 1rem;
+  border-bottom: 1px solid rgba(255, 249, 241, 0.08);
 }
 
 .mobile-menu-collapse__brand {
   display: inline-flex;
   align-items: center;
-  color: #2e241d;
+  color: #fff9f1;
   text-decoration: none;
 }
 
 .mobile-menu-collapse__brand-logo {
   display: block;
   width: auto;
-  max-width: 7.5rem;
-  max-height: 3.5rem;
+  max-width: 8rem;
+  max-height: 4rem;
   object-fit: contain;
 }
 
 .mobile-menu-collapse__brand-text {
-  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-  font-size: 1.1rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  line-height: 0.95;
 }
 
 .mobile-menu-collapse__close {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid rgba(63, 53, 45, 0.12);
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(255, 249, 241, 0.12);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.62);
-  color: #3f352d;
-  font-size: 1.15rem;
+  background: rgba(255, 249, 241, 0.06);
+  color: #fff9f1;
+  font-size: 1.1rem;
 }
 
 .mobile-menu-collapse__body {
   display: grid;
-  gap: 1.25rem;
-  padding: 1rem;
+  gap: 1.35rem;
+  padding: 1.1rem 1.2rem 2rem;
 }
 
 .mobile-menu-collapse__section {
-  border: 1px solid rgba(63, 53, 45, 0.08);
-  background: rgba(255, 252, 247, 0.9);
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(255, 249, 241, 0.08);
 }
 
-.mobile-menu-collapse__title {
-  padding: 0.9rem 1rem;
-  border-bottom: 1px solid rgba(63, 53, 45, 0.08);
+.mobile-menu-collapse__section:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
 }
 
-.mobile-menu-collapse__title span {
-  color: #8d7355;
-  font-size: 0.76rem;
+.mobile-menu-collapse__eyebrow {
+  margin-bottom: 0.85rem;
+  color: rgba(214, 192, 155, 0.84);
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
 .mobile-menu-collapse__list,
 .mobile-menu-collapse__plain-list {
   margin: 0;
-  padding: 0.35rem 1rem 0.75rem;
+  padding: 0;
   list-style: none;
 }
 
 .mobile-menu-collapse__plain-list li + li {
-  border-top: 1px solid rgba(63, 53, 45, 0.06);
+  margin-top: 0.7rem;
 }
 
 .mobile-menu-collapse__plain-link {
   display: block;
-  padding: 0.9rem 0;
-  color: #3f352d;
-  font-size: 0.98rem;
-  font-weight: 500;
+  color: rgba(255, 249, 241, 0.84);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-decoration: none;
+  text-transform: uppercase;
 }
 
 .mobile-menu-collapse__plain-link--active {
-  color: #7c5c3b;
-  font-weight: 700;
+  color: #d6c09b;
 }
 
 .mobile-menu-collapse__message {
   margin: 0;
-  padding: 1rem;
-  color: #5d5147;
-  line-height: 1.65;
+  color: rgba(255, 249, 241, 0.72);
+  line-height: 1.7;
 }
 
 .mobile-menu-collapse__message--error {
-  color: #8b3a2f;
+  color: #f0afa5;
 }
 
 .mobile-menu-collapse__contact {
   display: grid;
   gap: 0.75rem;
-  padding: 0.9rem 1rem 1rem;
 }
 
 .mobile-menu-collapse__contact-link {
-  color: #3f352d;
-  font-size: 0.95rem;
+  color: rgba(255, 249, 241, 0.9);
+  font-size: 0.9rem;
   text-decoration: none;
 }
 
@@ -388,19 +388,19 @@ onBeforeUnmount(() => {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  padding: 0 1rem 1rem;
+  margin-top: 1rem;
 }
 
 .mobile-menu-collapse__social-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid rgba(63, 53, 45, 0.1);
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid rgba(255, 249, 241, 0.12);
   border-radius: 999px;
-  background: #fff;
-  color: #6e5843;
+  background: rgba(255, 249, 241, 0.04);
+  color: rgba(255, 249, 241, 0.86);
   text-decoration: none;
 }
 
@@ -430,7 +430,7 @@ onBeforeUnmount(() => {
 .mobile-menu-panel-enter-from,
 .mobile-menu-panel-leave-to {
   opacity: 0;
-  transform: translateY(-12px);
+  transform: translateX(18px);
 }
 
 @media (min-width: 992px) {

@@ -1,4 +1,4 @@
-<section class="services-area pt-90 pb-90">
+<section class="shortcode-room-list services-area pt-90 pb-90">
     <div class="container">
         <div class="row">
             @foreach ($rooms as $room)

@@ -1,4 +1,4 @@
-<section class="testimonial-area pt-90 pb-90 p-relative fix"
+<section class="shortcode-testimonials testimonial-area pt-90 pb-90 p-relative fix"
          @if($bgImage = $shortcode->background_image) style="background-image: url('{{ RvMedia::getImageUrl($bgImage) }}'); background-size: cover;" @endif
 >
     <div class="container">

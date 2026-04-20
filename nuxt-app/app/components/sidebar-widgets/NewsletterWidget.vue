@@ -61,7 +61,7 @@ const { email, pending, feedback, submit } = useNewsletterSubscribe(actionUrl);
         v-model="email"
         type="email"
         class="footer-newsletter__input"
-        placeholder="Nhập email của bạn"
+        placeholder="Enter your email"
         autocomplete="email"
         required
       >
@@ -72,7 +72,7 @@ const { email, pending, feedback, submit } = useNewsletterSubscribe(actionUrl);
         :disabled="pending"
         :aria-label="pending ? 'Submitting newsletter' : 'Subscribe to newsletter'"
       >
-        {{ pending ? "..." : "→" }}
+        {{ pending ? "..." : "->" }}
       </button>
     </form>
 
@@ -89,28 +89,36 @@ const { email, pending, feedback, submit } = useNewsletterSubscribe(actionUrl);
 <style scoped>
 .sidebar-newsletter {
   display: grid;
-  gap: 0.75rem;
+  gap: 0.8rem;
 }
 
 .sidebar-newsletter__input {
   width: 100%;
-  border: 1px solid rgba(63, 53, 45, 0.14);
-  background: #fff;
-  padding: 0.85rem 1rem;
-  color: #2f241d;
+  min-height: 3.55rem;
+  border: 1px solid rgba(56, 41, 30, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  padding: 0.9rem 1.15rem;
+  color: var(--retreat-ink);
 }
 
 .sidebar-newsletter__button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 3rem;
+  min-height: 3.35rem;
   border: 0;
-  background: #7c5c3b;
-  color: #fff;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(107, 113, 83, 0.98), rgba(83, 91, 60, 0.98));
+  color: #fffdf8;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
+}
+
+.sidebar-newsletter__button:hover:enabled {
+  transform: translateY(-1px);
 }
 
 .sidebar-newsletter__button:disabled {
@@ -132,16 +140,16 @@ const { email, pending, feedback, submit } = useNewsletterSubscribe(actionUrl);
 
 .footer-newsletter__title {
   margin: 0 0 1rem;
-  color: #fff3dc;
-  font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: 1.75rem;
-  line-height: 1.1;
+  color: #fff9f1;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
 }
 
 .footer-newsletter__description {
   margin: 0 0 1rem;
-  color: rgba(245, 234, 214, 0.78);
-  line-height: 1.75;
+  color: rgba(248, 244, 236, 0.7);
+  line-height: 1.85;
 }
 
 .footer-newsletter__form {
@@ -153,26 +161,28 @@ const { email, pending, feedback, submit } = useNewsletterSubscribe(actionUrl);
 
 .footer-newsletter__input {
   width: 100%;
-  border: 1px solid rgba(255, 243, 220, 0.16);
-  background: rgba(255, 255, 255, 0.06);
-  padding: 0.95rem 1.15rem;
-  color: #fff3dc;
+  border: 1px solid rgba(255, 249, 241, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 249, 241, 0.05);
+  padding: 1rem 1.2rem;
+  color: #fff9f1;
 }
 
 .footer-newsletter__input::placeholder {
-  color: rgba(255, 243, 220, 0.62);
+  color: rgba(255, 249, 241, 0.52);
 }
 
 .footer-newsletter__button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 3.75rem;
-  min-height: 3.75rem;
+  width: 3.6rem;
+  min-height: 3.6rem;
   border: 0;
-  background: #b99247;
-  color: #fff;
-  font-size: 1.15rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #8f7659 0%, #72634d 100%);
+  color: #fffdf8;
+  font-size: 1rem;
   font-weight: 700;
   transition:
     background-color 0.2s ease,
@@ -180,7 +190,7 @@ const { email, pending, feedback, submit } = useNewsletterSubscribe(actionUrl);
 }
 
 .footer-newsletter__button:hover:not(:disabled) {
-  background: #d0a552;
+  background: linear-gradient(180deg, #a17f5c 0%, #7d6950 100%);
   transform: translateY(-1px);
 }
 
@@ -194,11 +204,11 @@ const { email, pending, feedback, submit } = useNewsletterSubscribe(actionUrl);
 }
 
 .footer-newsletter__feedback--success {
-  color: #9fe7c8;
+  color: #b8e2cd;
 }
 
 .footer-newsletter__feedback--error {
-  color: #f7b2aa;
+  color: #f0afa5;
 }
 
 @media (max-width: 767px) {

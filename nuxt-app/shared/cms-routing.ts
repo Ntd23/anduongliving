@@ -292,7 +292,14 @@ export const sanitizeCmsHtmlContent = (value?: string | null, siteUrl?: string |
     return "";
   }
 
-  let output = value.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gims, "");
+  let output = value
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gim, "")
+    .replace(/<script\b[^>]*\/?>/gim, "")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gim, "")
+    .replace(/<(?:style|link|meta|base)\b[^>]*>/gim, "")
+    .replace(/\son[a-z]+\s*=\s*(".*?"|'.*?'|[^\s>]+)/gim, "")
+    .replace(/\s(href|src|xlink:href)\s*=\s*(['"])\s*javascript:[^'"]*\2/gim, " $1=\"#\"")
+    .replace(/\s(href|src|xlink:href)\s*=\s*(javascript:[^\s>]+)/gim, " $1=\"#\"");
   const normalizedSiteUrl = normalizeSiteUrl(siteUrl);
 
   if (normalizedSiteUrl) {

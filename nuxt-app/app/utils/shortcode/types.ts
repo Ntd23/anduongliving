@@ -1,15 +1,39 @@
 export type ShortcodeName =
-  | "about"
-  | "feature"
+  | "all-rooms"
+  | "about-us"
+  | "booking-form"
+  | "brands"
+  | "check-availability-form"
+  | "cuisine-showcase"
+  | "feature-area"
+  | "featured-amenities"
+  | "featured-rooms"
+  | "faqs"
+  | "forest-facility-showcase"
+  | "galleries"
   | "hero-story"
+  | "hero-banner-with-booking-form"
+  | "hotel-places"
+  | "hotel-services"
+  | "intro-video"
+  | "location-tourism-showcase"
+  | "logo-showcase-banner"
+  | "news"
   | "newsletter"
+  | "onsen-spa-gallery"
+  | "pickup-gallery-showcase"
   | "pricing"
-  | "skill"
-  | "team"
+  | "room-mosaic-showcase"
+  | "room-list"
+  | "service-list"
   | "services"
-  | "service-details"
-  | "booking"
-  ;
+  | "simple-slider"
+  | "spa-collage-showcase"
+  | "special-story-showcase"
+  | "teams"
+  | "testimonials"
+  | "user-profile"
+  | "why-choose-us";
 
 export type ShortcodeBlock = {
   type: "shortcode" | "html" | "text";
@@ -18,16 +42,42 @@ export type ShortcodeBlock = {
 };
 
 export type ShortcodeComponentName =
-  | "About"
-  | "Feature"
+  | "AllRooms"
+  | "AboutUs"
+  | "Brands"
+  | "BookingForm"
+  | "CheckAvailabilityForm"
+  | "CuisineShowcase"
+  | "FeatureArea"
+  | "Faqs"
+  | "FeaturedRooms"
+  | "FeaturedAmenities"
+  | "ForestFacilityShowcase"
+  | "Galleries"
   | "HeroStory"
+  | "HeroBannerWithBookingForm"
+  | "HotelPlaces"
+  | "HotelServices"
+  | "IntroVideo"
+  | "LocationTourismShowcase"
+  | "LogoShowcaseBanner"
+  | "News"
   | "Newsletter"
+  | "OnsenSpaGallery"
+  | "PickupGalleryShowcase"
   | "Pricing"
-  | "Skill"
-  | "Team"
+  | "RoomList"
+  | "RoomMosaicShowcase"
+  | "Section"
+  | "ServiceList"
   | "Services"
-  | "ServiceDetails"
-  | "Booking";
+  | "SimpleSlider"
+  | "SpaCollageShowcase"
+  | "SpecialStoryShowcase"
+  | "Teams"
+  | "Testimonials"
+  | "UserProfile"
+  | "WhyChooseUs";
 
 export type ShortcodeImage = {
   src: string;
@@ -39,12 +89,15 @@ export type ServiceItem = {
   name: string;
   url: string;
   image: string;
+  description?: string | null;
   bookLabel: string;
   price: string;
   amenities: string[];
 };
 
-export type ServiceSectionData = {
+export type FeaturedRoomsSectionData = {
+  countLabel?: string | null;
+  paginationHtml?: string | null;
   subtitle: string | null;
   title: string | null;
   description: string | null;
@@ -83,11 +136,11 @@ export type TeamMember = {
   socials: TeamSocialLink[];
 };
 
-export type TeamSectionData = {
+export type TeamsSectionData = {
   members: TeamMember[];
 };
 
-export type AboutSectionData = {
+export type AboutUsSectionData = {
   backgroundImage: ShortcodeImage | null;
   mainImage: ShortcodeImage | null;
   accentImage: ShortcodeImage | null;
@@ -107,7 +160,7 @@ export type SkillItem = {
   percentage: number;
 };
 
-export type SkillSectionData = {
+export type WhyChooseUsSectionData = {
   backgroundColor: string | null;
   backgroundImage: ShortcodeImage | null;
   subtitle: string | null;
@@ -129,7 +182,7 @@ export type HeroStorySectionData = {
   } | null;
 };
 
-export type FeatureSectionData = {
+export type FeatureAreaSectionData = {
   backgroundColor: string | null;
   backgroundImage: ShortcodeImage | null;
   image: ShortcodeImage | null;
@@ -185,13 +238,297 @@ export type ServiceDetailItem = {
   thumbImgAlt: string;
 };
 
-export type ServiceDetailsData = {
-  bgImageUrl: string | null | undefined;
+export type ShortcodeAction = {
+  href: string;
+  label: string;
+};
+
+export type SimpleSliderSlide = {
+  image: ShortcodeImage | null;
+  caption: string | null;
+  href: string | null;
+};
+
+export type SimpleSliderSectionData = {
+  slides: SimpleSliderSlide[];
+};
+
+export type LogoShowcaseBannerSectionData = {
+  backgroundImage: ShortcodeImage | null;
+  logoImage: ShortcodeImage | null;
+  topLines: string[];
+  bottomLines: string[];
+};
+
+export type RoomMosaicShowcaseCard = {
+  title: string | null;
+  image: ShortcodeImage | null;
+};
+
+export type RoomMosaicShowcaseSectionData = {
+  backgroundImage: ShortcodeImage | null;
   subtitle: string | null;
   title: string | null;
   description: string | null;
-  items: ServiceDetailItem[];
+  mainImage: ShortcodeImage | null;
+  cards: RoomMosaicShowcaseCard[];
+  sideTextLines: string[];
+  roomItems: string[];
+  ctaTitle: string | null;
+  action: ShortcodeAction | null;
 };
+
+export type OnsenSpaGalleryItem = {
+  title: string | null;
+  image: ShortcodeImage | null;
+};
+
+export type OnsenSpaGallerySectionData = {
+  backgroundImage: ShortcodeImage | null;
+  backgroundTitle: string | null;
+  subtitle: string | null;
+  items: OnsenSpaGalleryItem[];
+  sectionLabel: string | null;
+  actions: ShortcodeAction[];
+};
+
+export type PickupGalleryShowcaseSectionData = {
+  backgroundImage: ShortcodeImage | null;
+  pretitle: string | null;
+  title: string | null;
+  galleryImages: ShortcodeImage[];
+  description: string | null;
+  sectionLabel: string | null;
+  action: ShortcodeAction | null;
+};
+
+export type SpecialStoryShowcaseCard = {
+  title: string | null;
+  image: ShortcodeImage | null;
+};
+
+export type SpecialStoryShowcaseNavEntry = {
+  text: string | null;
+  badgeTop: string | null;
+  badgeVolume: string | null;
+};
+
+export type SpecialStoryShowcaseSectionData = {
+  backgroundImage: ShortcodeImage | null;
+  decorativeText: string | null;
+  sectionLabel: string | null;
+  description: string | null;
+  cards: SpecialStoryShowcaseCard[];
+  navEntries: SpecialStoryShowcaseNavEntry[];
+  action: ShortcodeAction | null;
+};
+
+export type ForestFacilityShowcaseSectionData = {
+  leftImage: ShortcodeImage | null;
+  rightImages: ShortcodeImage[];
+  title: string | null;
+  description: string | null;
+  sectionLabel: string | null;
+  action: ShortcodeAction | null;
+};
+
+export type LocationTourismShowcaseColumn = {
+  description: string | null;
+  label: string | null;
+  action: ShortcodeAction | null;
+};
+
+export type LocationTourismShowcaseSectionData = {
+  backgroundImage: ShortcodeImage | null;
+  mapImage: ShortcodeImage | null;
+  gridImages: ShortcodeImage[];
+  decorativeText: string | null;
+  title: string | null;
+  access: LocationTourismShowcaseColumn;
+  tourism: LocationTourismShowcaseColumn;
+};
+
+export type CuisineShowcaseSectionData = {
+  title: string | null;
+  description: string | null;
+  images: ShortcodeImage[];
+  sectionLabel: string | null;
+  action: ShortcodeAction | null;
+};
+
+export type SpaCollageShowcaseSectionData = {
+  leftPanelImage: ShortcodeImage | null;
+  rightPanelImage: ShortcodeImage | null;
+  bottomImages: ShortcodeImage[];
+  title: string | null;
+  subtitle: string | null;
+  description: string | null;
+};
+
+export type AvailabilityBookingFormSectionData = {
+  title: string | null;
+  actionUrl: string | null;
+  dateFormat: string | null;
+  submitLabel: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  minAdults: number | null;
+  maxAdults: number | null;
+  defaultAdults: number | null;
+  defaultChildren: number | null;
+  defaultRooms: number | null;
+};
+
+export type HeroBannerWithBookingFormSectionData = {
+  backgroundColor: string | null;
+  backgroundImage: ShortcodeImage | null;
+  title: string | null;
+  description: string | null;
+  action: ShortcodeAction | null;
+  bookingForm: AvailabilityBookingFormSectionData | null;
+};
+
+export type CheckAvailabilityFormSectionData = {
+  bookingForm: AvailabilityBookingFormSectionData | null;
+};
+
+export type BookingSelectOption = {
+  value: string;
+  label: string;
+  selected: boolean;
+};
+
+export type BookingFormSectionData = {
+  shapeImage: ShortcodeImage | null;
+  image: ShortcodeImage | null;
+  subtitle: string | null;
+  title: string | null;
+  actionUrl: string | null;
+  method: string;
+  csrfToken: string | null;
+  dateFormat: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  submitLabel: string | null;
+  roomOptions: BookingSelectOption[];
+  adultOptions: BookingSelectOption[];
+};
+
+export type FeatureGridItem = {
+  title: string;
+  description: string | null;
+  image: ShortcodeImage | null;
+  href: string | null;
+  actionLabel: string | null;
+  price: string | null;
+  meta: string | null;
+};
+
+export type FeaturedAmenitiesSectionData = {
+  backgroundColor: string | null;
+  backgroundImage: ShortcodeImage | null;
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  items: FeatureGridItem[];
+};
+
+export type ServiceListSectionData = {
+  backgroundImage: ShortcodeImage | null;
+  items: FeatureGridItem[];
+};
+
+export type HotelPlacesSectionData = {
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  items: FeatureGridItem[];
+};
+
+export type HotelServicesSectionData = {
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  items: FeatureGridItem[];
+};
+
+export type NewsSectionData = {
+  backgroundImage: ShortcodeImage | null;
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  items: FeatureGridItem[];
+};
+
+export type TestimonialItem = {
+  name: string;
+  image: ShortcodeImage | null;
+  content: string | null;
+};
+
+export type TestimonialsSectionData = {
+  backgroundImage: ShortcodeImage | null;
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  items: TestimonialItem[];
+};
+
+export type GalleryFilter = {
+  label: string;
+  value: string;
+};
+
+export type GalleryItem = {
+  title: string | null;
+  image: ShortcodeImage | null;
+  href: string | null;
+  filter: string | null;
+};
+
+export type GalleriesSectionData = {
+  filters: GalleryFilter[];
+  items: GalleryItem[];
+};
+
+export type FaqItem = {
+  id: string;
+  question: string;
+  answer: string | null;
+};
+
+export type FaqsSectionData = {
+  items: FaqItem[];
+};
+
+export type BrandItem = {
+  name: string | null;
+  image: ShortcodeImage | null;
+  href: string | null;
+};
+
+export type BrandsSectionData = {
+  backgroundColor: string | null;
+  items: BrandItem[];
+};
+
+export type IntroVideoSectionData = {
+  backgroundImage: ShortcodeImage | null;
+  buttonIcon: ShortcodeImage | null;
+  videoUrl: string | null;
+  title: string | null;
+};
+
+export type UserProfileMetric = {
+  title: string;
+  percentage: number;
+};
+
+export type UserProfileSectionData = {
+  metrics: UserProfileMetric[];
+  images: ShortcodeImage[];
+};
+
 export type ShortcodeDefinition = {
   name: ShortcodeName;
   aliases: readonly string[];

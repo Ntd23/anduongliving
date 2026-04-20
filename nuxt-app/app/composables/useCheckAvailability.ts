@@ -5,6 +5,9 @@ const BOTBLE_DATE_FORMATS = ["d-m-Y", "m-d-Y", "Y-m-d", "d/m/Y", "m/d/Y", "Y/m/d
 type CheckAvailabilityMeta = {
   action_url?: string | null;
   date_format?: string | null;
+  default_start_date?: string | null;
+  default_end_date?: string | null;
+  default_adults?: number | null;
   minimum_adults?: number | null;
   maximum_adults?: number | null;
   default_children?: number | null;
@@ -56,6 +59,47 @@ const toIsoDate = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
+const parseBotbleDate = (value: string, format: string) => {
+  const normalized = String(value || "").trim();
+
+  if (!normalized) {
+    return null;
+  }
+
+  const parts = normalized.split(/[-/]/).map((part) => part.trim());
+
+  if (parts.length !== 3) {
+    return null;
+  }
+
+  let year = "";
+  let month = "";
+  let day = "";
+
+  switch (format) {
+    case "d-m-Y":
+    case "d/m/Y":
+      [day, month, year] = parts;
+      break;
+    case "m-d-Y":
+    case "m/d/Y":
+      [month, day, year] = parts;
+      break;
+    case "Y-m-d":
+    case "Y/m/d":
+      [year, month, day] = parts;
+      break;
+    default:
+      return null;
+  }
+
+  if (!year || !month || !day) {
+    return null;
+  }
+
+  return `${year.padStart(4, "0")}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+};
+
 export const useCheckAvailability = (
   meta: MaybeRefOrGetter<CheckAvailabilityMeta | null | undefined>,
 ) => {
@@ -76,6 +120,24 @@ export const useCheckAvailability = (
   });
   const minAdults = computed(() => Math.max(1, resolvedMeta.value.minimum_adults || 1));
   const maxAdults = computed(() => Math.max(minAdults.value, resolvedMeta.value.maximum_adults || minAdults.value));
+  const defaultStartDate = computed(() =>
+    parseBotbleDate(resolvedMeta.value.default_start_date || "", dateFormat.value),
+  );
+  const defaultEndDate = computed(() =>
+    parseBotbleDate(resolvedMeta.value.default_end_date || "", dateFormat.value),
+  );
+
+  watchEffect(() => {
+    if (defaultStartDate.value) {
+      startDate.value = defaultStartDate.value;
+    }
+
+    if (defaultEndDate.value) {
+      endDate.value = defaultEndDate.value;
+    }
+
+    adults.value = Math.max(minAdults.value, resolvedMeta.value.default_adults || adults.value || minAdults.value);
+  });
 
   watchEffect(() => {
     adults.value = Math.min(maxAdults.value, Math.max(minAdults.value, adults.value || minAdults.value));

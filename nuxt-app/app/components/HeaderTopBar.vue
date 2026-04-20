@@ -36,9 +36,7 @@ const hotline = computed(() => themeOptions.value?.hotline?.trim() || "");
 const socialLinks = computed<ThemeSocialLink[]>(() =>
   Array.isArray(themeOptions.value?.social_links) ? themeOptions.value.social_links : [],
 );
-const hasLanguageSwitcher = computed(() =>
-  (locales.value || []).length > 1,
-);
+const hasLanguageSwitcher = computed(() => (locales.value || []).length > 1);
 const wrapperClass = computed(() =>
   props.fullWidth ? "header-top-bar__inner header-top-bar__inner--fluid" : "container header-top-bar__inner",
 );
@@ -77,7 +75,7 @@ const hasContent = computed(() =>
         </span>
 
         <a v-if="hotline" :href="`tel:${hotline}`" class="header-top-bar__item header-top-bar__item--link">
-          <Icon name="ph:device-mobile" class="header-top-bar__item-icon" />
+          <Icon name="ph:phone" class="header-top-bar__item-icon" />
           <strong>{{ hotline }}</strong>
         </a>
       </div>
@@ -120,9 +118,10 @@ const hasContent = computed(() =>
 .header-top-bar {
   position: relative;
   z-index: 31;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: #121212;
-  color: rgba(255, 255, 255, 0.82);
+  border-bottom: 1px solid rgba(255, 249, 241, 0.08);
+  background:
+    linear-gradient(180deg, rgba(19, 13, 10, 0.96), rgba(28, 19, 14, 0.9));
+  color: rgba(248, 244, 236, 0.78);
 }
 
 .header-top-bar__inner {
@@ -130,7 +129,7 @@ const hasContent = computed(() =>
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  min-height: 3.5rem;
+  min-height: 2.75rem;
 }
 
 .header-top-bar__inner--fluid {
@@ -142,7 +141,8 @@ const hasContent = computed(() =>
 .header-top-bar__right {
   display: flex;
   align-items: center;
-  gap: 1.1rem;
+  gap: 1rem;
+  min-width: 0;
 }
 
 .header-top-bar__item,
@@ -150,37 +150,42 @@ const hasContent = computed(() =>
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 0.9rem;
+  color: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
   text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .header-top-bar__item--link:hover,
 .header-top-bar__social-link:hover {
-  color: #d8b56b;
+  color: #d6c09b;
 }
 
 .header-top-bar__item-icon {
-  font-size: 1rem;
+  font-size: 0.9rem;
+  opacity: 0.85;
 }
 
 .header-top-bar__socials {
   display: inline-flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.75rem;
 }
 
 .header-top-bar__social-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.82);
+  color: inherit;
   text-decoration: none;
 }
 
 .header-top-bar__social-icon,
 .header-top-bar__social-fallback {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .header-top-bar__social-image {

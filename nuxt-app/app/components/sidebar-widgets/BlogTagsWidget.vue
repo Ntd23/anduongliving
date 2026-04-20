@@ -46,20 +46,30 @@ const tags = computed<BlogTag[]>(() => data.value || []);
 .sidebar-tag-cloud {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.65rem;
 }
 
 .sidebar-tag-cloud__link {
-  border: 1px solid rgba(63, 53, 45, 0.1);
-  background: #fff;
-  padding: 0.45rem 0.8rem;
-  color: #3f352d;
-  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.3rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--retreat-ink);
+  font-size: 0.82rem;
+  font-weight: 600;
   text-decoration: none;
+}
+
+.sidebar-tag-cloud__link:hover {
+  background: rgba(167, 122, 84, 0.14);
+  color: var(--retreat-clay);
 }
 
 .sidebar-widget-empty {
   margin: 0;
-  color: #7b6b5d;
+  color: var(--retreat-ink-soft);
 }
 </style>

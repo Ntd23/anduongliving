@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { normalizeBlogPostCollection, useFilteredBlogPosts } from "~/composables/useBlog";
 import { cmsAppRoutes } from "~~/shared/cms-routing";
+import { useBlogSeo } from "~/composables/useBlogSeo";
 
 const route = useRoute();
 const { locale } = useI18n();
@@ -44,7 +45,7 @@ definePageMeta({
 const postsData = computed(() => normalizeBlogPostCollection(data.value));
 const posts = computed(() => postsData.value.items);
 const meta = computed(() => postsData.value.meta);
-const pageTitle = computed(() => (searchQuery.value ? `Search: ${searchQuery.value}` : "Blog Search"));
+const pageTitle = computed(() => (searchQuery.value ? "Search" : "Blog Search"));
 const breadcrumbs = computed(() => [
   { label: "Blog", to: localePath(cmsAppRoutes.blog.index()) },
   { label: pageTitle.value, to: null },
@@ -53,18 +54,39 @@ const emptyMessage = computed(() =>
   searchQuery.value ? "No posts matched your search." : "Enter a keyword to start searching.",
 );
 
-useSeoMeta({
+useBlogSeo({
   title: pageTitle,
-  description: "Search blog posts and stories.",
+  description: computed(() => "Search blog posts and stories."),
+  type: computed(() => "website"),
+  path: computed(() => {
+    const params = new URLSearchParams();
+
+    if (searchQuery.value) {
+      params.set("q", searchQuery.value);
+    }
+
+    if (currentPage.value > 1) {
+      params.set("page", String(currentPage.value));
+    }
+
+    const query = params.toString();
+
+    return query ? `${cmsAppRoutes.blog.search()}?${query}` : cmsAppRoutes.blog.search();
+  }),
 });
 </script>
 
 <template>
   <CmsBreadcrumbs :title="pageTitle" :crumbs="breadcrumbs" />
 
+  <BlogSearchIntro
+    :query="searchQuery"
+    :total="meta?.total"
+  />
+
   <BlogArchiveShell
     :title="pageTitle"
-    :posts="posts"
+    :posts="posts || []"
     :empty-message="emptyMessage"
     :current-page="currentPage"
     :last-page="meta?.last_page"
