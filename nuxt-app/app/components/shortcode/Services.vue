@@ -15,19 +15,19 @@ const props = defineProps<{
 
 const section = computed(() => parseServiceBlock(props.block.raw));
 const swiperRef = ref<SwiperType>();
+const isAtStart = ref(true);
+const isAtEnd = ref(false);
 
 const modules = [Navigation, Pagination];
 
 const swiperOptions = {
   slidesPerView: 1,
   spaceBetween: 20,
-  loop: true,
+  loop: false,
   navigation: false,
   pagination: {
     clickable: true,
-    renderBullet: (index: number, className: string) => {
-      return `<span class="${className}"></span>`;
-    },
+    type: 'bullets' as const,
   },
   breakpoints: {
     640: {
@@ -35,11 +35,11 @@ const swiperOptions = {
       spaceBetween: 20,
     },
     768: {
-      slidesPerView: 1,
+      slidesPerView: 2,
       spaceBetween: 30,
     },
     1024: {
-      slidesPerView: 1,
+      slidesPerView: 3,
       spaceBetween: 30,
     },
   },
@@ -47,6 +47,17 @@ const swiperOptions = {
 
 const onSwiper = (swiper: SwiperType) => {
   swiperRef.value = swiper;
+  
+  const updateButtonStates = () => {
+    isAtStart.value = swiper.isBeginning;
+    isAtEnd.value = swiper.isEnd;
+  };
+  
+  updateButtonStates();
+  
+  swiper.on('slideChange', updateButtonStates);
+  swiper.on('reachBeginning', () => { isAtStart.value = true; });
+  swiper.on('reachEnd', () => { isAtEnd.value = true; });
 };
 
 const goPrev = () => {
@@ -121,11 +132,19 @@ onMounted(() => {
           </SwiperSlide>
         </Swiper>
         
-        <div class="custom-nav-button prev" @click="goPrev">
-          <Icon name="heroicons:arrow-left" class="text-4xl" />
+        <div 
+          class="custom-nav-button prev" 
+          :class="{ disabled: isAtStart }"
+          @click="goPrev"
+        >
+          <Icon name="heroicons:chevron-left" class="text-4xl w-15 h-15" />
         </div>
-        <div class="custom-nav-button next" @click="goNext">
-          <Icon name="heroicons:arrow-right" class="text-4xl" />
+        <div 
+          class="custom-nav-button next" 
+          :class="{ disabled: isAtEnd }"
+          @click="goNext"
+        >
+          <Icon name="heroicons:chevron-right" class="text-4xl w-15 h-15" />
         </div>
       </div>
     </div>
@@ -138,7 +157,8 @@ onMounted(() => {
 
 <style scoped>
 .shortcode-services {
-  padding-bottom : 50px;
+  padding-top: 90px;
+  padding-bottom : 90px;
   position: relative;
 }
 
@@ -147,25 +167,26 @@ onMounted(() => {
 }
 
 .section-header h5 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #666;
+  font-size: 14px;
+  font-weight: 700;
+  color: #8a5a3c;
   margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .section-header h2 {
-  font-size: 36px;
-  font-weight: 700;
-  color: #333;
+  font-size: 53.36px;
+  color: #7b4d35;
+  font-weight: 500;
   margin-bottom: 20px;
+  font-family: "Times New Roman", Georgia, serif;
 }
 
 .section-header p {
-  font-size: 16px;
-  line-height: 1.6;
-  color: #666;
+  font-size: 18px;
+  line-height: 1.76;
+  color: rgba(69, 53, 43, 0.88);
   max-width: 600px;
   margin: 0 auto;
 }
@@ -181,20 +202,9 @@ onMounted(() => {
 }
 
 .services-swiper :deep(.swiper-slide) {
-  opacity: 0.3;
-  transform: scale(0.9);
-  transition: all 0.3s ease;
-}
-
-.services-swiper :deep(.swiper-slide-active) {
   opacity: 1;
   transform: scale(1);
-}
-
-.services-swiper :deep(.swiper-slide-prev),
-.services-swiper :deep(.swiper-slide-next) {
-  opacity: 0;
-  transform: scale(0.8);
+  transition: all 0.3s ease;
 }
 
 .service-card {
@@ -221,8 +231,38 @@ onMounted(() => {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  padding: 20px;
   display: block;
+}
+
+/* Responsive adjustments for tablet and desktop */
+@media (min-width: 768px) {
+  .services-swiper .service-image {
+    height: 400px !important;
+  }
+  
+  .services-swiper .service-content {
+    padding: 15px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .services-swiper .service-image {
+    height: 320px !important;
+  }
+  
+  .services-swiper .service-content {
+    padding: 12px;
+  }
+  
+  .services-swiper .service-content h3 {
+    font-size: 18px;
+    margin: 0 0 10px 0;
+  }
+  
+  .services-swiper .book-button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
 }
 
 .service-content {
@@ -278,8 +318,6 @@ onMounted(() => {
   transform: translateY(-50%);
   width: 70px;
   height: 50px;
-  background: white;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -291,19 +329,22 @@ onMounted(() => {
 }
 
 .custom-nav-button.prev {
-  left: 25px;
+  left: 0;
 }
 
 .custom-nav-button.next {
-  right: 25px;
+  right: 0;
 }
 
-.custom-nav-button:hover {
-  transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-  background: var(--retreat-clay);
-  color: white;
+.custom-nav-button.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
 }
+
+/* .custom-nav-button:not(.disabled):hover {
+  
+} */
 
 :deep(.swiper-pagination) {
   position: relative;
@@ -395,6 +436,7 @@ onMounted(() => {
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s ease-out;
+  color: #e3c8a8
 }
 
 .animate-on-scroll.animate-in {
@@ -426,4 +468,51 @@ onMounted(() => {
 .services-swiper .swiper-slide:nth-child(5) .service-card.animate-on-scroll {
   transition-delay: 0.5s;
 }
+
+/* Swiper pagination styling for mobile */
+:deep(.swiper-pagination) {
+  position: relative;
+  margin-top: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+:deep(.swiper-pagination-bullet) {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #e0e0e0;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 1;
+}
+
+:deep(.swiper-pagination-bullet:hover) {
+  background: #9f6f49;
+  transform: scale(1.1);
+}
+
+:deep(.swiper-pagination-bullet-active) {
+  background: #9f6f49;
+  border-color: #9f6f49;
+  transform: scale(1.2);
+}
+
+/* Hide pagination on desktop, show on mobile */
+@media (min-width: 768px) {
+  :deep(.swiper-pagination) {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  :deep(.swiper-pagination) {
+    display: flex !important;
+  }
+}
+
 </style>

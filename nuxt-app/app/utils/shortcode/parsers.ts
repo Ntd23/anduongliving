@@ -23,6 +23,9 @@ import type {
   FeatureSectionData,
   HeroStorySectionData,
   NewsletterSectionData,
+  ServiceDetailsData,
+  BookingSectionData,
+  BookingRoomOption,
   PricingItem,
   PricingSectionData,
   SkillItem,
@@ -406,5 +409,98 @@ export const parseTestimonialsBlock = (html: string): TestimonialsSectionData =>
         };
       })
       .filter(Boolean) as any[], // Type assertion needed due to filter
+  };
+};
+export const parseServiceDetailsBlock = (html: string): ServiceDetailsData => {
+  // Lấy section chứa dữ liệu. Dùng id hoặc class bao ngoài cùng, nếu không có helper theo id thì dùng chính html gốc
+  const section = html; 
+
+  // Lấy các khối text chính
+  const titleBlock = extractFirstBlockByClass(section, "div", "section-title") || section;
+  const subtitle = extractTextFromTag(titleBlock, "h5");
+  const title = extractTextFromTag(titleBlock, "h2");
+  const description = extractTextFromTag(titleBlock, "p");
+
+  // Xử lý background image
+  const animationsBlock = extractFirstBlockByClass(section, "div", "animations-01");
+  const bgImgMatch = animationsBlock ? animationsBlock.match(/<img[^>]+src="([^">]+)"/) : null;
+  const bgImageUrl = bgImgMatch ? bgImgMatch[1] : null;
+
+  // Lấy danh sách item
+  const itemBlocks = extractBlocksByTag(section, "div", "services-08-item");
+
+  return {
+    bgImageUrl,
+    subtitle,
+    title,
+    description,
+    items: itemBlocks
+      .map((itemBlock) => {
+        const itemTitle = extractTextFromTag(itemBlock, "h3");
+
+        // Parse ảnh icon
+        const iconBlock = extractFirstBlockByClass(itemBlock, "div", "services-icon2") || "";
+        const iconImgUrl = iconBlock.match(/<img[^>]+src="([^">]+)"/)?.[1] || "";
+        const iconImgAlt = iconBlock.match(/<img[^>]+alt="([^">]+)"/)?.[1] || itemTitle || "";
+
+        // Parse ảnh thumb
+        const thumbBlock = extractFirstBlockByClass(itemBlock, "div", "services-08-thumb") || "";
+        const thumbImgUrl = thumbBlock.match(/<img[^>]+src="([^">]+)"/)?.[1] || "";
+        const thumbImgAlt = thumbBlock.match(/<img[^>]+alt="([^">]+)"/)?.[1] || itemTitle || "";
+
+        if (!itemTitle) return null;
+
+        return { 
+          title: itemTitle, 
+          iconImgUrl, 
+          iconImgAlt, 
+          thumbImgUrl, 
+          thumbImgAlt 
+        };
+      })
+      .filter(Boolean) as ServiceDetailItem[],
+  };
+};
+export const parseBookingBlock = (html: string): BookingSectionData => {
+  const section = extractFirstBlockByClass(html, "section", "booking") || html;
+
+  // 1. Lấy Title & Subtitle
+  const titleBlock = extractFirstBlockByClass(section, "div", "section-title") || section;
+  const subtitle = extractTextFromTag(titleBlock, "h5");
+  const title = extractTextFromTag(titleBlock, "h2");
+  const description = extractTextFromTag(titleBlock, "p");
+  // 2. Lấy Form Action URL
+  const actionMatch = section.match(/<form[^>]+action="([^">]+)"/);
+  const actionUrl = actionMatch ? actionMatch[1] : null;
+
+  // 3. Lấy Ảnh
+  const imgBlock = extractFirstBlockByClass(section, "div", "booking-img") || "";
+  const imageSrc = imgBlock.match(/<img[^>]+src="([^">]+)"/)?.[1] || null;
+  const imageAlt = imgBlock.match(/<img[^>]+alt="([^">]+)"/)?.[1] || "Booking Image";
+
+  // 4. Lấy danh sách tuỳ chọn Phòng
+  const rooms: BookingRoomOption[] = [];
+  const roomSelectMatch = section.match(/<select[^>]+name="room_id"[^>]*>([\s\S]*?)<\/select>/);
+  
+  if (roomSelectMatch) {
+    const optionsHtml = roomSelectMatch[1] || "";
+    const optionRegex = /<option[^>]+value="([^"]+)"[^>]*>([^<]+)<\/option>/g;
+    let match;
+    while ((match = optionRegex.exec(optionsHtml)) !== null) {
+      rooms.push({
+        value: match[1],
+        label: match[2].trim(),
+      });
+    }
+  }
+
+  return {
+    subtitle,
+    title,
+    description,
+    actionUrl,
+    imageSrc,
+    imageAlt,
+    rooms,
   };
 };
