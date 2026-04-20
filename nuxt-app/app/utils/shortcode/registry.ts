@@ -248,12 +248,6 @@ export const shortcodeRegistry = [
     componentName: "UserProfile",
     parser: parseUserProfileBlock,
   },
-  {
-  name: "booking",
-  aliases: ["booking", "form-booking"],
-  componentName: "Booking",
-  parser: parseBookingBlock,
-},
 ] as const satisfies readonly ShortcodeDefinition[];
 
 export const findShortcodeDefinition = (name?: string | null): ShortcodeDefinition | null => {
