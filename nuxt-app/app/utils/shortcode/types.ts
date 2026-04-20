@@ -51,6 +51,23 @@ export type ServiceSectionData = {
   items: ServiceItem[];
 };
 
+export type TestimonialItem = {
+  name: string;
+  title: string | null;
+  content: string;
+  image: ShortcodeImage | null;
+  rating: number | null;
+};
+
+export type TestimonialsSectionData = {
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  backgroundImage: ShortcodeImage | null;
+  testimonialIds: string[];
+  items: TestimonialItem[];
+};
+
 export type TeamSocialPlatform = "facebook" | "twitter" | "instagram" | "website";
 
 export type TeamSocialLink = {

@@ -6,8 +6,10 @@ import {
   parseServiceDetailsBlock,
   parseBookingBlock,
   parsePricingBlock,
+  parseServiceBlock,
   parseSkillBlock,
   parseTeamBlock,
+  parseTestimonialsBlock,
 } from "./parsers";
 import type { ShortcodeDefinition, ShortcodeName } from "./types";
 
