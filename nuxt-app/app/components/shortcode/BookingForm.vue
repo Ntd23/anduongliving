@@ -25,9 +25,9 @@ const toIsoDate = (value?: string | null) => {
   }
 
   const format = section.value.dateFormat || "d-m-Y";
-  let year = "";
-  let month = "";
-  let day = "";
+  let year: string | undefined = "";
+  let month: string | undefined = "";
+  let day: string | undefined = "";
 
   switch (format) {
     case "d-m-Y":

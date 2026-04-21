@@ -54,7 +54,7 @@ const resolveLink = useResolvedCmsLink();
 }
 .service-list-card__image {
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4 / 3;
   display: block;
   object-fit: cover;
 }
