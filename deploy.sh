@@ -9,6 +9,8 @@ NITRO_DIR="${NITRO_DIR:-$DEPLOY_PATH/nuxt-app}"
 echo "Deploy path: $DEPLOY_PATH"
 echo "Deploy branch: $DEPLOY_BRANCH"
 
+git config --global --add safe.directory "$DEPLOY_PATH"
+
 cd "$DEPLOY_PATH"
 
 git fetch origin "$DEPLOY_BRANCH"
