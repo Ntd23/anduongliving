@@ -59,7 +59,7 @@ const layoutClass = computed(() => {
 .cms-layout--default,
 .cms-layout--full-menu {
   min-height: 100vh;
-  background: linear-gradient(180deg, #fcf9f3 0%, #f6efe5 55%, #f8f4ed 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #fdfbf8 55%, #ffffff 100%);
 }
 
 .cms-layout--default :deep(main),
@@ -70,7 +70,7 @@ const layoutClass = computed(() => {
 /* ─── Full-Width ─── */
 .cms-layout--full-width {
   min-height: 100vh;
-  background: linear-gradient(180deg, #fdfaf4 0%, #f4ede3 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #fcfaf7 100%);
 }
 
 .cms-layout--full-width :deep(.page-hero) {
@@ -119,7 +119,7 @@ const layoutClass = computed(() => {
 /* ─── Blog Sidebar ─── */
 .cms-layout--blog-sidebar {
   min-height: 100vh;
-  background: linear-gradient(180deg, #fcf9f3 0%, #f3ece2 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #fcfaf7 100%);
 }
 
 .cms-layout__body--blog {

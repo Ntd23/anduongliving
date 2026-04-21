@@ -43,7 +43,6 @@ const languages = computed(() =>
 
 const hasLanguages = computed(() => languages.value.length > 1);
 const hasSocialLinks = computed(() => (props.socialLinks || []).length > 0);
-const hasContact = computed(() => Boolean(props.hotline || props.email));
 
 const closeMenu = () => emit("update:open", false);
 
@@ -148,11 +147,7 @@ onBeforeUnmount(() => {
         </div>
 
         <div class="mobile-menu-collapse__body">
-          <section class="mobile-menu-collapse__section">
-            <div class="mobile-menu-collapse__eyebrow">
-              Navigation
-            </div>
-
+          <section class="mobile-menu-collapse__section mobile-menu-collapse__section--menu">
             <p v-if="menuError" class="mobile-menu-collapse__message mobile-menu-collapse__message--error">
               {{ menuError }}
             </p>
@@ -172,10 +167,6 @@ onBeforeUnmount(() => {
           </section>
 
           <section v-if="hasLanguages" class="mobile-menu-collapse__section">
-            <div class="mobile-menu-collapse__eyebrow">
-              Languages
-            </div>
-
             <ul class="mobile-menu-collapse__plain-list">
               <li v-for="item in languages" :key="item.code">
                 <NuxtLink
@@ -190,29 +181,8 @@ onBeforeUnmount(() => {
             </ul>
           </section>
 
-          <section v-if="hasContact || hasSocialLinks" class="mobile-menu-collapse__section">
-            <div class="mobile-menu-collapse__eyebrow">
-              Contact
-            </div>
-
-            <div v-if="hasContact" class="mobile-menu-collapse__contact">
-              <a
-                v-if="hotline"
-                :href="`tel:${hotline}`"
-                class="mobile-menu-collapse__contact-link"
-              >
-                {{ hotline }}
-              </a>
-              <a
-                v-if="email"
-                :href="`mailto:${email}`"
-                class="mobile-menu-collapse__contact-link"
-              >
-                {{ email }}
-              </a>
-            </div>
-
-            <div v-if="hasSocialLinks" class="mobile-menu-collapse__socials">
+          <section v-if="hasSocialLinks" class="mobile-menu-collapse__section">
+            <div class="mobile-menu-collapse__socials">
               <a
                 v-for="social in socialLinks"
                 :key="`${social.name}-${social.url}`"
@@ -253,21 +223,26 @@ onBeforeUnmount(() => {
   border: 0;
   background: rgba(16, 11, 8, 0.48);
   backdrop-filter: blur(3px);
+  touch-action: none;
 }
 
 .mobile-menu-collapse {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  top: 0.8rem;
+  right: 0.8rem;
+  bottom: 0.8rem;
   z-index: 59;
-  width: min(26rem, 100vw);
+  width: min(26rem, calc(100vw - 1.1rem));
   overflow-y: auto;
-  border-left: 1px solid rgba(255, 249, 241, 0.08);
-  background:
-    linear-gradient(180deg, rgba(22, 15, 11, 0.98), rgba(35, 24, 18, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 1.9rem;
+  background: linear-gradient(180deg, rgba(39, 28, 21, 0.9), rgba(28, 20, 16, 0.94));
   color: rgba(255, 249, 241, 0.92);
-  box-shadow: -24px 0 60px rgba(16, 11, 8, 0.2);
+  box-shadow: -24px 0 60px rgba(16, 11, 8, 0.22);
+  backdrop-filter: blur(22px) saturate(125%);
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 .mobile-menu-collapse__header {
@@ -275,7 +250,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.3rem 1.2rem 1rem;
+  padding: 1.1rem 1.1rem 0.95rem;
   border-bottom: 1px solid rgba(255, 249, 241, 0.08);
 }
 
@@ -315,27 +290,22 @@ onBeforeUnmount(() => {
 
 .mobile-menu-collapse__body {
   display: grid;
-  gap: 1.35rem;
-  padding: 1.1rem 1.2rem 2rem;
+  gap: 1rem;
+  padding: 0.95rem 1.1rem 1.4rem;
 }
 
 .mobile-menu-collapse__section {
-  padding-bottom: 1.2rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid rgba(255, 249, 241, 0.08);
+}
+
+.mobile-menu-collapse__section--menu {
+  padding-top: 0.1rem;
 }
 
 .mobile-menu-collapse__section:last-child {
   border-bottom: 0;
   padding-bottom: 0;
-}
-
-.mobile-menu-collapse__eyebrow {
-  margin-bottom: 0.85rem;
-  color: rgba(214, 192, 155, 0.84);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
 }
 
 .mobile-menu-collapse__list,
@@ -346,15 +316,17 @@ onBeforeUnmount(() => {
 }
 
 .mobile-menu-collapse__plain-list li + li {
-  margin-top: 0.7rem;
+  margin-top: 0.35rem;
 }
 
 .mobile-menu-collapse__plain-link {
   display: block;
+  min-height: 2.6rem;
+  padding: 0.6rem 0;
   color: rgba(255, 249, 241, 0.84);
-  font-size: 0.88rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.16em;
   text-decoration: none;
   text-transform: uppercase;
 }
@@ -373,22 +345,10 @@ onBeforeUnmount(() => {
   color: #f0afa5;
 }
 
-.mobile-menu-collapse__contact {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.mobile-menu-collapse__contact-link {
-  color: rgba(255, 249, 241, 0.9);
-  font-size: 0.9rem;
-  text-decoration: none;
-}
-
 .mobile-menu-collapse__socials {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 1rem;
 }
 
 .mobile-menu-collapse__social-link {
@@ -437,6 +397,22 @@ onBeforeUnmount(() => {
   .mobile-menu-collapse,
   .mobile-menu-collapse__overlay {
     display: none;
+  }
+}
+
+@media (max-width: 575px) {
+  .mobile-menu-collapse {
+    top: 0.55rem;
+    right: 0.55rem;
+    bottom: 0.55rem;
+    left: 0.55rem;
+    width: auto;
+    border-radius: 1.5rem;
+  }
+
+  .mobile-menu-collapse__header,
+  .mobile-menu-collapse__body {
+    padding-inline: 0.95rem;
   }
 }
 </style>
