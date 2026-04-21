@@ -14,10 +14,10 @@
   --retreat-olive: #6b7153;
   --retreat-clay: #a77a54;
   --retreat-gold: #c5aa74;
-  --retreat-sand: #e9dfd0;
-  --retreat-stone: #cfc4b5;
-  --retreat-cream: #f8f4ec;
-  --retreat-cream-strong: #fffdf8;
+  --retreat-sand: #ffffff;
+  --retreat-stone: #ffffff;
+  --retreat-cream: #ffffff;
+  --retreat-cream-strong: #ffffff;
   --retreat-night: #18110d;
   --retreat-line: rgba(56, 41, 30, 0.12);
   --retreat-shadow-soft: 0 20px 48px rgba(35, 22, 13, 0.08);
@@ -49,8 +49,8 @@ body {
   line-height: 1.72;
   color: var(--retreat-ink);
   background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.75), transparent 38%),
-    linear-gradient(180deg, #fcf9f3 0%, #f6efe5 55%, #f8f4ed 100%);
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.96), transparent 38%),
+    linear-gradient(180deg, #ffffff 0%, #fdfbf8 55%, #ffffff 100%);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

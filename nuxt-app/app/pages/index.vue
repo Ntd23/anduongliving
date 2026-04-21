@@ -129,7 +129,6 @@ definePageMeta({
 
 .cms-content {
   min-width: 0;
-  padding-bottom: clamp(3rem, 6vw, 5rem);
 }
 
 .cms-content--with-breadcrumbs {

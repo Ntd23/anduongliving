@@ -9,6 +9,8 @@ NITRO_DIR="${NITRO_DIR:-$DEPLOY_PATH/nuxt-app}"
 echo "Deploy path: $DEPLOY_PATH"
 echo "Deploy branch: $DEPLOY_BRANCH"
 
+git config --global --add safe.directory "$DEPLOY_PATH"
+
 cd "$DEPLOY_PATH"
 
 git fetch origin "$DEPLOY_BRANCH"
@@ -34,6 +36,9 @@ else
 fi
 
 export NODE_OPTIONS="${NODE_OPTIONS:---max-old-space-size=4096}"
+
+# Clean Nuxt build artifacts to avoid stale manifest/cache errors on server.
+rm -rf .nuxt .output node_modules/.cache/nuxt
 
 if command -v pnpm >/dev/null 2>&1; then
   pnpm build

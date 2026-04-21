@@ -23,6 +23,7 @@ const route = useRoute();
 const activeLocale = computed(() => locale.value);
 const mobileMenuOpen = ref(false);
 const sidebarMenuOpen = ref(false);
+const isScrolled = ref(false);
 
 const { data, error } = await useAsyncData(
   () => `main-menu-${activeLocale.value}`,
@@ -64,9 +65,15 @@ const headerButtonUrl = computed(() => themeOptions.value?.header_button_url?.tr
 const showHeaderButton = computed(() =>
   props.variant === "header" && !props.fullWidth && !!headerButtonLabel.value && !!headerButtonUrl.value,
 );
-const wrapperClass = computed(() =>
-  props.fullWidth ? "main-navigation__inner main-navigation__inner--fluid" : "container main-navigation__inner",
-);
+const wrapperClass = computed(() => {
+  if (props.variant === "header") {
+    return "main-navigation__inner main-navigation__inner--fluid";
+  }
+
+  return props.fullWidth
+    ? "main-navigation__inner main-navigation__inner--fluid"
+    : "container main-navigation__inner";
+});
 const showMobileToggle = computed(() => props.variant === "header" || props.variant === "side");
 const showOffcanvasTrigger = computed(() => props.variant === "header" && props.fullWidth);
 
@@ -115,6 +122,27 @@ watch(
     sidebarMenuOpen.value = false;
   },
 );
+
+const syncScrolledState = () => {
+  if (!import.meta.client || props.variant !== "header") {
+    return;
+  }
+
+  isScrolled.value = window.scrollY > 24;
+};
+
+onMounted(() => {
+  syncScrolledState();
+  window.addEventListener("scroll", syncScrolledState, { passive: true });
+});
+
+onBeforeUnmount(() => {
+  if (!import.meta.client || props.variant !== "header") {
+    return;
+  }
+
+  window.removeEventListener("scroll", syncScrolledState);
+});
 </script>
 
 <template>
@@ -124,6 +152,7 @@ watch(
       'main-navigation--side': variant === 'side',
       'main-navigation--header': variant === 'header',
       'main-navigation--full-width': fullWidth,
+      'main-navigation--scrolled': isScrolled,
     }"
   >
     <div :class="wrapperClass">
@@ -254,13 +283,26 @@ watch(
 
 <style scoped>
 .main-navigation {
-  position: sticky;
-  top: 0;
-  z-index: 30;
-  border-bottom: 1px solid rgba(50, 35, 25, 0.08);
-  background:
-    linear-gradient(180deg, rgba(252, 248, 241, 0.96), rgba(250, 244, 235, 0.92));
-  backdrop-filter: blur(16px);
+  position: relative;
+  z-index: 80;
+  background: transparent;
+  pointer-events: auto;
+  isolation: isolate;
+}
+
+.main-navigation--header {
+  padding-top: 1rem;
+}
+
+.main-navigation--header.main-navigation--scrolled {
+  min-height: 6.85rem;
+}
+
+.main-navigation--header.main-navigation--scrolled .main-navigation__inner {
+  position: fixed;
+  top: 0.0rem;
+  z-index: 81;
+  width: 100%;;
 }
 
 .main-navigation__inner {
@@ -268,15 +310,22 @@ watch(
   align-items: center;
   gap: 1.75rem;
   min-height: 5.85rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.66));
+  box-shadow:
+    0 18px 40px rgba(56, 41, 30, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(22px) saturate(135%);
+  pointer-events: auto;
 }
 
 .main-navigation__inner--fluid {
-  width: 100%;
-  padding-inline: 2rem;
+
 }
 
 .main-navigation__brand-block {
   flex: 0 0 auto;
+  padding: 0 50px;
 }
 
 .main-navigation__brand {
@@ -292,8 +341,8 @@ watch(
 .main-navigation__brand-logo {
   display: block;
   width: auto;
-  max-width: 9.75rem;
-  max-height: 5rem;
+  max-width: 9.4rem;
+  max-height: 4.4rem;
   object-fit: contain;
 }
 
@@ -310,7 +359,7 @@ watch(
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.85rem;
+  gap: 0.45rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -335,22 +384,25 @@ watch(
   display: none;
   align-items: center;
   justify-content: center;
-  min-height: 3.2rem;
-  padding: 0.9rem 1.55rem;
-  border: 1px solid rgba(93, 68, 47, 0.14);
+  min-height: 2.95rem;
+  padding: 0.85rem 1.35rem;
+  border: 1px solid rgba(120, 105, 87, 0.16);
   border-radius: 999px;
-  background: linear-gradient(180deg, #8f7659 0%, #72634d 100%);
-  color: #fffdf8;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.72));
+  color: var(--retreat-ink);
   font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-decoration: none;
   text-transform: uppercase;
-  box-shadow: 0 18px 40px rgba(62, 43, 31, 0.14);
+  box-shadow: 0 12px 28px rgba(56, 41, 30, 0.08);
 }
 
 .main-navigation__action:hover {
-  background: linear-gradient(180deg, #a17f5c 0%, #7d6950 100%);
+  border-color: rgba(167, 122, 84, 0.24);
+  color: var(--retreat-clay);
+  transform: translateY(-1px);
 }
 
 .main-navigation__mobile-toggle,
@@ -360,11 +412,12 @@ watch(
   justify-content: center;
   width: 3rem;
   height: 3rem;
-  border: 1px solid rgba(50, 35, 25, 0.1);
+  border: 1px solid rgba(120, 105, 87, 0.14);
   border-radius: 999px;
-  background: rgba(255, 252, 247, 0.86);
+  background: rgba(255, 255, 255, 0.74);
   color: var(--retreat-ink);
   font-size: 1.15rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.66);
 }
 
 .main-navigation__mobile-toggle:hover,
@@ -378,6 +431,7 @@ watch(
   display: flex;
   height: 100%;
   min-height: 100%;
+  padding-top: 0;
   border-bottom: 0;
   background:
     linear-gradient(180deg, rgba(250, 246, 239, 0.98), rgba(243, 234, 220, 0.96));
@@ -392,6 +446,11 @@ watch(
   gap: 2.5rem;
   min-height: 100%;
   padding: 2.5rem 1.75rem 2rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .main-navigation--side .main-navigation__brand {
@@ -471,14 +530,36 @@ watch(
   .main-navigation__action {
     display: inline-flex;
   }
+
+  .main-navigation--header .main-navigation__brand-block {
+    flex: 0 0 auto;
+    min-width: 10rem;
+    padding: 0 50px;
+  }
+
+  .main-navigation--header .main-navigation__actions {
+    min-width: 10rem;
+  }
 }
 
 @media (max-width: 991px) {
+  .main-navigation--header {
+    padding-top: 0.6rem;
+  }
+
+  .main-navigation--header.main-navigation--scrolled {
+    min-height: 5.2rem;
+  }
+
+
+  .main-navigation {
+    z-index: 80;
+  }
+
   .main-navigation__inner {
     justify-content: space-between;
-    min-height: 5rem;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
+    min-height: 4.6rem;
+    gap: 1rem;
   }
 
   .main-navigation--header .main-navigation__nav,
@@ -512,6 +593,7 @@ watch(
   }
 
   .main-navigation__inner--fluid {
+    width: calc(100% - 1rem);
     padding-inline: 1rem;
   }
 
