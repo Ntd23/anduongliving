@@ -44,7 +44,7 @@ const descriptionLines = computed(() =>
               loading="lazy"
             >
           </div>
-
+        
           <div v-if="section.accentImage?.src" class="about-media__accent">
             <img
               :src="section.accentImage.src"

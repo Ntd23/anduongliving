@@ -948,20 +948,25 @@ export const parseServiceBlock = (html: string): ServiceSectionData => {
 };
 
 export const parsePricingBlock = (html: string): PricingSectionData => {
-
   const attributes = parseShortcodeAttributes(html);
   const section = extractFirstBlockByClass(html, "section", "pricing-area") || html;
   const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
-  const pricingBlocks = extractBlocksByTag(section, "div", "single-pricing");
+
+  const pricingBlocks = [
+    ...extractBlocksByTag(section, "div", "single-pricing"),
+    ...extractBlocksByTag(section, "div", "pricing-box"),
+  ];
 
   const parsePriceText = (priceText: string): { price: string; currency: string } => {
-    const priceMatch = priceText.match(/^([^\d]*)([\d.,]+)(.*)$/);
+    const normalized = (priceText || "").trim();
+
+    const priceMatch = normalized.match(/^([^\d]*)([\d.,]+)(.*)$/);
     if (!priceMatch) {
-      return { price: priceText, currency: "" };
+      return { price: normalized, currency: "" };
     }
 
     const prefix = priceMatch[1]?.trim() || "";
-    const digits = priceMatch[2]?.trim() || priceText;
+    const digits = priceMatch[2]?.trim() || normalized;
     const suffix = priceMatch[3]?.trim() || "";
 
     return {
@@ -985,9 +990,10 @@ export const parsePricingBlock = (html: string): PricingSectionData => {
         const title = attributes[`title_${itemIndex}`] || null;
         const priceText = attributes[`price_${itemIndex}`] || null;
         const duration = attributes[`duration_${itemIndex}`] || null;
+        const description = attributes[`description_${itemIndex}`] || null;
         const features = getFeatures(attributes[`feature_list_${itemIndex}`] || null);
         const buttonLabel = attributes[`button_label_${itemIndex}`] || "Bắt đầu ngay";
-        const buttonUrl = attributes[`button_url_${itemIndex}`] || attributes[`button_url_${itemIndex}`] || "#";
+        const buttonUrl = attributes[`button_url_${itemIndex}`] || "#";
 
         if (!title || !priceText) {
           return null;
@@ -997,6 +1003,7 @@ export const parsePricingBlock = (html: string): PricingSectionData => {
 
         return {
           title,
+          description,
           price: parsedPrice.price,
           currency: parsedPrice.currency,
           period: duration || "",
@@ -1009,42 +1016,90 @@ export const parsePricingBlock = (html: string): PricingSectionData => {
       .filter(Boolean) as PricingItem[];
   };
 
+  const builtItems = buildPricingItems();
+
   return {
     backgroundColor: attributes.background_color || null,
+
     backgroundImage1: attributes.background_image_1
       ? { src: attributes.background_image_1, alt: "" }
-      : null,
+      : extractFirstBlockByClass(section, "div", "animations-01")
+        ? extractFirstImage(extractFirstBlockByClass(section, "div", "animations-01") || "")
+        : null,
+
     backgroundImage2: attributes.background_image_2
       ? { src: attributes.background_image_2, alt: "" }
-      : null,
-    subtitle: attributes.subtitle ? attributes.subtitle : titleBlock ? extractTextFromTag(titleBlock, "h5") : null,
-    title: attributes.title ? attributes.title : titleBlock ? extractTextFromTag(titleBlock, "h2") : null,
+      : extractFirstBlockByClass(section, "div", "animations-02")
+        ? extractFirstImage(extractFirstBlockByClass(section, "div", "animations-02") || "")
+        : null,
+
+    subtitle: attributes.subtitle
+      ? attributes.subtitle
+      : titleBlock
+        ? extractTextFromTag(titleBlock, "h5")
+        : null,
+
+    title: attributes.title
+      ? attributes.title
+      : titleBlock
+        ? extractTextFromTag(titleBlock, "h2")
+        : null,
+
     description:
-      attributes.description || (titleBlock ? extractTextFromTag(titleBlock, "p") : null),
-    items: buildPricingItems().length ? buildPricingItems() : pricingBlocks
-      .map((pricingBlock) => {
-        const title = extractTextFromTag(pricingBlock, "h4");
-        const priceText = extractTextFromTag(pricingBlock, "h2");
-        const features = extractListItems(pricingBlock);
-        const buttonLink = extractLinks(pricingBlock)[0];
+      attributes.description ||
+      (titleBlock
+        ? (() => {
+            const titleBlockText = extractTextFromTag(titleBlock, "p");
+            if (titleBlockText) return titleBlockText;
 
-        if (!title || !priceText) return null;
+            const sectionParagraphs = extractParagraphTexts(section);
+            return sectionParagraphs.length ? sectionParagraphs[0] : null;
+          })()
+        : null),
 
-        const parsedPrice = parsePriceText(priceText);
+    items: builtItems.length
+      ? builtItems
+      : pricingBlocks
+          .map((pricingBlock) => {
+            const title =
+              extractTextFromTag(pricingBlock, "h3") ||
+              extractTextFromTag(pricingBlock, "h4");
 
-        return {
-          title,
-          description: null,
-          price: parsedPrice.price,
-          currency: parsedPrice.currency,
-          period: extractTextFromTag(pricingBlock, "span") || "",
-          features,
-          buttonLabel: buttonLink ? normalizeText(buttonLink.raw) : "Get Started",
-          buttonUrl: buttonLink?.url || "#",
-          isPopular: pricingBlock.includes("popular") || pricingBlock.includes("featured"),
-        } satisfies PricingItem;
-      })
-      .filter(Boolean) as PricingItem[],
+            const description =
+              extractFirstBlockByClass(pricingBlock, "div", "pricing-head")
+                ? extractTextFromTag(
+                    extractFirstBlockByClass(pricingBlock, "div", "pricing-head") || "",
+                    "p",
+                  )
+                : extractTextFromTag(pricingBlock, "p");
+
+            const priceText = extractTextFromTag(pricingBlock, "h2");
+            const features = extractListItems(pricingBlock);
+            const buttonLink = extractLinks(pricingBlock)[0];
+
+            const period =
+              extractTextFromTag(pricingBlock, "div", "month") ||
+              extractTextFromTag(pricingBlock, "span") ||
+              "";
+
+            if (!title || !priceText) return null;
+
+            const parsedPrice = parsePriceText(priceText);
+
+            return {
+              title,
+              description,
+              price: parsedPrice.price,
+              currency: parsedPrice.currency,
+              period,
+              features,
+              buttonLabel: buttonLink ? normalizeText(buttonLink.raw) : "Bắt đầu ngay",
+              buttonUrl: buttonLink?.url || "#",
+              isPopular:
+                pricingBlock.includes("popular") || pricingBlock.includes("featured"),
+            } satisfies PricingItem;
+          })
+          .filter(Boolean) as PricingItem[],
   };
 };
 const parseRoomsListingSection = (html: string, sectionClass: string): FeaturedRoomsSectionData => {

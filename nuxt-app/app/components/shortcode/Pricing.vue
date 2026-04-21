@@ -31,7 +31,6 @@ const sectionStyle = computed(() =>
     </div>
     <div class="container">
       <div v-if="section.title || section.subtitle || section.description" class="pricing-header">
-      
 
         <p v-if="section.subtitle" class="pricing-subtitle">
           {{ section.subtitle }}
