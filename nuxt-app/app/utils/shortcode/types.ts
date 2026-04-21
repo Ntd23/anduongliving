@@ -460,20 +460,6 @@ export type NewsSectionData = {
   items: FeatureGridItem[];
 };
 
-export type TestimonialItem = {
-  name: string;
-  image: ShortcodeImage | null;
-  content: string | null;
-};
-
-export type TestimonialsSectionData = {
-  backgroundImage: ShortcodeImage | null;
-  subtitle: string | null;
-  title: string | null;
-  description: string | null;
-  items: TestimonialItem[];
-};
-
 export type GalleryFilter = {
   label: string;
   value: string;

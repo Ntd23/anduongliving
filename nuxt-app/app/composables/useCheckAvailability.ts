@@ -72,9 +72,9 @@ const parseBotbleDate = (value: string, format: string) => {
     return null;
   }
 
-  let year = "";
-  let month = "";
-  let day = "";
+  let year: string | undefined = "";
+  let month: string | undefined = "";
+  let day: string | undefined = "";
 
   switch (format) {
     case "d-m-Y":
