@@ -1,6 +1,7 @@
 export type ShortcodeName =
   | "all-rooms"
   | "about-us"
+  | "blog-posts"
   | "booking-form"
   | "brands"
   | "check-availability-form"
@@ -44,6 +45,7 @@ export type ShortcodeBlock = {
 export type ShortcodeComponentName =
   | "AllRooms"
   | "AboutUs"
+  | "BlogPosts"
   | "Brands"
   | "BookingForm"
   | "CheckAvailabilityForm"
@@ -246,6 +248,7 @@ export type ShortcodeAction = {
 export type SimpleSliderSlide = {
   image: ShortcodeImage | null;
   caption: string | null;
+  captionHtml: string | null;
   href: string | null;
 };
 
@@ -458,6 +461,11 @@ export type NewsSectionData = {
   title: string | null;
   description: string | null;
   items: FeatureGridItem[];
+};
+
+export type BlogPostsSectionData = {
+  items: FeatureGridItem[];
+  paginationHtml: string | null;
 };
 
 export type GalleryFilter = {

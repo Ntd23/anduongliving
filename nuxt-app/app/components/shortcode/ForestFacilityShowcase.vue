@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { parseForestFacilityShowcaseBlock, type ShortcodeBlock } from "~/utils/shortcode";
 import { useResolvedCmsLink } from "~/composables/useResolvedCmsLink";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
@@ -10,19 +11,20 @@ const props = defineProps<{
 const section = computed(() => parseForestFacilityShowcaseBlock(props.block.raw));
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 const resolveLink = useResolvedCmsLink();
+const resolveAsset = useResolvedCmsAsset();
 
 const action = computed(() => resolveLink(section.value.action?.href));
 </script>
 
 <template>
   <section
-    v-if="section.title || section.leftImage?.src || section.rightImages.length"
+    v-if="(section.leftImage?.src || section.rightImages.length) && (section.title || section.description || section.sectionLabel || section.action?.label)"
     class="shortcode-forest-facility-native"
   >
     <div class="forest-shell">
       <div class="forest-media">
         <figure v-if="section.leftImage?.src" class="forest-media__primary">
-          <img :src="section.leftImage.src" :alt="section.leftImage.alt || section.title || 'Forest facility image'">
+          <img :src="resolveAsset(section.leftImage.src) || section.leftImage.src" :alt="section.leftImage.alt || section.title || 'Forest facility image'">
         </figure>
 
         <div v-if="section.rightImages.length" class="forest-media__secondary">
@@ -31,7 +33,7 @@ const action = computed(() => resolveLink(section.value.action?.href));
             :key="`${image.src}-${index}`"
             class="forest-media__secondary-item"
           >
-            <img :src="image.src" :alt="image.alt || `Forest detail ${index + 1}`">
+            <img :src="resolveAsset(image.src) || image.src" :alt="image.alt || `Forest detail ${index + 1}`">
           </figure>
         </div>
       </div>

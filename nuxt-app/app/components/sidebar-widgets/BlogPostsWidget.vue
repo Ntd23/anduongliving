@@ -8,6 +8,7 @@ import {
 import { cmsAppRoutes } from "~~/shared/cms-routing";
 import { formatCmsDate } from "~/utils/locale-format";
 import type { SidebarWidgetManifest } from "~/utils/sidebar-widgets";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
 
 const props = defineProps<{
   widget: SidebarWidgetManifest;
@@ -15,6 +16,7 @@ const props = defineProps<{
 
 const { locale } = useI18n();
 const localePath = useLocalePath();
+const resolveAsset = useResolvedCmsAsset();
 
 const limit = computed(() => Math.max(1, Number.parseInt(String(props.widget.data?.limit || 5), 10) || 5));
 const type = computed<"recent" | "popular">(() =>
@@ -48,8 +50,8 @@ const formatDate = (value?: string | null) => {
       <li v-for="post in posts" :key="post.id" class="sidebar-post-list__item">
         <NuxtLink :to="localePath(cmsAppRoutes.blog.post(post.slug))" class="sidebar-post-list__image-link">
           <img
-            v-if="post.image"
-            :src="post.image"
+            v-if="resolveAsset(post.image)"
+            :src="resolveAsset(post.image)!"
             :alt="post.name"
             class="sidebar-post-list__image"
           >

@@ -5,12 +5,18 @@ import {
   type PricingSectionData,
   type ShortcodeBlock,
 } from "~/utils/shortcode";
+import { useResolvedCmsLink } from "~/composables/useResolvedCmsLink";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
+import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
   block: ShortcodeBlock;
 }>();
 
 const section = computed<PricingSectionData>(() => parsePricingBlock(props.block.raw));
+const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
+const resolveLink = useResolvedCmsLink();
+const resolveAsset = useResolvedCmsAsset();
 
 const sectionStyle = computed(() =>
   section.value.backgroundColor
@@ -20,13 +26,13 @@ const sectionStyle = computed(() =>
 </script>
 
 <template>
-  <section class="shortcode-pricing" :style="sectionStyle">
+  <section v-if="section.title || section.subtitle || section.description || section.items.length" class="shortcode-pricing" :style="sectionStyle">
     <div class="shortcode-pricing__background">
       <div v-if="section.backgroundImage1" class="pricing-bg-image pricing-bg-image--one">
-        <img :src="section.backgroundImage1.src" :alt="section.backgroundImage1.alt || ''" />
+        <img :src="resolveAsset(section.backgroundImage1.src) || section.backgroundImage1.src" :alt="section.backgroundImage1.alt || ''" />
       </div>
       <div v-if="section.backgroundImage2" class="pricing-bg-image pricing-bg-image--two">
-        <img :src="section.backgroundImage2.src" :alt="section.backgroundImage2.alt || ''" />
+        <img :src="resolveAsset(section.backgroundImage2.src) || section.backgroundImage2.src" :alt="section.backgroundImage2.alt || ''" />
       </div>
     </div>
     <div class="container">
@@ -69,15 +75,28 @@ const sectionStyle = computed(() =>
           </ul>
 
           <NuxtLink
-            :to="item.buttonUrl"
+            v-if="resolveLink(item.buttonUrl)?.isInternal"
+            :to="resolveLink(item.buttonUrl)!.href"
             class="pricing-button"
             :class="{ 'pricing-button--popular': item.isPopular }"
           >
             {{ item.buttonLabel }}
           </NuxtLink>
+          <a
+            v-else
+            :href="item.buttonUrl"
+            class="pricing-button"
+            :class="{ 'pricing-button--popular': item.isPopular }"
+          >
+            {{ item.buttonLabel }}
+          </a>
         </div>
       </div>
     </div>
+  </section>
+
+  <section v-else class="shortcode-pricing">
+    <div class="container" v-html="sanitizedHtml" />
   </section>
 </template>
 
