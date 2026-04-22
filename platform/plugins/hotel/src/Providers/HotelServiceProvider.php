@@ -184,7 +184,7 @@ class HotelServiceProvider extends ServiceProvider
             ->loadHelpers()
             ->loadAndPublishTranslations()
             ->loadAndPublishViews()
-            ->loadRoutes()
+            ->loadRoutes(['web', 'api'])
             ->publishAssets();
 
         SlugHelper::registering(function (): void {

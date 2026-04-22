@@ -175,6 +175,11 @@ const sectionStyle = computed(() =>
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.special-story-card:hover img {
+  transform: scale(1.03);
 }
 
 .special-story-card::after {
@@ -210,7 +215,10 @@ const sectionStyle = computed(() =>
   gap: 1rem;
   padding: 1rem 1.2rem;
   border-radius: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .special-story-nav__text {

@@ -176,6 +176,7 @@ export const cmsProxyRoutes = {
     login: () => "/api/cms/customer/login",
     register: () => "/api/cms/customer/register",
     session: () => "/api/cms/customer/session",
+    logout: () => "/api/cms/customer/logout",
   },
   pages: {
     homepage: () => "/api/cms/pages/homepage",

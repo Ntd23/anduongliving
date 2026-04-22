@@ -1,26 +1,11 @@
-import {
-  buildAbsoluteUrl,
-  cmsAppRoutes,
-  normalizePath,
-  resolveUrlOrigin,
-  normalizeSiteUrl,
-} from "~~/shared/cms-routing";
-import { createForwardHeaders, forwardUpstreamCookies } from "~~/server/utils/http-upstream";
+import { buildAbsoluteUrl, cmsAppRoutes, normalizePath, normalizeSiteUrl, resolveUrlOrigin } from "~~/shared/cms-routing";
+import { fetchCustomerProfile } from "~~/server/utils/customer-auth";
+import { createForwardHeaders } from "~~/server/utils/http-upstream";
 
 type CurrencyItem = {
   title: string;
   href: string;
   active: boolean;
-};
-
-type CustomerBlock = {
-  authenticated: boolean;
-  name?: string | null;
-  avatarUrl?: string | null;
-  overviewUrl?: string | null;
-  loginUrl?: string | null;
-  registerUrl?: string | null;
-  logoutUrl?: string | null;
 };
 
 const stripTags = (value: string) => value.replace(/<[^>]+>/g, " ");
@@ -71,57 +56,16 @@ const extractCurrencyItems = (html: string, siteUrl: string): CurrencyItem[] => 
     : [];
 };
 
-const extractCustomerBlock = (html: string, siteUrl: string, backendSiteUrl: string): CustomerBlock => {
-  const overviewMatches = Array.from(
-    html.matchAll(/<a\b[^>]*href=(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi),
-  ).filter((match) => /\/customer\/overview\b/i.test(match[2]));
-
-  const customerLink =
-    overviewMatches.find((match) => /customer-name|customer-avatar|Hi,/i.test(match[3])) ||
-    overviewMatches[0];
-
-  if (customerLink) {
-    const avatarUrl = customerLink[3].match(/<img\b[^>]*src=(["'])(.*?)\1/i)?.[2] || null;
-    let name = normalizeText(customerLink[3]);
-    name = name.replace(/^Hi,\s*/i, "").trim();
-
-    return {
-      authenticated: true,
-      name: name || null,
-      avatarUrl: avatarUrl ? buildAbsoluteUrl(siteUrl, avatarUrl) : null,
-      overviewUrl: cmsAppRoutes.customer.overview(),
-      logoutUrl: buildAbsoluteUrl(backendSiteUrl || siteUrl, "/customer/logout"),
-      loginUrl: cmsAppRoutes.auth.login(),
-      registerUrl: cmsAppRoutes.auth.register(),
-    };
-  }
-
-  const loginHref =
-    html.match(/<a\b[^>]*href=(["'])(.*?\/login)\1[^>]*>/i)?.[2] ||
-    "/login";
-  const registerHref =
-    html.match(/<a\b[^>]*href=(["'])(.*?\/register)\1[^>]*>/i)?.[2] ||
-    "/register";
-
-  return {
-    authenticated: false,
-    overviewUrl: cmsAppRoutes.customer.overview(),
-    loginUrl: (loginHref || "").includes("/login") ? cmsAppRoutes.auth.login() : buildAbsoluteUrl(backendSiteUrl || siteUrl, loginHref || "/login"),
-    registerUrl: (registerHref || "").includes("/register") ? cmsAppRoutes.auth.register() : buildAbsoluteUrl(backendSiteUrl || siteUrl, registerHref || "/register"),
-    logoutUrl: buildAbsoluteUrl(backendSiteUrl || siteUrl, "/customer/logout"),
-  };
-};
-
-const emptyPayload = (siteUrl: string, backendSiteUrl: string) => ({
+const emptyPayload = {
   currencies: [] as CurrencyItem[],
   customer: {
     authenticated: false,
     overviewUrl: cmsAppRoutes.customer.overview(),
     loginUrl: cmsAppRoutes.auth.login(),
     registerUrl: cmsAppRoutes.auth.register(),
-    logoutUrl: buildAbsoluteUrl(backendSiteUrl || siteUrl, "/customer/logout"),
-  } satisfies CustomerBlock,
-});
+    logoutUrl: "/logout",
+  },
+};
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
@@ -130,28 +74,24 @@ export default defineEventHandler(async (event) => {
   const siteOrigin = resolveUrlOrigin(siteUrl);
   const backendOrigin = resolveUrlOrigin(backendSiteUrl);
 
-  if (!siteUrl) {
-    return { data: emptyPayload("", backendSiteUrl) };
+  let currencies: CurrencyItem[] = [];
+
+  if (siteUrl && backendSiteUrl && (!siteOrigin || !backendOrigin || siteOrigin !== backendOrigin)) {
+    try {
+      const response = await fetch(buildAbsoluteUrl(backendSiteUrl, normalizePath("/")), {
+        headers: createForwardHeaders(event, "text/html,application/xhtml+xml"),
+      });
+      const html = await response.text();
+      currencies = extractCurrencyItems(html, siteUrl);
+    } catch {
+      currencies = [];
+    }
   }
 
-  if (!backendSiteUrl || (siteOrigin && backendOrigin && siteOrigin === backendOrigin)) {
-    return { data: emptyPayload(siteUrl, backendSiteUrl) };
-  }
-
-  try {
-    const response = await fetch(buildAbsoluteUrl(backendSiteUrl, normalizePath("/")), {
-      headers: createForwardHeaders(event, "text/html,application/xhtml+xml"),
-    });
-    forwardUpstreamCookies(event, response);
-    const html = await response.text();
-
-    return {
-      data: {
-        currencies: extractCurrencyItems(html, siteUrl),
-        customer: extractCustomerBlock(html, siteUrl, backendSiteUrl),
-      },
-    };
-  } catch {
-    return { data: emptyPayload(siteUrl, backendSiteUrl) };
-  }
+  return {
+    data: {
+      currencies,
+      customer: await fetchCustomerProfile(event).catch(() => emptyPayload.customer),
+    },
+  };
 });

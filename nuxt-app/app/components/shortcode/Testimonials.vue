@@ -49,72 +49,104 @@ const sectionStyle = computed(() =>
   background-size: cover;
   color: #f7efe2;
 }
+
 .testimonials-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(17, 12, 9, 0.72), rgba(17, 12, 9, 0.82));
+  background:
+    radial-gradient(circle at 30% 70%, rgba(185, 130, 90, 0.1), transparent 30%),
+    linear-gradient(180deg, rgba(17, 12, 9, 0.68), rgba(17, 12, 9, 0.82));
 }
+
 .testimonials-shell {
   position: relative;
   z-index: 1;
   display: grid;
   gap: 2.5rem;
 }
+
 .testimonials-header {
   max-width: 42rem;
   margin: 0 auto;
   text-align: center;
 }
+
 .testimonials-header__eyebrow {
   margin: 0 0 0.75rem;
   color: #cbb27b;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   font-size: 0.78rem;
+  font-weight: 600;
 }
+
 .testimonials-header__title {
   margin: 0;
   color: #fff8ee;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
   font-size: clamp(2.5rem, 5vw, 4.2rem);
+  line-height: 1;
 }
+
 .testimonials-header__description {
   margin: 1rem 0 0;
-  color: rgba(247, 239, 226, 0.8);
-  line-height: 1.9;
+  color: rgba(247, 239, 226, 0.78);
+  line-height: 1.8;
 }
+
 .testimonials-grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 1rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+
 .testimonial-card {
-  padding: 1.6rem;
-  border-radius: 1.5rem;
-  background: rgba(255, 252, 246, 0.1);
-  backdrop-filter: blur(8px);
+  padding: 1.5rem;
+  border-radius: 1.6rem;
+  border: 1px solid rgba(248, 243, 234, 0.1);
+  background: rgba(255, 252, 246, 0.07);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(255, 248, 237, 0.05);
+  transition: box-shadow 0.3s ease;
 }
+
+.testimonial-card:hover {
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 248, 237, 0.08);
+}
+
 .testimonial-card__author {
   display: flex;
   align-items: center;
   gap: 0.9rem;
 }
+
 .testimonial-card__avatar {
   width: 3.75rem;
   height: 3.75rem;
   border-radius: 999px;
   object-fit: cover;
+  border: 2px solid rgba(203, 178, 123, 0.3);
 }
+
 .testimonial-card__name {
   margin: 0;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
+  line-height: 1.1;
+  color: #fff8ee;
 }
+
 .testimonial-card__content {
   margin: 1rem 0 0;
-  color: rgba(247, 239, 226, 0.84);
-  line-height: 1.9;
+  color: rgba(247, 239, 226, 0.82);
+  line-height: 1.85;
+  font-size: 0.95rem;
 }
+
 @media (max-width: 991px) {
   .testimonials-grid {
     grid-template-columns: 1fr;

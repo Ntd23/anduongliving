@@ -28,7 +28,7 @@ const sectionStyle = computed(() =>
         v-if="section.quote || section.quoteAuthor"
         class="feature-quote"
       >
-        <span class="quote-mark left">“</span>
+        <span class="quote-mark left">"</span>
 
         <div class="quote-content">
           <h3 v-if="section.quote" class="quote-text">
@@ -36,12 +36,12 @@ const sectionStyle = computed(() =>
           </h3>
 
           <p v-if="section.quoteAuthor" class="quote-author">
-            <span class="quote-line"></span>
+            <span class="quote-line" />
             {{ section.quoteAuthor }}
           </p>
         </div>
 
-        <span class="quote-mark right">”</span>
+        <span class="quote-mark right">"</span>
       </div>
 
       <div
@@ -64,25 +64,27 @@ const sectionStyle = computed(() =>
 
         <div class="feature-right">
           <div class="feature-copy">
-            <p v-if="section.subtitle" class="feature-subtitle">
-              {{ section.subtitle }}
-            </p>
+            <div class="feature-copy__glass">
+              <p v-if="section.subtitle" class="feature-subtitle">
+                {{ section.subtitle }}
+              </p>
 
-            <h2 v-if="section.title" class="feature-title">
-              {{ section.title }}
-            </h2>
+              <h2 v-if="section.title" class="feature-title">
+                {{ section.title }}
+              </h2>
 
-            <p v-if="section.description" class="feature-description">
-              {{ section.description }}
-            </p>
+              <p v-if="section.description" class="feature-description">
+                {{ section.description }}
+              </p>
 
-            <NuxtLink
-              v-if="section.action?.href && section.action?.label"
-              :to="section.action.href"
-              class="feature-button"
-            >
-              {{ section.action.label }}
-            </NuxtLink>
+              <NuxtLink
+                v-if="section.action?.href && section.action?.label"
+                :to="section.action.href"
+                class="feature-button"
+              >
+                {{ section.action.label }}
+              </NuxtLink>
+            </div>
           </div>
 
           <div v-if="section.secondaryImage?.src" class="feature-side-image">
@@ -108,8 +110,10 @@ const sectionStyle = computed(() =>
 .shortcode-feature-v2 {
   position: relative;
   overflow: hidden;
-  padding: 72px 0 64px;
-  background: #f3efeb;
+  padding: clamp(4.5rem, 8vw, 6rem) 0;
+  background:
+    radial-gradient(circle at bottom left, rgba(185, 130, 90, 0.1), transparent 28%),
+    linear-gradient(180deg, #fcfaf6, #f3ecdf);
 }
 
 .container {
@@ -117,17 +121,24 @@ const sectionStyle = computed(() =>
   margin: 0 auto;
 }
 
+/* ── Quote ── */
 .feature-quote {
   display: grid;
   grid-template-columns: 50px minmax(0, 760px) 50px;
   justify-content: center;
   align-items: start;
   gap: 16px;
-  margin-bottom: 56px;
+  margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border: 1px solid rgba(111, 117, 83, 0.1);
+  border-radius: 2rem;
+  background: rgba(255, 252, 246, 0.72);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 20px 48px rgba(47, 36, 29, 0.06);
 }
 
 .quote-mark {
-  color: #9c633d;
+  color: var(--retreat-clay, #9c633d);
   font-size: 72px;
   line-height: 1;
   font-weight: 700;
@@ -140,7 +151,8 @@ const sectionStyle = computed(() =>
 
 .quote-text {
   margin: 0;
-  color: #1f241d;
+  color: var(--retreat-ink, #1f241d);
+  font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
   font-size: clamp(1.9rem, 2.8vw, 3rem);
   line-height: 1.28;
   font-weight: 600;
@@ -151,7 +163,7 @@ const sectionStyle = computed(() =>
   align-items: center;
   gap: 12px;
   margin: 22px 0 0;
-  color: #9c633d;
+  color: var(--retreat-clay, #9c633d);
   font-size: 15px;
   font-weight: 700;
   text-transform: uppercase;
@@ -163,16 +175,18 @@ const sectionStyle = computed(() =>
   background: rgba(31, 36, 29, 0.45);
 }
 
+/* ── Grid ── */
 .feature-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
-  gap: 38px;
+  gap: clamp(2rem, 4vw, 3rem);
   align-items: start;
 }
 
-.feature-main-image,
-.feature-side-image {
+.feature-main-image {
   overflow: hidden;
+  border-radius: 1.75rem;
+  box-shadow: 0 28px 72px rgba(47, 36, 29, 0.12);
 }
 
 .feature-main-image img,
@@ -190,37 +204,44 @@ const sectionStyle = computed(() =>
 .feature-right {
   display: grid;
   grid-template-rows: auto auto;
-  gap: 28px;
+  gap: clamp(1.5rem, 3vw, 2rem);
   align-content: start;
-  padding-top: 42px;
+  padding-top: clamp(1rem, 3vw, 2.5rem);
 }
 
-.feature-copy {
-  max-width: 480px;
+/* ── Glass panel ── */
+.feature-copy__glass {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid rgba(111, 117, 83, 0.1);
+  border-radius: 1.75rem;
+  background: rgba(255, 252, 246, 0.72);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 20px 48px rgba(47, 36, 29, 0.06);
 }
 
 .feature-subtitle {
-  margin: 0 0 10px;
-  color: #8a5a3c;
-  font-size: 14px;
+  margin: 0 0 0.65rem;
+  color: var(--retreat-clay, #8a5a3c);
+  font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .feature-title {
   margin: 0;
-  color: #7b4d35;
+  color: var(--retreat-ink, #2d2018);
   font-size: clamp(2.4rem, 3.5vw, 4rem);
   line-height: 1.04;
-  font-weight: 500;
-  font-family: "Times New Roman", Georgia, serif;
+  font-weight: 600;
+  font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
 }
 
 .feature-description {
-  margin: 18px 0 0;
-  color: rgba(69, 53, 43, 0.88);
-  font-size: 18px;
+  margin: 1rem 0 0;
+  max-width: 30rem;
+  color: rgba(69, 53, 43, 0.82);
+  font-size: 1rem;
   line-height: 1.78;
 }
 
@@ -228,29 +249,29 @@ const sectionStyle = computed(() =>
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  margin-top: 22px;
-  padding: 0 18px;
-  border: 1px solid rgba(123, 77, 53, 0.45);
+  min-height: 3rem;
+  margin-top: 1.25rem;
+  padding: 0 1.25rem;
   border-radius: 999px;
-  background: transparent;
-  color: #7b4d35;
-  font-size: 14px;
+  background: linear-gradient(135deg, var(--retreat-clay, #9c633d), #8a5530);
+  color: #fffdf9;
+  font-size: 0.84rem;
   font-weight: 700;
   text-decoration: none;
   text-transform: uppercase;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease;
+  letter-spacing: 0.06em;
+  box-shadow: 0 14px 28px rgba(156, 99, 61, 0.18);
+  transition: box-shadow 0.2s ease;
 }
 
 .feature-button:hover {
-  transform: translateY(-1px);
-  background: #7b4d35;
-  color: #fff;
-  border-color: #7b4d35;
+  box-shadow: 0 18px 36px rgba(156, 99, 61, 0.24);
+}
+
+.feature-side-image {
+  overflow: hidden;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 50px rgba(47, 36, 29, 0.1);
 }
 
 .feature-side-image img {
@@ -264,7 +285,6 @@ const sectionStyle = computed(() =>
 @media (max-width: 1023px) {
   .feature-quote {
     grid-template-columns: 32px minmax(0, 1fr) 32px;
-    margin-bottom: 38px;
   }
 
   .quote-mark {
@@ -273,7 +293,6 @@ const sectionStyle = computed(() =>
 
   .feature-grid {
     grid-template-columns: 1fr;
-    gap: 24px;
   }
 
   .feature-right {
@@ -286,17 +305,12 @@ const sectionStyle = computed(() =>
     width: min(100%, calc(100% - 24px));
   }
 
-  .shortcode-feature-v2 {
-    padding: 48px 0;
-  }
-
   .quote-text {
     font-size: 1.5rem;
   }
 
   .feature-description {
-    font-size: 16px;
-    line-height: 1.7;
+    font-size: 0.95rem;
   }
 }
 </style>

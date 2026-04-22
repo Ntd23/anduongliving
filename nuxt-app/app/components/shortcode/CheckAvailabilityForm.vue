@@ -78,8 +78,10 @@ const { startDate, endDate, adults, children, rooms, minAdults, maxAdults, submi
 
 <style scoped>
 .shortcode-check-availability-native {
-  padding: 3rem 0;
-  background: linear-gradient(180deg, #f8f2e7, #f2e7d8);
+  padding: 3.5rem 0;
+  background:
+    radial-gradient(circle at top left, rgba(185, 130, 90, 0.1), transparent 28%),
+    linear-gradient(180deg, #f8f2e7, #f2e7d8);
 }
 
 .availability-shell {
@@ -88,14 +90,16 @@ const { startDate, endDate, adults, children, rooms, minAdults, maxAdults, submi
 }
 
 .availability-card {
-  padding: 1.6rem;
+  padding: clamp(1.5rem, 3vw, 2.2rem);
   border-radius: 1.75rem;
-  background: rgba(255, 251, 245, 0.9);
+  border: 1px solid rgba(111, 117, 83, 0.1);
+  background: rgba(255, 252, 246, 0.82);
   box-shadow: 0 24px 60px rgba(48, 35, 27, 0.08);
+  backdrop-filter: blur(10px);
 }
 
 .availability-card__title {
-  margin: 0 0 1rem;
+  margin: 0 0 1.25rem;
   color: #2f241d;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
   font-size: clamp(2rem, 4vw, 3.1rem);
@@ -119,15 +123,22 @@ const { startDate, endDate, adults, children, rooms, minAdults, maxAdults, submi
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.72rem;
+  font-weight: 600;
 }
 
 .availability-form__field input {
   min-height: 3.25rem;
   padding: 0 0.95rem;
-  border: 1px solid rgba(107, 116, 79, 0.18);
+  border: 1px solid rgba(107, 116, 79, 0.16);
   border-radius: 999px;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.9);
   color: #2f241d;
+  transition: border-color 0.2s ease;
+}
+
+.availability-form__field input:focus {
+  outline: none;
+  border-color: rgba(107, 116, 79, 0.4);
 }
 
 .availability-form__button {
@@ -135,9 +146,16 @@ const { startDate, endDate, adults, children, rooms, minAdults, maxAdults, submi
   margin-top: auto;
   border: 0;
   border-radius: 999px;
-  background: #6c744f;
+  background: linear-gradient(135deg, #6c744f, #5e6746);
   color: #fffaf1;
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: 0 12px 28px rgba(108, 116, 79, 0.18);
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+
+.availability-form__button:hover {
+  box-shadow: 0 16px 36px rgba(108, 116, 79, 0.24);
 }
 
 @media (max-width: 991px) {

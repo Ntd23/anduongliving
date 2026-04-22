@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cmsProxyRoutes, resolveCmsProxyRequestUrl } from "~~/shared/cms-routing";
+import { cmsProxyRoutes } from "~~/shared/cms-routing";
 
 type CustomerSessionData = {
   authenticated: boolean;
@@ -13,15 +13,10 @@ definePageMeta({
   layout: "default",
 });
 
-const config = useRuntimeConfig();
 const localePath = useLocalePath();
 
 const { data, error } = await useAsyncData("customer-session", () =>
   $fetch<{ data?: CustomerSessionData }>(cmsProxyRoutes.customer.session(), {
-    baseURL: resolveCmsProxyRequestUrl("/", {
-      cmsProxyBaseUrl: config.public.cmsProxyBaseUrl,
-      client: import.meta.client,
-    }),
   }).then((response) => response.data || { authenticated: false }),
 );
 
@@ -30,13 +25,13 @@ if (error.value) {
 }
 
 const customer = computed(() => data.value || { authenticated: false });
-const logoutUrl = computed(() => customer.value.logoutUrl || null);
-const displayName = computed(() => customer.value.name || "Khách hàng");
-const avatarUrl = computed(() => customer.value.avatarUrl || null);
-
 if (!customer.value.authenticated) {
   await navigateTo(localePath("/login"), { replace: true });
 }
+
+const displayName = computed(() => customer.value.name || "Customer");
+const avatarUrl = computed(() => customer.value.avatarUrl || null);
+const logoutUrl = computed(() => customer.value.logoutUrl || "/logout");
 
 useSeoMeta({
   title: () => `${displayName.value} | Tài khoản`,

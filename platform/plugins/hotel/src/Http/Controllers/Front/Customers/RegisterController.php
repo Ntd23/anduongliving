@@ -77,7 +77,8 @@ class RegisterController extends BaseController
 
         return $this
             ->httpResponse()
-            ->setNextUrl($this->redirectPath())->setMessage(trans('plugins/hotel::customer.registered_successfully'));
+            ->setNextUrl($this->redirectPath())
+            ->setMessage(trans('plugins/hotel::customer.registered_successfully'));
     }
 
     protected function create(array $data)

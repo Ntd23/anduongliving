@@ -98,6 +98,10 @@ const registerTo = computed(() =>
 const overviewTo = computed(() =>
   customer.value?.overviewUrl?.startsWith("/") ? localePath(customer.value.overviewUrl) : null,
 );
+
+const logoutTo = computed(() =>
+  customer.value?.logoutUrl?.startsWith("/") ? localePath(customer.value.logoutUrl) : null,
+);
 </script>
 
 <template>

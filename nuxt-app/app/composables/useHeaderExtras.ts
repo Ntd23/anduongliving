@@ -1,4 +1,4 @@
-import { cmsProxyRoutes, resolveCmsLocale, resolveCmsProxyRequestUrl } from "~~/shared/cms-routing";
+import { cmsProxyRoutes, resolveCmsLocale } from "~~/shared/cms-routing";
 
 export type ThemeCurrencyLink = {
   title: string;
@@ -35,12 +35,7 @@ const toHeaderExtras = (value?: Partial<ThemeHeaderExtrasData> | null): ThemeHea
 });
 
 export const useHeaderExtras = async (locale?: string): Promise<ThemeHeaderExtrasData> => {
-  const config = useRuntimeConfig();
   const response = await $fetch<{ data?: ThemeHeaderExtrasData }>(cmsProxyRoutes.theme.headerExtras(), {
-    baseURL: resolveCmsProxyRequestUrl("/", {
-      cmsProxyBaseUrl: config.public.cmsProxyBaseUrl,
-      client: import.meta.client,
-    }),
     query: locale ? { lang: resolveCmsLocale(locale) } : undefined,
   });
 

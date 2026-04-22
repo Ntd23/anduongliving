@@ -158,6 +158,11 @@ const sectionStyle = computed(() =>
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pickup-gallery-strip__item:hover img {
+  transform: scale(1.03);
 }
 
 .pickup-gallery-copy {
@@ -166,7 +171,12 @@ const sectionStyle = computed(() =>
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 1rem 0.5rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(248, 243, 234, 0.1);
+  border-radius: 1.5rem;
+  background: rgba(255, 252, 246, 0.06);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(255, 248, 237, 0.05);
 }
 
 .pickup-gallery-copy__description {
@@ -191,15 +201,16 @@ const sectionStyle = computed(() =>
   min-width: 12.5rem;
   padding: 0.9rem 1.35rem;
   border-radius: 999px;
-  background: #b19143;
+  background: linear-gradient(135deg, #b19143, #9a7c38);
   color: #fff8ed;
   text-decoration: none;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  font-weight: 600;
+  box-shadow: 0 12px 28px rgba(177, 145, 67, 0.22);
+  transition: box-shadow 0.2s ease;
 }
 
 .pickup-gallery-copy__button:hover {
-  background: #987938;
-  transform: translateY(-1px);
+  box-shadow: 0 16px 36px rgba(177, 145, 67, 0.3);
 }
 
 @media (max-width: 991px) {

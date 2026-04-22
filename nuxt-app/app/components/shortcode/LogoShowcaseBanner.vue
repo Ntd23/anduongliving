@@ -73,8 +73,8 @@ const sectionStyle = computed(() =>
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(9, 6, 5, 0.44), rgba(9, 6, 5, 0.62)),
-    radial-gradient(circle at center, rgba(255, 255, 255, 0.06), transparent 44%);
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.06), transparent 44%),
+    linear-gradient(180deg, rgba(9, 6, 5, 0.4), rgba(9, 6, 5, 0.6));
 }
 
 .logo-showcase-shell {
@@ -124,7 +124,8 @@ const sectionStyle = computed(() =>
 
 .logo-showcase-mark {
   width: min(100%, 11rem);
-  filter: drop-shadow(0 22px 40px rgba(0, 0, 0, 0.42));
+  filter: drop-shadow(0 22px 40px rgba(0, 0, 0, 0.42))
+    drop-shadow(0 4px 12px rgba(0, 0, 0, 0.28));
 }
 
 @media (max-width: 767px) {
