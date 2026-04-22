@@ -357,6 +357,8 @@ export type CuisineShowcaseSectionData = {
   images: ShortcodeImage[];
   sectionLabel: string | null;
   action: ShortcodeAction | null;
+  buttonLabel: string | null;
+  buttonUrl: string | null;
 };
 
 export type SpaCollageShowcaseSectionData = {
