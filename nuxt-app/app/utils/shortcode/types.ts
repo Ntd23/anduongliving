@@ -97,6 +97,30 @@ export type ServiceItem = {
   amenities: string[];
 };
 
+export type AllRoomItem = {
+  id: number;
+  name: string;
+  url: string;
+  image: string;
+  description?: string | null;
+  bookLabel: string;
+  price: string;
+  amenities: string[];
+  size?: number | null;
+  number_of_beds?: number | null;
+  max_adults?: number | null;
+  max_children?: number | null;
+};
+
+export type AllRoomSectionData = {
+  countLabel?: string | null;
+  paginationHtml?: string | null;
+  subtitle: string | null;
+  title: string | null;
+  description: string | null;
+  items: AllRoomItem[];
+};
+
 export type FeaturedRoomsSectionData = {
   countLabel?: string | null;
   paginationHtml?: string | null;
@@ -139,6 +163,9 @@ export type TeamMember = {
 };
 
 export type TeamsSectionData = {
+  title: string | null;
+  subtitle: string | null;
+  description: string | null;
   members: TeamMember[];
 };
 

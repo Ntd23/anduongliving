@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { computed, nextTick, onMounted, onUnmounted } from "vue";
 import { parseTeamsBlock, type ShortcodeBlock } from "~/utils/shortcode";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
+import { useScrollAnimation } from "~/composables/useScrollAnimation";
 
 const props = defineProps<{
   block: ShortcodeBlock;
@@ -15,16 +17,52 @@ const socialIcons = {
 
 const section = computed(() => parseTeamsBlock(props.block.raw));
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
+
+const { setupScrollAnimations } = useScrollAnimation()
+
+const toggleExpanded = (event: MouseEvent) => {
+  const target = event.currentTarget as HTMLElement
+  const expandedContent = target.closest('.team-card__content')?.querySelector('.team-card__expanded-content')
+  if (expandedContent) {
+    expandedContent.classList.toggle('expanded')
+    target.classList.toggle('expanded')
+  }
+}
+
+onMounted(async () => {
+  await nextTick()
+  setupScrollAnimations()
+})
+
+onUnmounted(() => {
+  // Cleanup handled by composable
+})
 </script>
 
 <template>
-  <section v-if="section.members.length" class="shortcode-team">
-    <div class="container">
-      <div class="team-grid">
-        <article
-          v-for="member in section.members"
+  <section v-if="section.members.length" class="shortcode-team-native">
+    <div class="team-backdrop" />
+    <div class="team-veil" />
+    
+    <div class="container team-shell animate-on-scroll">
+      <header class="team-header animate-on-scroll" style="--delay: 100ms">
+        <h2 v-if="section.title" class="team-title animate-on-scroll" style="--delay: 200ms">
+          {{ section.title }}
+        </h2>
+        <p v-if="section.subtitle" class="team-description animate-on-scroll" style="--delay: 300ms">
+          {{ section.subtitle }}
+        </p>
+        <p v-if="section.description" class="team-description animate-on-scroll" style="--delay: 400ms">
+          {{ section.description }}
+        </p>
+      </header>
+      
+      <div class="team-grid animate-on-scroll" style="--delay: 400ms">
+        <article 
+          v-for="(member, index) in section.members" 
           :key="`${member.name}-${member.profileUrl || member.image?.src || 'card'}`"
-          class="team-card"
+          class="team-card animate-on-scroll"
+          :style="{ '--delay': `${index * 150 + 500}ms` }"
         >
           <div class="team-card__media-wrap">
             <component
@@ -112,13 +150,13 @@ const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
   position: relative;
 }
 
-.team-card__media {
-  display: block;
-  aspect-ratio: 15 / 17;
+.team-card__image-container {
+  position: relative;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
 }
 
-.team-card__media img {
+.team-card__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -152,6 +190,19 @@ const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
   backdrop-filter: blur(12px);
   box-shadow: inset 0 1px 0 rgba(255, 248, 237, 0.06);
   text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.team-card.animate-in .team-card__info {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.8s ease-out;
+  transition-delay: calc(var(--delay, 0ms) + 400ms);
 }
 
 .team-card__name {
@@ -162,10 +213,21 @@ const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
 }
 
-.team-card__name a,
-.team-card__name span {
-  color: inherit;
-  text-decoration: none;
+.team-card.animate-in .team-card__name {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.6s ease-out;
+  transition-delay: calc(var(--delay, 0ms) + 600ms);
+}
+
+.team-card__title {
+  margin: 0 0 1.5rem 0;
+  color: rgba(255, 249, 240, 0.9);
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(15px);
 }
 
 .team-card__title {
@@ -182,7 +244,7 @@ const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
   margin-top: 0.65rem;
 }
 
-.team-card__socials a {
+.team-card__social-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -207,7 +269,7 @@ const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 
 @media (min-width: 1100px) {
   .team-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 </style>
