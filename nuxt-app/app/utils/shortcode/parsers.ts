@@ -849,11 +849,12 @@ export const parseFaqsBlock = (html: string): FaqsSectionData => {
 
         const target = extractAttribute(button || "", "data-bs-target") || "";
         const sortNumber = (target.match(/collapse(\d+)/i)?.[1] || "").trim();
+        const answer = extractFirstParagraphText(block) || "";
 
         return {
           id: sortNumber || question,
           question,
-          answer: extractTextFromTag(block, "div", "card-body"),
+          answer,
         } satisfies FaqItem;
       })
       .filter(Boolean)
