@@ -193,13 +193,14 @@ Rule giao việc:
 
 ### Danh sách shortcode còn lại để QA / redesign nếu cần
 - [ ] `AllRooms.vue`
-- [ ] `BookingForm.vue`
+- [x] `BookingForm.vue`
 - [ ] `Brands.vue`
 - [ ] `CheckAvailabilityForm.vue`
-- [ ] `Faqs.vue`
+- [x] `Faqs.vue`
+  - `Parser changed : extract answer from paragraph instead of card-body`
 - [ ] `FeatureArea.vue`
-- [ ] `FeaturedAmenities.vue`
-- [ ] `FeaturedRooms.vue`
+- [x] `FeaturedAmenities.vue`
+- [x] `FeaturedRooms.vue`
 - [ ] `Galleries.vue`
 - [ ] `HeroBannerWithBookingForm.vue`
 - [ ] `HotelPlaces.vue`
