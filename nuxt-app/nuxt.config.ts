@@ -1,5 +1,5 @@
 import { tr } from "@nuxt/ui/runtime/locale/index.js";
-import { buildDevOrigin, resolveCmsProxyBaseUrl } from "./shared/cms-routing";
+import { buildDevOrigin, resolveBackendSiteUrl, resolveCmsProxyBaseUrl } from "./shared/cms-routing";
 
 const DEV_HOST = process.env.NUXT_DEV_HOST || "127.0.0.1";
 const DEV_PORT = Number(process.env.NUXT_DEV_PORT || 3000);
@@ -9,6 +9,12 @@ const API_BASE_URL = process.env.NUXT_API_BASE_URL || "http://127.0.0.1/api";
 const API_KEY = process.env.NUXT_API_KEY || "";
 const PUBLIC_SITE_URL =
     process.env.NUXT_PUBLIC_SITE_URL || `http://${DEV_HOST}:${DEV_PORT}`;
+const BACKEND_SITE_URL = resolveBackendSiteUrl({
+    explicitBaseUrl: process.env.NUXT_BACKEND_SITE_URL,
+    apiBaseUrl: API_BASE_URL,
+    publicSiteUrl: PUBLIC_SITE_URL,
+    isDevelopment: process.env.NODE_ENV !== "production",
+});
 const ALLOWED_HOSTS = (process.env.NUXT_ALLOWED_HOSTS || "")
     .split(",")
     .map((item) => item.trim())
@@ -86,6 +92,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         apiBaseUrl: API_BASE_URL,
         apiKey: API_KEY,
+        backendSiteUrl: BACKEND_SITE_URL,
         public: {
             apiBaseUrl: API_BASE_URL,
             siteUrl: PUBLIC_SITE_URL,

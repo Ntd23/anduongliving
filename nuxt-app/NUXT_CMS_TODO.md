@@ -25,6 +25,7 @@ Nguyen tac:
 - [x] doi ngon ngu theo SSR se lay lai `main-menu` dung locale
 - [x] `menu-mobile-collapse` da co flow Nuxt rieng cho mobile
 - [x] `SidebarMenuDrawer` da co flow Nuxt cho offcanvas / drawer
+- [x] desktop/mobile menu da co parity co ban ve account/currency trong cac bien the header hien dang dung
 
 ### Page / template / SEO
 
@@ -43,6 +44,9 @@ Nguyen tac:
 - [x] header button (`header_button_label` / `header_button_url`) da di qua theme options
 - [x] `breadcrumbs` da co component Nuxt rieng
 - [x] `footer` da co flow Nuxt rieng va dung `footer_sidebar`
+- [x] `header-top` da co `currency switcher`
+- [x] `header-top` da co `account/customer block`
+- [x] `side-menu` da co parity them cho account/currency/footer links
 
 ### Shortcode
 
@@ -112,13 +116,13 @@ Nguyen tac:
 
 ### CMS clone tong the tren Nuxt
 
-- khoang `90-92%`
+- khoang `93-94%`
 
 Phan con lai khong nam o data flow chinh nua. Chu yeu la:
 
 - QA toan site
 - polish UI/fidelity
-- mot so block header/account/currency neu muon clone sat Blade hon
+- mot so shortcode van dang can fix render/UI that
 
 ---
 
@@ -140,16 +144,25 @@ Phan con lai khong nam o data flow chinh nua. Chu yeu la:
   - widget data
   - shortcode attributes
 
-### Header fidelity theo Blade
+### Shortcode / page bugs con mo
 
-- [ ] `header-top` van chua co `currency switcher`
-- [ ] `header-top` van chua co `account/customer block`
-- [ ] `side-menu` van chua co du mobile/account parity nhu Blade
+- [ ] `SimpleSlider` van con loi caption/text tren UI that
+- [ ] `CuisineShowcase` can chot lai parser/render tren page that
+- [ ] `ForestFacilityShowcase` can chot lai parser/render tren page that
+- [ ] can chay lai QA tren cac page da doi layout menu/blog de bat regressions
+
+### Header fidelity / parity con lai
+
+- [x] `header-top` da co `currency switcher`
+- [x] `header-top` da co `account/customer block`
+- [x] `side-menu` da co parity them cho account/currency
+- [ ] can QA lai tren guest state va customer state that
+- [ ] can xac nhan parity mobile/desktop voi site that sau khi co du lieu thuc
 
 Luu y:
-- cac muc nay khong phai bug data flow
-- day la phan fidelity / feature parity them
-- neu admin/site hien tai khong co source public cho account/currency thi can quyet dinh ro co clone tiep hay khong
+
+- phan `currency/account` hien duoc lay theo public HTML/Blade state, khong mo them source config moi
+- huong nay giu sat spec hien tai, nhung van can test that o env co session customer
 
 ### UI polish
 
@@ -175,16 +188,18 @@ Luu y:
 - footer flow
 - shortcode parity theo Blade
 - native hoa tat ca widget chinh dang dung
+- header currency/account block
+- side-menu parity co ban cho account/currency
 
 ### Chua xong
 
 - QA pass toan site
-- header/account/currency fidelity
-- side-menu mobile/account parity
+- mot so shortcode render/UI bug con mo
 - pass polish UI cuoi
+- QA guest/customer state that cho header va side-menu
 
 ### Viec nen lam tiep ngay
 
 1. QA pass theo route that + locale + mobile
-2. fix tung loi page that phat hien trong QA
-3. neu can fidelity cao hon nua, lam them header account/currency va side-menu parity
+2. dong 3 bug shortcode dang mo: `SimpleSlider`, `CuisineShowcase`, `ForestFacilityShowcase`
+3. QA lai header / side-menu o guest state va logged-in customer state

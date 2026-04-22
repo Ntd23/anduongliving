@@ -31,14 +31,21 @@ const slides = computed(() =>
   section.value.slides.map((slide, index) => ({
     ...slide,
     id: `${index}-${slide.image?.src || slide.caption || "slide"}`,
-    caption:
-      normalizeCaptionText(slide.caption) ||
-      fallbackCaptions.value[index] ||
-      normalizeCaptionText(slide.image?.alt) ||
-      "",
+    caption: normalizeCaptionText(slide.caption) || normalizeCaptionText(slide.image?.alt) || "",
     link: resolveLink(slide.href),
   })),
 );
+
+const displayCaptions = computed(() =>
+  slides.value.map(
+    (slide, index) =>
+      fallbackCaptions.value[index] ||
+      slide.caption ||
+      "",
+  ),
+);
+
+const activeCaption = computed(() => displayCaptions.value[activeIndex.value] || "");
 
 const stopAutoplay = () => {
   if (autoplayTimer) {
@@ -112,11 +119,11 @@ watch(
         </div>
 
         <div class="simple-slider-overlay" />
-
-        <div v-if="slide.caption" class="simple-slider-caption">
-          <p class="simple-slider-caption__inner">{{ slide.caption }}</p>
-        </div>
       </article>
+
+      <div v-if="activeCaption" class="simple-slider-caption">
+        <p class="simple-slider-caption__inner">{{ activeCaption }}</p>
+      </div>
 
       <div v-if="slides.length > 1" class="simple-slider-controls">
         <div class="simple-slider-dots">

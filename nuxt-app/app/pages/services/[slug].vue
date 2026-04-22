@@ -1,21 +1,19 @@
 <script setup lang="ts">
-import { usePage } from "~/composables/usePage";
-import { resolveCmsLocale } from "~~/shared/cms-routing";
-import {
-  layoutUsesBreadcrumbs,
-  layoutUsesFooter,
-  resolvePageLayoutName,
-} from "~/utils/page-template";
+import { useService } from "~/composables/useService";
+import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
+import { buildAbsoluteUrl, cmsAppRoutes } from "~~/shared/cms-routing";
 
 const route = useRoute();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
+const localePath = useLocalePath();
+const config = useRuntimeConfig();
 
-const slug = computed(() => `services/${String(route.params.slug || "")}`);
-const activeLocale = computed(() => resolveCmsLocale(locale.value));
+const slug = computed(() => String(route.params.slug || ""));
+const activeLocale = computed(() => locale.value);
 
 const { data, error } = await useAsyncData(
-  () => `page-${slug.value}-${activeLocale.value}`,
-  () => usePage(slug.value, activeLocale.value),
+  () => `service-${slug.value}-${activeLocale.value}`,
+  () => useService(slug.value, activeLocale.value),
   { watch: [slug, activeLocale] },
 );
 
@@ -23,17 +21,30 @@ if (error.value) {
   throw error.value;
 }
 
-const page = computed(() => data.value?.page);
-const blocks = computed(() => data.value?.blocks || []);
-const layoutName = computed(() => resolvePageLayoutName(page.value?.template));
-const hasBlocks = computed(() => blocks.value.length > 0);
-const showBreadcrumbs = computed(() =>
-  Boolean(page.value && layoutUsesBreadcrumbs(layoutName.value) && page.value.breadcrumb?.enabled !== false),
-);
-const showPlainPageHero = computed(() => Boolean(page.value && !showBreadcrumbs.value && !hasBlocks.value));
-const showFooter = computed(() => Boolean(page.value && layoutUsesFooter(layoutName.value)));
+const service = computed(() => data.value || null);
+const sanitizedContent = useSanitizedCmsHtml(() => service.value?.content || "");
 
-usePageSeo(page);
+useSeoMeta({
+  title: computed(() => service.value?.seo?.title || service.value?.name || undefined),
+  description: computed(() => service.value?.seo?.description || undefined),
+  ogTitle: computed(() => service.value?.seo?.title || service.value?.name || undefined),
+  ogDescription: computed(() => service.value?.seo?.description || undefined),
+});
+
+useHead(() => {
+  if (!service.value?.seo?.canonical_path) {
+    return {};
+  }
+
+  return {
+    link: [
+      {
+        rel: "canonical",
+        href: buildAbsoluteUrl(String(config.public.siteUrl || ""), service.value.seo.canonical_path),
+      },
+    ],
+  };
+});
 
 definePageMeta({
   layout: "cms-page",
@@ -42,79 +53,89 @@ definePageMeta({
 
 <template>
   <main>
-    <CmsBreadcrumbs v-if="page && showBreadcrumbs" :page="page" />
+    <CmsBreadcrumbs
+      v-if="service"
+      :title="service.name"
+      :crumbs="[
+        { label: t('home'), to: localePath(cmsAppRoutes.home()) },
+        { label: service.name, to: null },
+      ]"
+    />
 
-    <section v-if="showPlainPageHero" class="page-shell">
-      <header class="page-hero py-10">
-        <div class="container page-hero__inner">
-          <h1 class="page-hero__title">
-            {{ page.name }}
-          </h1>
-          <p v-if="page.description" class="page-hero__description">
-            {{ page.description }}
-          </p>
+    <section class="service-detail">
+      <div class="container">
+        <div v-if="service" class="service-detail__content" v-html="sanitizedContent" />
+        <div v-else class="service-detail__empty">
+          Service not found
         </div>
-      </header>
-    </section>
-
-    <section
-      v-if="page && hasBlocks"
-      class="cms-content"
-      :class="{ 'cms-content--with-breadcrumbs': showBreadcrumbs }"
-    >
-      <ShortcodeBlockRenderer
-        v-for="(block, index) in blocks"
-        :key="`${index}-${block.type}-${block.name || 'block'}`"
-        :block="block"
-      />
-    </section>
-
-    <section v-else-if="!page" class="py-20 text-center">
-      <div class="container mx-auto px-4">
-        <p>Page not found</p>
       </div>
     </section>
 
-    <CmsFooter v-if="showFooter" />
+    <CmsFooter />
   </main>
 </template>
 
 <style scoped>
-.page-shell {
-  background: linear-gradient(180deg, #fffdf8 0%, #f8f1e7 100%);
+.service-detail {
+  padding: clamp(3rem, 6vw, 5rem) 0;
 }
 
-.page-hero {
-  padding-top: clamp(3.5rem, 8vw, 6rem);
-  padding-bottom: clamp(2rem, 5vw, 3.25rem);
+.service-detail__content:deep(.about-area5) {
+  padding: 0;
 }
 
-.page-hero__inner {
-  max-width: 56rem;
+.service-detail__content:deep(.container) {
+  width: 100%;
+  max-width: none;
+  padding: 0;
 }
 
-.page-hero__title {
+.service-detail__content:deep(.pt-120) {
+  padding-top: 0 !important;
+}
+
+.service-detail__content:deep(.pb-90) {
+  padding-bottom: 0 !important;
+}
+
+.service-detail__content:deep(.sidebar-widget) {
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 24px 60px rgba(66, 47, 35, 0.08);
+  padding: 1.5rem;
+}
+
+.service-detail__content:deep(.widget-title) {
+  color: var(--retreat-ink);
+}
+
+.service-detail__content:deep(.services-categories) {
   margin: 0;
-  color: #241913;
-  font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: clamp(2.6rem, 5vw, 4.4rem);
-  font-weight: 600;
-  line-height: 0.98;
+  padding: 0;
+  list-style: none;
 }
 
-.page-hero__description {
-  max-width: 42rem;
-  margin: 1rem 0 0;
-  color: rgba(61, 45, 35, 0.78);
-  font-size: 1rem;
-  line-height: 1.8;
+.service-detail__content:deep(.services-categories li + li) {
+  margin-top: 0.85rem;
 }
 
-.cms-content {
-  min-width: 0;
+.service-detail__content:deep(.services-categories a) {
+  color: rgba(46, 35, 28, 0.82);
+  text-decoration: none;
 }
 
-.cms-content--with-breadcrumbs {
-  padding-top: 0;
+.service-detail__content:deep(.services-categories li.active a) {
+  color: var(--retreat-clay);
+}
+
+.service-detail__empty {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+@media (max-width: 991px) {
+  .service-detail__content:deep(.row) {
+    row-gap: 2rem;
+  }
 }
 </style>

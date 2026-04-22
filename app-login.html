@@ -1,0 +1,389 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style id="nuxt-ui-colors">@layer theme {
+  :root, :host {
+  --ui-color-primary-50: var(--color-green-50, oklch(98.2% 0.018 155.826));
+  --ui-color-primary-100: var(--color-green-100, oklch(96.2% 0.044 156.743));
+  --ui-color-primary-200: var(--color-green-200, oklch(92.5% 0.084 155.995));
+  --ui-color-primary-300: var(--color-green-300, oklch(87.1% 0.15 154.449));
+  --ui-color-primary-400: var(--color-green-400, oklch(79.2% 0.209 151.711));
+  --ui-color-primary-500: var(--color-green-500, oklch(72.3% 0.219 149.579));
+  --ui-color-primary-600: var(--color-green-600, oklch(62.7% 0.194 149.214));
+  --ui-color-primary-700: var(--color-green-700, oklch(52.7% 0.154 150.069));
+  --ui-color-primary-800: var(--color-green-800, oklch(44.8% 0.119 151.328));
+  --ui-color-primary-900: var(--color-green-900, oklch(39.3% 0.095 152.535));
+  --ui-color-primary-950: var(--color-green-950, oklch(26.6% 0.065 152.934));
+  --ui-color-secondary-50: var(--color-blue-50, oklch(97% 0.014 254.604));
+  --ui-color-secondary-100: var(--color-blue-100, oklch(93.2% 0.032 255.585));
+  --ui-color-secondary-200: var(--color-blue-200, oklch(88.2% 0.059 254.128));
+  --ui-color-secondary-300: var(--color-blue-300, oklch(80.9% 0.105 251.813));
+  --ui-color-secondary-400: var(--color-blue-400, oklch(70.7% 0.165 254.624));
+  --ui-color-secondary-500: var(--color-blue-500, oklch(62.3% 0.214 259.815));
+  --ui-color-secondary-600: var(--color-blue-600, oklch(54.6% 0.245 262.881));
+  --ui-color-secondary-700: var(--color-blue-700, oklch(48.8% 0.243 264.376));
+  --ui-color-secondary-800: var(--color-blue-800, oklch(42.4% 0.199 265.638));
+  --ui-color-secondary-900: var(--color-blue-900, oklch(37.9% 0.146 265.522));
+  --ui-color-secondary-950: var(--color-blue-950, oklch(28.2% 0.091 267.935));
+  --ui-color-success-50: var(--color-green-50, oklch(98.2% 0.018 155.826));
+  --ui-color-success-100: var(--color-green-100, oklch(96.2% 0.044 156.743));
+  --ui-color-success-200: var(--color-green-200, oklch(92.5% 0.084 155.995));
+  --ui-color-success-300: var(--color-green-300, oklch(87.1% 0.15 154.449));
+  --ui-color-success-400: var(--color-green-400, oklch(79.2% 0.209 151.711));
+  --ui-color-success-500: var(--color-green-500, oklch(72.3% 0.219 149.579));
+  --ui-color-success-600: var(--color-green-600, oklch(62.7% 0.194 149.214));
+  --ui-color-success-700: var(--color-green-700, oklch(52.7% 0.154 150.069));
+  --ui-color-success-800: var(--color-green-800, oklch(44.8% 0.119 151.328));
+  --ui-color-success-900: var(--color-green-900, oklch(39.3% 0.095 152.535));
+  --ui-color-success-950: var(--color-green-950, oklch(26.6% 0.065 152.934));
+  --ui-color-info-50: var(--color-blue-50, oklch(97% 0.014 254.604));
+  --ui-color-info-100: var(--color-blue-100, oklch(93.2% 0.032 255.585));
+  --ui-color-info-200: var(--color-blue-200, oklch(88.2% 0.059 254.128));
+  --ui-color-info-300: var(--color-blue-300, oklch(80.9% 0.105 251.813));
+  --ui-color-info-400: var(--color-blue-400, oklch(70.7% 0.165 254.624));
+  --ui-color-info-500: var(--color-blue-500, oklch(62.3% 0.214 259.815));
+  --ui-color-info-600: var(--color-blue-600, oklch(54.6% 0.245 262.881));
+  --ui-color-info-700: var(--color-blue-700, oklch(48.8% 0.243 264.376));
+  --ui-color-info-800: var(--color-blue-800, oklch(42.4% 0.199 265.638));
+  --ui-color-info-900: var(--color-blue-900, oklch(37.9% 0.146 265.522));
+  --ui-color-info-950: var(--color-blue-950, oklch(28.2% 0.091 267.935));
+  --ui-color-warning-50: var(--color-yellow-50, oklch(98.7% 0.026 102.212));
+  --ui-color-warning-100: var(--color-yellow-100, oklch(97.3% 0.071 103.193));
+  --ui-color-warning-200: var(--color-yellow-200, oklch(94.5% 0.129 101.54));
+  --ui-color-warning-300: var(--color-yellow-300, oklch(90.5% 0.182 98.111));
+  --ui-color-warning-400: var(--color-yellow-400, oklch(85.2% 0.199 91.936));
+  --ui-color-warning-500: var(--color-yellow-500, oklch(79.5% 0.184 86.047));
+  --ui-color-warning-600: var(--color-yellow-600, oklch(68.1% 0.162 75.834));
+  --ui-color-warning-700: var(--color-yellow-700, oklch(55.4% 0.135 66.442));
+  --ui-color-warning-800: var(--color-yellow-800, oklch(47.6% 0.114 61.907));
+  --ui-color-warning-900: var(--color-yellow-900, oklch(42.1% 0.095 57.708));
+  --ui-color-warning-950: var(--color-yellow-950, oklch(28.6% 0.066 53.813));
+  --ui-color-error-50: var(--color-red-50, oklch(97.1% 0.013 17.38));
+  --ui-color-error-100: var(--color-red-100, oklch(93.6% 0.032 17.717));
+  --ui-color-error-200: var(--color-red-200, oklch(88.5% 0.062 18.334));
+  --ui-color-error-300: var(--color-red-300, oklch(80.8% 0.114 19.571));
+  --ui-color-error-400: var(--color-red-400, oklch(70.4% 0.191 22.216));
+  --ui-color-error-500: var(--color-red-500, oklch(63.7% 0.237 25.331));
+  --ui-color-error-600: var(--color-red-600, oklch(57.7% 0.245 27.325));
+  --ui-color-error-700: var(--color-red-700, oklch(50.5% 0.213 27.518));
+  --ui-color-error-800: var(--color-red-800, oklch(44.4% 0.177 26.899));
+  --ui-color-error-900: var(--color-red-900, oklch(39.6% 0.141 25.723));
+  --ui-color-error-950: var(--color-red-950, oklch(25.8% 0.092 26.042));
+  --ui-color-neutral-50: var(--color-slate-50, oklch(98.4% 0.003 247.858));
+  --ui-color-neutral-100: var(--color-slate-100, oklch(96.8% 0.007 247.896));
+  --ui-color-neutral-200: var(--color-slate-200, oklch(92.9% 0.013 255.508));
+  --ui-color-neutral-300: var(--color-slate-300, oklch(86.9% 0.022 252.894));
+  --ui-color-neutral-400: var(--color-slate-400, oklch(70.4% 0.04 256.788));
+  --ui-color-neutral-500: var(--color-slate-500, oklch(55.4% 0.046 257.417));
+  --ui-color-neutral-600: var(--color-slate-600, oklch(44.6% 0.043 257.281));
+  --ui-color-neutral-700: var(--color-slate-700, oklch(37.2% 0.044 257.287));
+  --ui-color-neutral-800: var(--color-slate-800, oklch(27.9% 0.041 260.031));
+  --ui-color-neutral-900: var(--color-slate-900, oklch(20.8% 0.042 265.755));
+  --ui-color-neutral-950: var(--color-slate-950, oklch(12.9% 0.042 264.695));
+  }
+  :root, :host, .light {
+  --ui-primary: var(--ui-color-primary-500);
+  --ui-secondary: var(--ui-color-secondary-500);
+  --ui-success: var(--ui-color-success-500);
+  --ui-info: var(--ui-color-info-500);
+  --ui-warning: var(--ui-color-warning-500);
+  --ui-error: var(--ui-color-error-500);
+  }
+  .dark {
+  --ui-primary: var(--ui-color-primary-400);
+  --ui-secondary: var(--ui-color-secondary-400);
+  --ui-success: var(--ui-color-success-400);
+  --ui-info: var(--ui-color-info-400);
+  --ui-warning: var(--ui-color-warning-400);
+  --ui-error: var(--ui-color-error-400);
+  }
+}</style><title>Login</title><link rel="stylesheet" href="/_nuxt/virtual:nuxt:D%3A%2FDuong%2Fsrc%2Flaragon%2Fwww%2Fanduongliving%2Fnuxt-app%2F.nuxt%2Fnuxt-fonts-global.css" crossorigin><link rel="stylesheet" href="/_nuxt/assets/css/main.css" crossorigin><link rel="stylesheet" href="/_nuxt/app.vue?vue&type=style&index=0&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/pages/index.vue?vue&type=style&index=0&scoped=02281a80&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/CmsBreadcrumbs.vue?vue&type=style&index=0&scoped=5b1f8247&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/AboutUs.vue?vue&type=style&index=0&scoped=8ac61b44&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/AllRooms.vue?vue&type=style&index=0&scoped=c4a85d1b&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/BlogPosts.vue?vue&type=style&index=0&scoped=da8d6a3d&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/BookingForm.vue?vue&type=style&index=0&scoped=6c704222&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/Brands.vue?vue&type=style&index=0&scoped=1eec9989&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/CheckAvailabilityForm.vue?vue&type=style&index=0&scoped=22bfdcd7&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/CuisineShowcase.vue?vue&type=style&index=0&scoped=c1629da6&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/Faqs.vue?vue&type=style&index=0&scoped=d7ba5486&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/FeatureArea.vue?vue&type=style&index=0&scoped=f0e0407c&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/FeaturedAmenities.vue?vue&type=style&index=0&scoped=9bcf01c7&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/FeaturedRooms.vue?vue&type=style&index=0&scoped=a479677b&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/ForestFacilityShowcase.vue?vue&type=style&index=0&scoped=996a5b86&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/Galleries.vue?vue&type=style&index=0&scoped=49987841&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/HeroBannerWithBookingForm.vue?vue&type=style&index=0&scoped=de551e42&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/HeroStory.vue?vue&type=style&index=0&scoped=ee06c614&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/HotelPlaces.vue?vue&type=style&index=0&scoped=058214ec&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/HotelServices.vue?vue&type=style&index=0&scoped=b0baf69a&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/IntroVideo.vue?vue&type=style&index=0&scoped=e312259c&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/LocationTourismShowcase.vue?vue&type=style&index=0&scoped=3dcc4d4a&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/LogoShowcaseBanner.vue?vue&type=style&index=0&scoped=fb1cd634&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/News.vue?vue&type=style&index=0&scoped=2ed12bdc&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/Newsletter.vue?vue&type=style&index=0&scoped=6f887324&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/OnsenSpaGallery.vue?vue&type=style&index=0&scoped=9e1f1d9e&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/PickupGalleryShowcase.vue?vue&type=style&index=0&scoped=10e1bc06&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/Pricing.vue?vue&type=style&index=0&scoped=f1927e8c&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/RoomList.vue?vue&type=style&index=0&scoped=ab0f4e67&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/RoomMosaicShowcase.vue?vue&type=style&index=0&scoped=eba1793b&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/ServiceList.vue?vue&type=style&index=0&scoped=b96bfb44&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/Services.vue?vue&type=style&index=0&scoped=a3272e2f&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/SimpleSlider.vue?vue&type=style&index=0&scoped=a49035fb&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/SpaCollageShowcase.vue?vue&type=style&index=0&scoped=c7410278&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/SpecialStoryShowcase.vue?vue&type=style&index=0&scoped=aa0a30b3&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/Teams.vue?vue&type=style&index=0&scoped=bd74b03b&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/Testimonials.vue?vue&type=style&index=0&scoped=d84c8bb4&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/UserProfile.vue?vue&type=style&index=0&scoped=e6f2a1f5&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/shortcode/WhyChooseUs.vue?vue&type=style&index=0&scoped=d2015f4b&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/CmsFooter.vue?vue&type=style&index=0&scoped=f42d7e45&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/FooterWidgets.vue?vue&type=style&index=0&scoped=3d6a3929&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/sidebar-widgets/BlogSocialsWidget.vue?vue&type=style&index=0&scoped=56dc433c&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/sidebar-widgets/SidebarWidgetCard.vue?vue&type=style&index=0&scoped=52c2c863&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/sidebar-widgets/ContactInformationWidget.vue?vue&type=style&index=0&scoped=1e214d9a&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/sidebar-widgets/CoreSimpleMenuWidget.vue?vue&type=style&index=0&scoped=76aae4be&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/sidebar-widgets/CustomMenuWidget.vue?vue&type=style&index=0&scoped=e30cf714&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/sidebar-widgets/NewsletterWidget.vue?vue&type=style&index=0&scoped=5634bea4&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/sidebar-widgets/RoomContactWidget.vue?vue&type=style&index=0&scoped=87db141d&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/sidebar-widgets/TextWidget.vue?vue&type=style&index=0&scoped=1ee3c839&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/CmsPageShell.vue?vue&type=style&index=0&scoped=b65f7089&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/MainNavigation.vue?vue&type=style&index=0&scoped=e0594dd1&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/menu/MenuTreeItem.vue?vue&type=style&index=0&scoped=2ea4d9a9&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/menu/MobileMenuCollapse.vue?vue&type=style&index=0&scoped=2e13ad54&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/menu/SidebarMenuDrawer.vue?vue&type=style&index=0&scoped=479e5d6f&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/HeaderTopBar.vue?vue&type=style&index=0&scoped=2834d9ba&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/LanguageSwitcher.vue?vue&type=style&index=0&scoped=0c7c64a4&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/BlogSidebarWidgets.vue?vue&type=style&index=0&scoped=f8db23eb&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/sidebar-widgets/BlogCategoriesWidget.vue?vue&type=style&index=0&scoped=32ee8de8&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/sidebar-widgets/BlogPostsWidget.vue?vue&type=style&index=0&scoped=ec995b87&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/sidebar-widgets/BlogSearchWidget.vue?vue&type=style&index=0&scoped=68054b46&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/sidebar-widgets/BlogTagsWidget.vue?vue&type=style&index=0&scoped=c70567ae&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/sidebar-widgets/CheckAvailabilityWidget.vue?vue&type=style&index=0&scoped=aafe5b9f&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/@fs/D:/Duong/src/laragon/www/anduongliving/nuxt-app/node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29_d1a16486fe8088ab2b1d7a24a07fdc59/node_modules/nuxt/dist/app/components/error-404.vue?vue&type=style&index=0&scoped=02241097&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/D:/Duong/src/laragon/www/anduongliving/nuxt-app/node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29_d1a16486fe8088ab2b1d7a24a07fdc59/node_modules/nuxt/dist/app/components/error-404.vue?vue&type=style&index=0&scoped=02241097&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/pages/[slug].vue?vue&type=style&index=0&scoped=2def17b6&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/components/auth/AuthPassthroughPage.vue?vue&type=style&index=0&scoped=194d016c&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/layouts/default.vue?vue&type=style&index=0&scoped=433a9abd&lang.css" crossorigin><link rel="stylesheet" href="/_nuxt/D:/Duong/src/laragon/www/anduongliving/nuxt-app/app/assets/css/main.css" crossorigin><link rel="stylesheet" href="/_nuxt/D:/Duong/src/laragon/www/anduongliving/nuxt-app/.nuxt/nuxt-fonts-global.css" crossorigin><style>@layer base {
+:where(.i-ph\:list){display:inline-block;width:1em;height:1em;background-color:currentColor;-webkit-mask-image:var(--svg);mask-image:var(--svg);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%;--svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' width='256' height='256'%3E%3Cpath fill='black' d='M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8M40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16m176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16'/%3E%3C/svg%3E")}
+:where(.i-ph\:sign-in){display:inline-block;width:1em;height:1em;background-color:currentColor;-webkit-mask-image:var(--svg);mask-image:var(--svg);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%;--svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' width='256' height='256'%3E%3Cpath fill='black' d='m141.66 133.66l-40 40a8 8 0 0 1-11.32-11.32L116.69 136H24a8 8 0 0 1 0-16h92.69L90.34 93.66a8 8 0 0 1 11.32-11.32l40 40a8 8 0 0 1 0 11.32M200 32h-64a8 8 0 0 0 0 16h56v160h-56a8 8 0 0 0 0 16h64a8 8 0 0 0 8-8V40a8 8 0 0 0-8-8'/%3E%3C/svg%3E")}
+}</style><link rel="modulepreload" as="script" crossorigin href="/_nuxt/D:/Duong/src/laragon/www/anduongliving/nuxt-app/node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29_d1a16486fe8088ab2b1d7a24a07fdc59/node_modules/nuxt/dist/app/entry.async.js"><script type="module" src="/_nuxt/@vite/client" crossorigin></script><script type="module" src="/_nuxt/D:/Duong/src/laragon/www/anduongliving/nuxt-app/node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29_d1a16486fe8088ab2b1d7a24a07fdc59/node_modules/nuxt/dist/app/entry.async.js" crossorigin></script><script>"use strict";(()=>{const t=window,e=document.documentElement,c=["dark","light"],n=getStorageValue("localStorage","nuxt-color-mode")||"system";let i=n==="system"?u():n;const r=e.getAttribute("data-color-mode-forced");r&&(i=r),l(i),t["__NUXT_COLOR_MODE__"]={preference:n,value:i,getColorScheme:u,addColorScheme:l,removeColorScheme:d};function l(o){const s=""+o+"",a="";e.classList?e.classList.add(s):e.className+=" "+s,a&&e.setAttribute("data-"+a,o)}function d(o){const s=""+o+"",a="";e.classList?e.classList.remove(s):e.className=e.className.replace(new RegExp(s,"g"),""),a&&e.removeAttribute("data-"+a)}function f(o){return t.matchMedia("(prefers-color-scheme"+o+")")}function u(){if(t.matchMedia&&f("").media!=="not all"){for(const o of c)if(f(":"+o).matches)return o}return"light"}})();function getStorageValue(t,e){switch(t){case"localStorage":return window.localStorage.getItem(e);case"sessionStorage":return window.sessionStorage.getItem(e);case"cookie":return getCookie(e);default:return null}}function getCookie(t){const c=("; "+window.document.cookie).split("; "+t+"=");if(c.length===2)return c.pop()?.split(";").shift()}</script></head><body><!--teleport start anchor--><!----><!----><!--teleport anchor--><div id="__nuxt" class="isolate"><div><div></div><div class="nuxt-loading-indicator" style="position:fixed;top:0;right:0;left:0;pointer-events:none;width:auto;height:2px;opacity:0;background:linear-gradient(90deg, #7d6b53 0%, #b48c63 45%, #d6c09b 100%);background-size:0% auto;transform:scaleX(0%);transform-origin:left;transition:transform 0.1s, height 0.4s, opacity 0.4s;z-index:999999;"></div><div class="cms-layout cms-layout--default" data-v-433a9abd><div class="header-top-bar" data-v-433a9abd data-v-2834d9ba><div class="container header-top-bar__inner" data-v-2834d9ba><div class="header-top-bar__left" data-v-2834d9ba><!----><!----></div><div class="header-top-bar__right" data-v-2834d9ba><nav class="language-switcher language-switcher--inline" aria-label="Language switcher" data-v-2834d9ba data-v-0c7c64a4><!--[--><a aria-current="page" href="/login" class="router-link-active router-link-exact-active language-switcher__link language-switcher__link--active" data-v-0c7c64a4>VI</a><a href="/en/login" class="language-switcher__link" data-v-0c7c64a4>EN</a><a href="/ja/login" class="language-switcher__link" data-v-0c7c64a4>JA</a><!--]--></nav><div class="header-top-bar__currency" data-v-2834d9ba><span class="header-top-bar__currency-current" data-v-2834d9ba>USD</span><div class="header-top-bar__currency-list" data-v-2834d9ba><!--[--><a href="http://127.0.0.1:8000/currency/switch/VND" class="header-top-bar__currency-link" data-v-2834d9ba>VND</a><a href="http://127.0.0.1:8000/currency/switch/EUR" class="header-top-bar__currency-link" data-v-2834d9ba>EUR</a><!--]--></div></div><div class="header-top-bar__account" data-v-2834d9ba><div class="header-top-bar__account-guest" data-v-2834d9ba><a aria-current="page" href="/login" class="router-link-active router-link-exact-active header-top-bar__account-link" data-v-2834d9ba><span class="iconify i-ph:sign-in header-top-bar__account-icon" aria-hidden="true" style="" data-v-2834d9ba></span><span data-v-2834d9ba>Login</span></a><a href="/register" class="header-top-bar__account-secondary" data-v-2834d9ba> Register </a></div></div><!----></div></div></div><header class="main-navigation main-navigation--header" data-v-433a9abd data-v-e0594dd1><div class="main-navigation__inner main-navigation__inner--fluid" data-v-e0594dd1><div class="main-navigation__brand-block" data-v-e0594dd1><a href="/" class="main-navigation__brand" data-v-e0594dd1><img src="http://anduongliving.test/storage/logo/new-project.png" alt="Anduong Living" class="main-navigation__brand-logo" data-v-e0594dd1></a></div><nav class="main-navigation__nav" aria-label="Main menu" data-v-e0594dd1><ul class="main-navigation__list" data-v-e0594dd1><!--[--><li class="menu-tree-item" data-v-e0594dd1 data-v-2ea4d9a9><a href="/" class="menu-tree-item__link" data-v-2ea4d9a9>Trang ch?</a><!----></li><li class="menu-tree-item menu-tree-item--with-children" data-v-e0594dd1 data-v-2ea4d9a9><a href="/services" class="menu-tree-item__link" data-v-2ea4d9a9>D?ch v?</a><ul class="menu-tree-item__children" data-v-2ea4d9a9><!--[--><li class="menu-tree-item" data-v-2ea4d9a9 data-v-2ea4d9a9><a href="/trai-nghiem" class="menu-tree-item__link" data-v-2ea4d9a9>TR?I NGHI?M</a><!----></li><li class="menu-tree-item" data-v-2ea4d9a9 data-v-2ea4d9a9><a href="/services/phong-chat-luong-cao" class="menu-tree-item__link" data-v-2ea4d9a9>PHÒNG CH?T LU?NG CAO</a><!----></li><li class="menu-tree-item" data-v-2ea4d9a9 data-v-2ea4d9a9><a href="/services/nha-hang-va-quay-bar" class="menu-tree-item__link" data-v-2ea4d9a9>NHÀ HÀNG VÀ QU?Y BAR</a><!----></li><li class="menu-tree-item" data-v-2ea4d9a9 data-v-2ea4d9a9><a href="/services/bai-bien-rieng" class="menu-tree-item__link" data-v-2ea4d9a9>BÃI BI?N RIÊNG</a><!----></li><!--]--></ul></li><li class="menu-tree-item" data-v-e0594dd1 data-v-2ea4d9a9><a href="/blog" class="menu-tree-item__link" data-v-2ea4d9a9>Bài vi?t</a><!----></li><li class="menu-tree-item menu-tree-item--with-children" data-v-e0594dd1 data-v-2ea4d9a9><a href="/" class="menu-tree-item__link" data-v-2ea4d9a9>AN U?NG</a><ul class="menu-tree-item__children" data-v-2ea4d9a9><!--[--><li class="menu-tree-item" data-v-2ea4d9a9 data-v-2ea4d9a9><a href="/nha-hang" class="menu-tree-item__link" data-v-2ea4d9a9>NHÀ HÀNG</a><!----></li><li class="menu-tree-item" data-v-2ea4d9a9 data-v-2ea4d9a9><a href="/am-thuc-tren-may" class="menu-tree-item__link" data-v-2ea4d9a9>?M TH?C TRÊN MÂY</a><!----></li><!--]--></ul></li><li class="menu-tree-item" data-v-e0594dd1 data-v-2ea4d9a9><a href="/rooms" class="menu-tree-item__link" data-v-2ea4d9a9>Phòng</a><!----></li><li class="menu-tree-item menu-tree-item--with-children" data-v-e0594dd1 data-v-2ea4d9a9><a href="/about-us" class="menu-tree-item__link" data-v-2ea4d9a9>V? AnduongLiving</a><ul class="menu-tree-item__children" data-v-2ea4d9a9><!--[--><li class="menu-tree-item" data-v-2ea4d9a9 data-v-2ea4d9a9><a href="/cau-chuyen-ve-chung-toi" class="menu-tree-item__link" data-v-2ea4d9a9>Câu chuy?n v? chúng tôi</a><!----></li><li class="menu-tree-item" data-v-2ea4d9a9 data-v-2ea4d9a9><a href="/su-da-dang-sinh-hoc" class="menu-tree-item__link" data-v-2ea4d9a9>S? da d?ng sinh h?c</a><!----></li><!--]--></ul></li><li class="menu-tree-item menu-tree-item--with-children" data-v-e0594dd1 data-v-2ea4d9a9><a href="/uu-dai-dac-biet" class="menu-tree-item__link" data-v-2ea4d9a9>Uu dãi d?c bi?t</a><ul class="menu-tree-item__children" data-v-2ea4d9a9><!--[--><li class="menu-tree-item" data-v-2ea4d9a9 data-v-2ea4d9a9><a href="/uu-dai-dac-biet" class="menu-tree-item__link" data-v-2ea4d9a9>Gói d?c bi?t</a><!----></li><li class="menu-tree-item" data-v-2ea4d9a9 data-v-2ea4d9a9><a href="/goi-dac-quyen" class="menu-tree-item__link" data-v-2ea4d9a9>Uu dãi d?c quy?n</a><!----></li><!--]--></ul></li><!--]--></ul></nav><!----><div class="main-navigation__actions" data-v-e0594dd1><!----><!----><button type="button" class="main-navigation__mobile-toggle" aria-label="Open mobile menu" aria-expanded="false" data-v-e0594dd1><span class="iconify i-ph:list" aria-hidden="true" style="" data-v-e0594dd1></span></button></div><!----></div><!--teleport start--><!--teleport end--><!----></header><!--[--><main><section class="auth-passthrough" data-v-194d016c><div class="auth-passthrough__container" data-v-194d016c><!----><div class="auth-passthrough__content" data-v-194d016c><section class="breadcrumb-area d-flex align-items-center" style="background-image:url(http://anduongliving.test/themes/riorelax/images/breadcrumb-bg.jpg);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-xl-12 col-lg-12">
+                <div class="breadcrumb-wrap text-center">
+                    <div class="breadcrumb-title">
+                                                    <h2>Ðang nh?p</h2>
+                        
+                                                        <div class="breadcrumb-wrap">
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                                                                                                                                <li class="breadcrumb-item"><a href="http://anduongliving.test">Trang ch?</a></li>
+                                                                                                                                                                                                <li class="breadcrumb-item active" aria-current="page">Ðang nh?p</li>
+                                                                                                                                    </ol>
+                                    </nav>
+                                </div>
+                                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    
+    <section class="pt-40 pb-40">
+        <div class="container">
+            <section class="about-area about-p pt-120 pb-120 p-relative fix">
+    <div class="container">
+        <div class="row flex-row-reverse justify-content-center align-items-center">
+            
+            <div class="col-xxl-5 col-xl-12 col-lg-12">
+                <div class="about-content s-about-content wow fadeInRight animated" data-animation="fadeInRight" data-delay=".4s" style="visibility: visible; animation-name: fadeInRight;">
+                    <div class="about-title second-title pb-25">
+                        <h1>Welcome back</h1>
+                    </div>
+                    <div class="form-border-box">
+                        <form method="POST" action="http://anduongliving.test/login" accept-charset="UTF-8" id="botble-hotel-forms-fronts-auth-login-form" class="js-base-form auth-form dirty-check" icon="ti ti-lock" heading="Ðang nh?p vào tài kho?n c?a b?n" description="D? li?u cá nhân c?a b?n s? du?c s? d?ng d? h? tr? tr?i nghi?m c?a b?n trên trang web này, d? qu?n lý quy?n truy c?p vào tài kho?n c?a b?n."><input name="_token" type="hidden" value="TtNwmlcEl2ZTSxMH6IhsYVbSuCxG0dAhgAuh99Y6">
+
+    
+
+            
+        
+            
+        <div class="mb-3 position-relative" >
+    
+            <label class="form-label form-label required" for="email">
+    Email
+
+    
+    </label>
+    
+            <div class="position-relative"><span class="auth-input-icon input-group-text"><svg class="icon svg-icon-ti-ti-mail"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+  <path d="M3 7l9 6l9 -6" />
+</svg></span>
+    
+    <input class="form-control ps-5" data-counter="60" placeholder="Ví d?: example@gmail.com" autocomplete="email" required="required" name="email" type="email" id="email">
+
+            </div>
+    
+    
+
+            </div>
+    
+
+            
+        <div class="mb-3 position-relative" >
+    
+            <label class="form-label" for="password">
+    M?t kh?u
+
+    
+    </label>
+    
+            <div class="position-relative"><span class="auth-input-icon input-group-text"><svg class="icon svg-icon-ti-ti-lock"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z" />
+  <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" />
+  <path d="M8 11v-4a4 4 0 1 1 8 0v4" />
+</svg></span>
+    
+    <div class="input-group">
+        <input
+            type="password"
+            name="password"
+            id="password"
+            value=""
+             class="form-control ps-5" data-counter="250" placeholder="M?t kh?u"
+            data-bb-password
+        >
+        <span
+            class="input-password-toggle"
+            data-bb-toggle-password
+        >
+            <svg class="icon svg-icon-ti-ti-eye"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+  <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+</svg>        </span>
+    </div>
+
+            </div>
+    
+    
+
+            </div>
+    
+    
+    .input-password-toggle {
+        position: absolute;
+        right: 0;
+        top: 0;
+        cursor: pointer;
+        padding: 10px 15px;
+        z-index: 9;
+        height: 100%;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    input[data-bb-password]:valid,
+    input[data-bb-password].is-valid {
+        background-image: unset;
+    }
+
+    body[dir="rtl"] .input-password-toggle {
+        right: unset;
+        left: 0;
+    }
+</style>
+
+
+
+
+            
+        <div class="row g-0 mb-3">
+
+    
+    
+
+    
+
+            
+        <div class="col-6" >
+    
+
+    
+    <input
+        type="hidden"
+        name="remember"
+        value="0"
+    >
+
+    <label  class="form-check">
+    <input
+        type="checkbox" id="remember_dc3c99bb4e249a95567a2bf7d5f327ed" name="remember" class="form-check-input"
+        value="1"
+            >
+
+            <span class="form-check-label">
+            Ghi nh? dang nh?p
+        </span>
+    
+    </label>
+
+    
+    
+
+            </div>
+    
+
+            
+        <div class="col-6 text-end" >
+    
+
+    
+    <a href="http://anduongliving.test/password/request" class="text-decoration-underline">Qu&ecirc;n m?t kh?u?</a>
+
+    
+    
+
+            </div>
+    
+
+            
+        </div>
+
+    
+    
+
+    
+
+            
+        <div class="d-grid">
+
+    
+    
+
+    
+
+            
+        
+            
+        <button class="btn btn-primary btn-auth-submit" type="submit">Ðang nh?p <svg class="icon svg-icon-ti-ti-arrow-narrow-right"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M5 12l14 0" />
+  <path d="M15 16l4 -4" />
+  <path d="M15 8l4 4" />
+</svg></button>
+
+
+            
+        </div>
+
+    
+    
+
+    
+
+            
+        <div class="mt-3 text-center">B?n chua có tài kho?n? <a href="http://anduongliving.test/register" class="text-decoration-underline">Ðang ký ngay</a></div>
+
+    
+    
+
+    
+
+            
+        
+            
+        
+    
+    
+
+    </form>
+
+    
+                    </div>
+                </div>
+                <div class="col-lg-12 mt-20">
+                    <span class="color-grey-500 d-inline-block align-middle font-sm">
+                        Don’t have an account?
+                    </span>
+                    <a class="d-inline-block align-middle color-success ms-1 custom-register-label" href="http://anduongliving.test/register">Sign up now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+        </div>
+    </section></div></div></section><footer class="cms-footer" data-v-f42d7e45><div class="cms-footer__top" style="" data-v-f42d7e45><div class="container cms-footer__container" data-v-f42d7e45><p class="cms-footer__eyebrow" data-v-f42d7e45> Quiet retreat living </p><div class="footer-widgets cms-footer__grid" data-v-f42d7e45 data-v-3d6a3929><!--[--><!--[--><article class="footer-contact-widget footer-widgets__item footer-widgets__item--native" data-v-3d6a3929 data-v-1e214d9a><div class="footer-contact-widget__brand" data-v-1e214d9a><img src="http://anduongliving.test/storage/logo/new-project.png" alt="An Duong Living" class="footer-contact-widget__logo" data-v-1e214d9a></div><ul class="footer-contact-widget__list" data-v-1e214d9a><!--[--><li class="footer-contact-widget__item" data-v-1e214d9a><span class="footer-contact-widget__label" data-v-1e214d9a>Phone</span><a href="tel:0989692323" class="footer-contact-widget__value footer-contact-widget__value--link" data-v-1e214d9a>0989692323</a></li><li class="footer-contact-widget__item" data-v-1e214d9a><span class="footer-contact-widget__label" data-v-1e214d9a>Email</span><a href="mailto:Vnsgroup.vns@gmail.com" class="footer-contact-widget__value footer-contact-widget__value--link" data-v-1e214d9a>Vnsgroup.vns@gmail.com</a></li><li class="footer-contact-widget__item" data-v-1e214d9a><span class="footer-contact-widget__label" data-v-1e214d9a>Address</span><span class="footer-contact-widget__value" data-v-1e214d9a>104/54 du?ng Lê Quang Ð?o, Phu?ng T? Liêm, Thành ph? Hà N?i, Vi?t Nam</span></li><!--]--></ul></article><!--]--><!--[--><article class="footer-custom-menu footer-widgets__item footer-widgets__item--native" data-v-3d6a3929 data-v-e30cf714><h2 class="footer-custom-menu__title" data-v-e30cf714>Liên k?t</h2><ul class="footer-custom-menu__list" data-v-e30cf714><!--[--><li class="footer-custom-menu__item" data-v-e30cf714><a href="/about-us" class="footer-custom-menu__link" data-v-e30cf714>V? chúng tôi</a><!----></li><li class="footer-custom-menu__item" data-v-e30cf714><a href="/services" class="footer-custom-menu__link" data-v-e30cf714>D?ch v?</a><!----></li><li class="footer-custom-menu__item" data-v-e30cf714><a href="/contact-us" class="footer-custom-menu__link" data-v-e30cf714>Liên h? v?i chúng tôi</a><!----></li><li class="footer-custom-menu__item" data-v-e30cf714><a href="/blog" class="footer-custom-menu__link" data-v-e30cf714>Bài vi?t</a><!----></li><!--]--></ul></article><!--]--><!--[--><article class="footer-custom-menu footer-widgets__item footer-widgets__item--native" data-v-3d6a3929 data-v-e30cf714><h2 class="footer-custom-menu__title" data-v-e30cf714>D?ch v?</h2><ul class="footer-custom-menu__list" data-v-e30cf714><!--[--><li class="footer-custom-menu__item" data-v-e30cf714><a href="/faq" class="footer-custom-menu__link" data-v-e30cf714>Câu h?i thu?ng g?p</a><!----></li><li class="footer-custom-menu__item" data-v-e30cf714><a href="/privacy" class="footer-custom-menu__link" data-v-e30cf714>Riêng tu</a><!----></li><li class="footer-custom-menu__item" data-v-e30cf714><a href="/term-and-conditions" class="footer-custom-menu__link" data-v-e30cf714>Ði?u kho?n &amp; Ði?u ki?n</a><!----></li><!--]--></ul></article><!--]--><!--[--><article class="footer-newsletter footer-widgets__item footer-widgets__item--native" data-v-3d6a3929 data-v-5634bea4><h2 class="footer-newsletter__title" data-v-5634bea4>Ðang ký nh?n b?n tin</h2><!----><form class="footer-newsletter__form" data-v-5634bea4><input value="" type="email" class="footer-newsletter__input" placeholder="Enter your email" autocomplete="email" required data-v-5634bea4><button type="submit" class="footer-newsletter__button" aria-label="Subscribe to newsletter" data-v-5634bea4>-&gt;</button></form><!----></article><!--]--><!--]--></div></div></div></footer></main><!--]--></div></div></div><div id="teleports"></div><script type="application/json" data-nuxt-logs="nuxt-app">[[]]</script><script>window.__NUXT__={};window.__NUXT__.config={public:{apiBaseUrl:"http://anduongliving.test/api",siteUrl:"http://anduongliving.test",cmsProxyBaseUrl:"http://127.0.0.1:3000",motion:{},i18n:{baseUrl:"",defaultLocale:"vi",rootRedirect:"",redirectStatusCode:302,skipSettingLocaleOnNavigate:false,locales:[{code:"vi",language:"vi-VN",name:"Ti?ng Vi?t"},{code:"en",language:"en-US",name:"English"},{code:"ja",language:"ja-JP",name:"???"}],detectBrowserLanguage:false,experimental:{localeDetector:"",typedPages:true,typedOptionsAndMessages:false,alternateLinkCanonicalQueries:true,devCache:false,cacheLifetime:"",stripMessagesPayload:false,preload:false,strictSeo:false,nitroContextDetection:true,httpCacheDuration:10},domainLocales:{vi:{domain:""},en:{domain:""},ja:{domain:""}}}},app:{baseURL:"/",buildId:"dev",buildAssetsDir:"/_nuxt/",cdnURL:""}}</script><script type="application/json" data-nuxt-data="nuxt-app" data-ssr="true" id="__NUXT_DATA__">[["ShallowReactive",1],{"data":2,"state":236,"once":247,"_errors":248,"serverRendered":18,"path":153,"pinia":250},["ShallowReactive",3],{"main-menu-vi":4,"customer-login-page":124,"header-top-theme-options-default-vi":130,"theme-options-header-vi":136,"footer-theme-options-vi":138,"header-top-extras-default-vi":140,"theme-header-extras-header-vi":156,"footer-sidebar-vi":162},{"id":5,"name":6,"slug":7,"location":7,"locale":8,"items":9},10,"Main menu","main-menu","vi",[10,20,50,57,77,82,103],{"id":11,"title":12,"url":13,"target":14,"css_class":15,"icon_font":15,"reference_type":16,"reference_id":17,"is_external":18,"reference":16,"children":19},87,"Trang ch?","http:\u002F\u002Fanduongliving.test\u002F","_self","",null,0,true,[],{"id":21,"title":22,"url":23,"target":14,"css_class":15,"icon_font":15,"reference_type":16,"reference_id":17,"is_external":18,"reference":16,"children":24},128,"D?ch v?","http:\u002F\u002Fanduongliving.test\u002Fservices",[25,35,40,45],{"id":26,"title":27,"url":28,"target":14,"css_class":15,"icon_font":15,"reference_type":29,"reference_id":30,"is_external":31,"reference":32,"children":34},131,"TR?I NGHI?M","\u002Ftrai-nghiem","Botble\\Page\\Models\\Page",16,false,{"slug":33},"trai-nghiem",[],{"id":36,"title":37,"url":38,"target":14,"css_class":15,"icon_font":15,"reference_type":16,"reference_id":17,"is_external":18,"reference":16,"children":39},159,"PHÒNG CH?T LU?NG CAO","http:\u002F\u002Fanduongliving.test\u002Fservices\u002Fphong-chat-luong-cao",[],{"id":41,"title":42,"url":43,"target":14,"css_class":15,"icon_font":15,"reference_type":16,"reference_id":17,"is_external":18,"reference":16,"children":44},160,"NHÀ HÀNG VÀ QU?Y BAR","http:\u002F\u002Fanduongliving.test\u002Fservices\u002Fnha-hang-va-quay-bar",[],{"id":46,"title":47,"url":48,"target":14,"css_class":15,"icon_font":15,"reference_type":16,"reference_id":17,"is_external":18,"reference":16,"children":49},161,"BÃI BI?N RIÊNG","http:\u002F\u002Fanduongliving.test\u002Fservices\u002Fbai-bien-rieng",[],{"id":51,"title":52,"url":53,"target":14,"css_class":15,"icon_font":15,"reference_type":29,"reference_id":5,"is_external":31,"reference":54,"children":56},142,"Bài vi?t","\u002Fblog",{"slug":55},"blog",[],{"id":58,"title":59,"url":13,"target":14,"css_class":15,"icon_font":15,"reference_type":16,"reference_id":17,"is_external":18,"reference":16,"children":60},143,"AN U?NG",[61,69],{"id":62,"title":63,"url":64,"target":14,"css_class":15,"icon_font":15,"reference_type":29,"reference_id":65,"is_external":31,"reference":66,"children":68},155,"NHÀ HÀNG","\u002Fnha-hang",18,{"slug":67},"nha-hang",[],{"id":70,"title":71,"url":72,"target":14,"css_class":15,"icon_font":15,"reference_type":29,"reference_id":73,"is_external":31,"reference":74,"children":76},154,"?M TH?C TRÊN MÂY","\u002Fam-thuc-tren-may",19,{"slug":75},"am-thuc-tren-may",[],{"id":78,"title":79,"url":80,"target":14,"css_class":15,"icon_font":15,"reference_type":16,"reference_id":17,"is_external":18,"reference":16,"children":81},89,"Phòng","http:\u002F\u002Fanduongliving.test\u002Frooms",[],{"id":83,"title":84,"url":85,"target":14,"css_class":15,"icon_font":15,"reference_type":16,"reference_id":17,"is_external":18,"reference":16,"children":86},88,"V? AnduongLiving","http:\u002F\u002Fanduongliving.test\u002Fabout-us",[87,95],{"id":88,"title":89,"url":90,"target":14,"css_class":15,"icon_font":15,"reference_type":29,"reference_id":91,"is_external":31,"reference":92,"children":94},150,"Câu chuy?n v? chúng tôi","\u002Fcau-chuyen-ve-chung-toi",17,{"slug":93},"cau-chuyen-ve-chung-toi",[],{"id":96,"title":97,"url":98,"target":14,"css_class":15,"icon_font":15,"reference_type":29,"reference_id":99,"is_external":31,"reference":100,"children":102},164,"S? da d?ng sinh h?c","\u002Fsu-da-dang-sinh-hoc",23,{"slug":101},"su-da-dang-sinh-hoc",[],{"id":104,"title":105,"url":106,"target":14,"css_class":15,"icon_font":15,"reference_type":29,"reference_id":107,"is_external":31,"reference":108,"children":110},163,"Uu dãi d?c bi?t","\u002Fuu-dai-dac-biet",22,{"slug":109},"uu-dai-dac-biet",[111,116],{"id":112,"title":113,"url":106,"target":14,"css_class":15,"icon_font":15,"reference_type":29,"reference_id":107,"is_external":31,"reference":114,"children":115},168,"Gói d?c bi?t",{"slug":109},[],{"id":117,"title":118,"url":119,"target":14,"css_class":15,"icon_font":15,"reference_type":29,"reference_id":120,"is_external":31,"reference":121,"children":123},167,"Uu dãi d?c quy?n","\u002Fgoi-dac-quyen",26,{"slug":122},"goi-dac-quyen",[],{"data":125},{"mode":126,"csrfToken":127,"heading":128,"html":129,"imageUrl":16},"login","TtNwmlcEl2ZTSxMH6IhsYVbSuCxG0dAhgAuh99Y6","Welcome back","\u003Csection class=\"breadcrumb-area d-flex align-items-center\" style=\"background-image:url(http:\u002F\u002Fanduongliving.test\u002Fthemes\u002Friorelax\u002Fimages\u002Fbreadcrumb-bg.jpg);\">\n    \u003Cdiv class=\"container\">\n        \u003Cdiv class=\"row align-items-center\">\n            \u003Cdiv class=\"col-xl-12 col-lg-12\">\n                \u003Cdiv class=\"breadcrumb-wrap text-center\">\n                    \u003Cdiv class=\"breadcrumb-title\">\n                                                    \u003Ch2>Ðang nh?p\u003C\u002Fh2>\n                        \n                                                        \u003Cdiv class=\"breadcrumb-wrap\">\n                                    \u003Cnav aria-label=\"breadcrumb\">\n                                        \u003Col class=\"breadcrumb\">\n                                                                                                                                                \u003Cli class=\"breadcrumb-item\">\u003Ca href=\"http:\u002F\u002Fanduongliving.test\">Trang ch?\u003C\u002Fa>\u003C\u002Fli>\n                                                                                                                                                                                                \u003Cli class=\"breadcrumb-item active\" aria-current=\"page\">Ðang nh?p\u003C\u002Fli>\n                                                                                                                                    \u003C\u002Fol>\n                                    \u003C\u002Fnav>\n                                \u003C\u002Fdiv>\n                                            \u003C\u002Fdiv>\n                \u003C\u002Fdiv>\n            \u003C\u002Fdiv>\n        \u003C\u002Fdiv>\n    \u003C\u002Fdiv>\n\u003C\u002Fsection>\n\n    \n    \u003Csection class=\"pt-40 pb-40\">\n        \u003Cdiv class=\"container\">\n            \u003Csection class=\"about-area about-p pt-120 pb-120 p-relative fix\">\n    \u003Cdiv class=\"container\">\n        \u003Cdiv class=\"row flex-row-reverse justify-content-center align-items-center\">\n            \n            \u003Cdiv class=\"col-xxl-5 col-xl-12 col-lg-12\">\n                \u003Cdiv class=\"about-content s-about-content wow fadeInRight animated\" data-animation=\"fadeInRight\" data-delay=\".4s\" style=\"visibility: visible; animation-name: fadeInRight;\">\n                    \u003Cdiv class=\"about-title second-title pb-25\">\n                        \u003Ch1>Welcome back\u003C\u002Fh1>\n                    \u003C\u002Fdiv>\n                    \u003Cdiv class=\"form-border-box\">\n                        \u003Cform method=\"POST\" action=\"http:\u002F\u002Fanduongliving.test\u002Flogin\" accept-charset=\"UTF-8\" id=\"botble-hotel-forms-fronts-auth-login-form\" class=\"js-base-form auth-form dirty-check\" icon=\"ti ti-lock\" heading=\"Ðang nh?p vào tài kho?n c?a b?n\" description=\"D? li?u cá nhân c?a b?n s? du?c s? d?ng d? h? tr? tr?i nghi?m c?a b?n trên trang web này, d? qu?n lý quy?n truy c?p vào tài kho?n c?a b?n.\">\u003Cinput name=\"_token\" type=\"hidden\" value=\"TtNwmlcEl2ZTSxMH6IhsYVbSuCxG0dAhgAuh99Y6\">\n\n    \n\n            \n        \n            \n        \u003Cdiv class=\"mb-3 position-relative\" >\n    \n            \u003Clabel class=\"form-label form-label required\" for=\"email\">\n    Email\n\n    \n    \u003C\u002Flabel>\n    \n            \u003Cdiv class=\"position-relative\">\u003Cspan class=\"auth-input-icon input-group-text\">\u003Csvg class=\"icon svg-icon-ti-ti-mail\"\n  xmlns=\"http:\u002F\u002Fwww.w3.org\u002F2000\u002Fsvg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  \u003Cpath d=\"M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z\" \u002F>\n  \u003Cpath d=\"M3 7l9 6l9 -6\" \u002F>\n\u003C\u002Fsvg>\u003C\u002Fspan>\n    \n    \u003Cinput class=\"form-control ps-5\" data-counter=\"60\" placeholder=\"Ví d?: example@gmail.com\" autocomplete=\"email\" required=\"required\" name=\"email\" type=\"email\" id=\"email\">\n\n            \u003C\u002Fdiv>\n    \n    \n\n            \u003C\u002Fdiv>\n    \n\n            \n        \u003Cdiv class=\"mb-3 position-relative\" >\n    \n            \u003Clabel class=\"form-label\" for=\"password\">\n    M?t kh?u\n\n    \n    \u003C\u002Flabel>\n    \n            \u003Cdiv class=\"position-relative\">\u003Cspan class=\"auth-input-icon input-group-text\">\u003Csvg class=\"icon svg-icon-ti-ti-lock\"\n  xmlns=\"http:\u002F\u002Fwww.w3.org\u002F2000\u002Fsvg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  \u003Cpath d=\"M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z\" \u002F>\n  \u003Cpath d=\"M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0\" \u002F>\n  \u003Cpath d=\"M8 11v-4a4 4 0 1 1 8 0v4\" \u002F>\n\u003C\u002Fsvg>\u003C\u002Fspan>\n    \n    \u003Cdiv class=\"input-group\">\n        \u003Cinput\n            type=\"password\"\n            name=\"password\"\n            id=\"password\"\n            value=\"\"\n             class=\"form-control ps-5\" data-counter=\"250\" placeholder=\"M?t kh?u\"\n            data-bb-password\n        >\n        \u003Cspan\n            class=\"input-password-toggle\"\n            data-bb-toggle-password\n        >\n            \u003Csvg class=\"icon svg-icon-ti-ti-eye\"\n  xmlns=\"http:\u002F\u002Fwww.w3.org\u002F2000\u002Fsvg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  \u003Cpath d=\"M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0\" \u002F>\n  \u003Cpath d=\"M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6\" \u002F>\n\u003C\u002Fsvg>        \u003C\u002Fspan>\n    \u003C\u002Fdiv>\n\n            \u003C\u002Fdiv>\n    \n    \n\n            \u003C\u002Fdiv>\n    \n    \n    .input-password-toggle {\n        position: absolute;\n        right: 0;\n        top: 0;\n        cursor: pointer;\n        padding: 10px 15px;\n        z-index: 9;\n        height: 100%;\n        display: inline-flex;\n        align-items: center;\n    }\n\n    input[data-bb-password]:valid,\n    input[data-bb-password].is-valid {\n        background-image: unset;\n    }\n\n    body[dir=\"rtl\"] .input-password-toggle {\n        right: unset;\n        left: 0;\n    }\n\u003C\u002Fstyle>\n\n\n\n\n            \n        \u003Cdiv class=\"row g-0 mb-3\">\n\n    \n    \n\n    \n\n            \n        \u003Cdiv class=\"col-6\" >\n    \n\n    \n    \u003Cinput\n        type=\"hidden\"\n        name=\"remember\"\n        value=\"0\"\n    >\n\n    \u003Clabel  class=\"form-check\">\n    \u003Cinput\n        type=\"checkbox\" id=\"remember_dc3c99bb4e249a95567a2bf7d5f327ed\" name=\"remember\" class=\"form-check-input\"\n        value=\"1\"\n            >\n\n            \u003Cspan class=\"form-check-label\">\n            Ghi nh? dang nh?p\n        \u003C\u002Fspan>\n    \n    \u003C\u002Flabel>\n\n    \n    \n\n            \u003C\u002Fdiv>\n    \n\n            \n        \u003Cdiv class=\"col-6 text-end\" >\n    \n\n    \n    \u003Ca href=\"http:\u002F\u002Fanduongliving.test\u002Fpassword\u002Frequest\" class=\"text-decoration-underline\">Qu&ecirc;n m?t kh?u?\u003C\u002Fa>\n\n    \n    \n\n            \u003C\u002Fdiv>\n    \n\n            \n        \u003C\u002Fdiv>\n\n    \n    \n\n    \n\n            \n        \u003Cdiv class=\"d-grid\">\n\n    \n    \n\n    \n\n            \n        \n            \n        \u003Cbutton class=\"btn btn-primary btn-auth-submit\" type=\"submit\">Ðang nh?p \u003Csvg class=\"icon svg-icon-ti-ti-arrow-narrow-right\"\n  xmlns=\"http:\u002F\u002Fwww.w3.org\u002F2000\u002Fsvg\"\n  width=\"24\"\n  height=\"24\"\n  viewBox=\"0 0 24 24\"\n  fill=\"none\"\n  stroke=\"currentColor\"\n  stroke-width=\"2\"\n  stroke-linecap=\"round\"\n  stroke-linejoin=\"round\"\n>\n  \u003Cpath d=\"M5 12l14 0\" \u002F>\n  \u003Cpath d=\"M15 16l4 -4\" \u002F>\n  \u003Cpath d=\"M15 8l4 4\" \u002F>\n\u003C\u002Fsvg>\u003C\u002Fbutton>\n\n\n            \n        \u003C\u002Fdiv>\n\n    \n    \n\n    \n\n            \n        \u003Cdiv class=\"mt-3 text-center\">B?n chua có tài kho?n? \u003Ca href=\"http:\u002F\u002Fanduongliving.test\u002Fregister\" class=\"text-decoration-underline\">Ðang ký ngay\u003C\u002Fa>\u003C\u002Fdiv>\n\n    \n    \n\n    \n\n            \n        \n            \n        \n    \n    \n\n    \u003C\u002Fform>\n\n    \n                    \u003C\u002Fdiv>\n                \u003C\u002Fdiv>\n                \u003Cdiv class=\"col-lg-12 mt-20\">\n                    \u003Cspan class=\"color-grey-500 d-inline-block align-middle font-sm\">\n                        Don’t have an account?\n                    \u003C\u002Fspan>\n                    \u003Ca class=\"d-inline-block align-middle color-success ms-1 custom-register-label\" href=\"http:\u002F\u002Fanduongliving.test\u002Fregister\">Sign up now\u003C\u002Fa>\n                \u003C\u002Fdiv>\n            \u003C\u002Fdiv>\n        \u003C\u002Fdiv>\n    \u003C\u002Fdiv>\n\u003C\u002Fsection>\n\n        \u003C\u002Fdiv>\n    \u003C\u002Fsection>",{"social_links":131,"locale":8,"site_title":15,"logo":132,"logo_url":133,"breadcrumb_background_image":15,"breadcrumb_background_image_url":16,"background_footer":15,"background_footer_url":16,"header_top_enabled":134,"header_sticky_enabled":135,"header_button_label":15,"header_button_url":15,"opening_hours":15,"hotline":15,"email":15},[],"logo\u002Fnew-project.png","http:\u002F\u002Fanduongliving.test\u002Fstorage\u002Flogo\u002Fnew-project.png","1","yes",{"social_links":137,"locale":8,"site_title":15,"logo":132,"logo_url":133,"breadcrumb_background_image":15,"breadcrumb_background_image_url":16,"background_footer":15,"background_footer_url":16,"header_top_enabled":134,"header_sticky_enabled":135,"header_button_label":15,"header_button_url":15,"opening_hours":15,"hotline":15,"email":15},[],{"social_links":139,"locale":8,"site_title":15,"logo":132,"logo_url":133,"breadcrumb_background_image":15,"breadcrumb_background_image_url":16,"background_footer":15,"background_footer_url":16,"header_top_enabled":134,"header_sticky_enabled":135,"header_button_label":15,"header_button_url":15,"opening_hours":15,"hotline":15,"email":15},[],{"currencies":141,"customer":151},[142,145,148],{"title":143,"href":144,"active":31},"VND","http:\u002F\u002F127.0.0.1:8000\u002Fcurrency\u002Fswitch\u002FVND",{"title":146,"href":147,"active":31},"EUR","http:\u002F\u002F127.0.0.1:8000\u002Fcurrency\u002Fswitch\u002FEUR",{"title":149,"href":150,"active":18},"USD","http:\u002F\u002F127.0.0.1:8000\u002Fcurrency\u002Fswitch\u002FUSD",{"authenticated":31,"name":16,"avatarUrl":16,"overviewUrl":152,"loginUrl":153,"registerUrl":154,"logoutUrl":155},"http:\u002F\u002Fanduongliving.test\u002Fcustomer\u002Foverview","\u002Flogin","\u002Fregister","http:\u002F\u002Fanduongliving.test\u002Fcustomer\u002Flogout",{"currencies":157,"customer":161},[158,159,160],{"title":143,"href":144,"active":31},{"title":146,"href":147,"active":31},{"title":149,"href":150,"active":18},{"authenticated":31,"name":16,"avatarUrl":16,"overviewUrl":152,"loginUrl":153,"registerUrl":154,"logoutUrl":155},{"sidebar_id":163,"lang":8,"locale":8,"items":164},"footer_sidebar",[165,174,204,228],{"id":166,"widget_id":167,"sidebar_id":163,"position":17,"data":168,"lang":172,"rendered_html":173},83,"ContactInformationMenuWidget",{"id":167,"phone_number":169,"email":170,"address":171},"0989692323","Vnsgroup.vns@gmail.com","104\u002F54 du?ng Lê Quang Ð?o, Phu?ng T? Liêm, Thành ph? Hà N?i, Vi?t Nam ","vi_VN","\u003Cdiv class=\"col-xl-4 col-lg-4 col-sm-6\">\n    \u003Cdiv class=\"footer-widget mb-30\">\n                    \u003Cdiv class=\"f-widget-title mb-30\">\n                \u003Cimg src=\"http:\u002F\u002Fanduongliving.test\u002Fstorage\u002Flogo\u002Fnew-project.png\" alt=\"\">\n            \u003C\u002Fdiv>\n                \u003Cdiv class=\"f-contact\">\n            \u003Cul>\n                                    \u003Cli>\n                        \u003Ci class=\"icon fal fa-phone\">\u003C\u002Fi>\n                        \u003Cspan>0989692323\u003C\u002Fspan>\n                    \u003C\u002Fli>\n                \n                                    \u003Cli>\n                        \u003Ci class=\"icon fal fa-envelope\">\u003C\u002Fi>\n                        \u003Cspan>Vnsgroup.vns@gmail.com\u003C\u002Fspan>\n                    \u003C\u002Fli>\n                \n                                    \u003Cli>\n                        \u003Ci class=\"icon fal fa-map-marker-check\">\u003C\u002Fi>\n                        \u003Cspan>104\u002F54 du?ng Lê Quang Ð?o, Phu?ng T? Liêm, Thành ph? Hà N?i, Vi?t Nam \u003C\u002Fspan>\n                    \u003C\u002Fli>\n                            \u003C\u002Ful>\n\n        \u003C\u002Fdiv>\n    \u003C\u002Fdiv>\n\u003C\u002Fdiv>\n",{"id":175,"widget_id":176,"sidebar_id":163,"position":177,"data":178,"lang":172,"menu_data":181,"rendered_html":203},84,"CustomMenuWidget",1,{"id":176,"name":179,"menu_id":180},"Liên k?t","our-links-vi",{"id":182,"name":183,"slug":180,"location":16,"nodes":184},6,"Our Links",[185,189,192,198],{"id":186,"menu_id":182,"parent_id":17,"title":187,"url":85,"icon":16,"target":14,"position":17,"has_children":31,"children":188},63,"V? chúng tôi",[],{"id":190,"menu_id":182,"parent_id":17,"title":22,"url":23,"icon":16,"target":14,"position":177,"has_children":31,"children":191},64,[],{"id":193,"menu_id":182,"parent_id":17,"title":194,"url":195,"icon":16,"target":14,"position":196,"has_children":31,"children":197},65,"Liên h? v?i chúng tôi","http:\u002F\u002Fanduongliving.test\u002Fcontact-us",2,[],{"id":199,"menu_id":182,"parent_id":17,"title":52,"url":200,"icon":16,"target":14,"position":201,"has_children":31,"children":202},66,"http:\u002F\u002Fanduongliving.test\u002Fblog",3,[],"\u003Cdiv class=\"col-xl-2 col-lg-2 col-sm-6\">\n    \u003Cdiv class=\"footer-widget mb-30\">\n        \u003Cdiv class=\"f-widget-title\">\n            \u003Ch2>Liên k?t\u003C\u002Fh2>\n        \u003C\u002Fdiv>\n        \u003Cdiv class=\"footer-link\">\n            \u003Cul >\n            \u003Cli>\n            \u003Ca target=\"_self\" class=\"font-sm color-grey-200\" href=\"http:\u002F\u002Fanduongliving.test\u002Fabout-us\">V? chúng tôi\u003C\u002Fa>\n        \u003C\u002Fli>\n            \u003Cli>\n            \u003Ca target=\"_self\" class=\"font-sm color-grey-200\" href=\"http:\u002F\u002Fanduongliving.test\u002Fservices\">D?ch v?\u003C\u002Fa>\n        \u003C\u002Fli>\n            \u003Cli>\n            \u003Ca target=\"_self\" class=\"font-sm color-grey-200\" href=\"http:\u002F\u002Fanduongliving.test\u002Fcontact-us\">Liên h? v?i chúng tôi\u003C\u002Fa>\n        \u003C\u002Fli>\n            \u003Cli>\n            \u003Ca target=\"_self\" class=\"font-sm color-grey-200\" href=\"http:\u002F\u002Fanduongliving.test\u002Fblog\">Bài vi?t\u003C\u002Fa>\n        \u003C\u002Fli>\n    \u003C\u002Ful>\n\n        \u003C\u002Fdiv>\n    \u003C\u002Fdiv>\n\u003C\u002Fdiv>\n",{"id":205,"widget_id":176,"sidebar_id":163,"position":196,"data":206,"lang":172,"menu_data":208,"rendered_html":227},85,{"id":176,"name":22,"menu_id":207},"our-services-vi",{"id":209,"name":210,"slug":207,"location":16,"nodes":211},7,"Our Services",[212,217,222],{"id":213,"menu_id":209,"parent_id":17,"title":214,"url":215,"icon":16,"target":14,"position":17,"has_children":31,"children":216},67,"Câu h?i thu?ng g?p","http:\u002F\u002Fanduongliving.test\u002Ffaq",[],{"id":218,"menu_id":209,"parent_id":17,"title":219,"url":220,"icon":16,"target":14,"position":177,"has_children":31,"children":221},69,"Riêng tu","http:\u002F\u002Fanduongliving.test\u002Fprivacy",[],{"id":223,"menu_id":209,"parent_id":17,"title":224,"url":225,"icon":16,"target":14,"position":196,"has_children":31,"children":226},70,"Ði?u kho?n & Ði?u ki?n","http:\u002F\u002Fanduongliving.test\u002Fterm-and-conditions",[],"\u003Cdiv class=\"col-xl-2 col-lg-2 col-sm-6\">\n    \u003Cdiv class=\"footer-widget mb-30\">\n        \u003Cdiv class=\"f-widget-title\">\n            \u003Ch2>D?ch v?\u003C\u002Fh2>\n        \u003C\u002Fdiv>\n        \u003Cdiv class=\"footer-link\">\n            \u003Cul >\n            \u003Cli>\n            \u003Ca target=\"_self\" class=\"font-sm color-grey-200\" href=\"http:\u002F\u002Fanduongliving.test\u002Ffaq\">Câu h?i thu?ng g?p\u003C\u002Fa>\n        \u003C\u002Fli>\n            \u003Cli>\n            \u003Ca target=\"_self\" class=\"font-sm color-grey-200\" href=\"http:\u002F\u002Fanduongliving.test\u002Fprivacy\">Riêng tu\u003C\u002Fa>\n        \u003C\u002Fli>\n            \u003Cli>\n            \u003Ca target=\"_self\" class=\"font-sm color-grey-200\" href=\"http:\u002F\u002Fanduongliving.test\u002Fterm-and-conditions\">Ði?u kho?n &amp; Ði?u ki?n\u003C\u002Fa>\n        \u003C\u002Fli>\n    \u003C\u002Ful>\n\n        \u003C\u002Fdiv>\n    \u003C\u002Fdiv>\n\u003C\u002Fdiv>\n",{"id":229,"widget_id":230,"sidebar_id":163,"position":201,"data":231,"lang":172,"rendered_html":233,"meta":234},86,"NewsletterWidget",{"id":230,"title":232},"Ðang ký nh?n b?n tin","\u003Cdiv class=\"col-xl-4 col-lg-4 col-sm-6\">\n        \u003Cdiv class=\"footer-widget mb-30\">\n                            \u003Cdiv class=\"f-widget-title\">\n                    \u003Ch2>Ðang ký nh?n b?n tin\u003C\u002Fh2>\n                \u003C\u002Fdiv>\n            \n            \u003Cdiv class=\"footer-link\" dir=\"ltr\">\n                \u003Cdiv class=\"subricbe p-relative form-newsletter\" data-animation=\"fadeInDown\" data-delay=\".4s\" >\n                    \u003Cform method=\"POST\" action=\"http:\u002F\u002Fanduongliving.test\u002Fnewsletter\u002Fsubscribe\" accept-charset=\"UTF-8\" id=\"botble-newsletter-forms-fronts-newsletter-form\" class=\"subscribe-form dirty-check\">\u003Cinput name=\"_token\" type=\"hidden\">\n\n    \n\n            \n        \n            \n        \u003Cdiv class=\"input-group mb-3\">\n\n    \n    \n\n    \n\n            \n        \u003Cinput class=\"form-control\" placeholder=\"Nh?p email c?a b?n\" id=\"newsletter-email\" required=\"required\" name=\"email\" type=\"email\">\n\n    \n    \n\n    \n\n            \n        \n            \n        \u003C\u002Fdiv>\n\n    \n    \n\n    \n\n            \n        \u003Cdiv class=\"newsletter-message newsletter-success-message\" style=\"display: none\">\u003C\u002Fdiv>\n    \u003Cdiv class=\"newsletter-message newsletter-error-message\" style=\"display: none\">\u003C\u002Fdiv>\n\n    \n    \n\n    \n\n            \n        \n            \n        \u003Cbutton class=\"btn header-btn\" type=\"submit\">\u003Ci class=\"fas fa-location-arrow\">\u003C\u002Fi>\u003C\u002Fbutton>\n\n\n    \n    \n\n    \u003C\u002Fform>\n\n    \n                \u003C\u002Fdiv>\n            \u003C\u002Fdiv>\n\n        \u003C\u002Fdiv>\n    \u003C\u002Fdiv>\n",{"action_url":235},"http:\u002F\u002Fanduongliving.test\u002Fnewsletter\u002Fsubscribe",["Reactive",237],{"$scolor-mode":238,"$si18n:cached-locale-configs":240,"$si18n:resolved-locale":15},{"preference":239,"value":239,"unknown":18,"forced":31},"system",{"vi":241,"en":243,"ja":245},{"fallbacks":242,"cacheable":18},[8],{"fallbacks":244,"cacheable":18},[],{"fallbacks":246,"cacheable":18},[],["Set"],["ShallowReactive",249],{"header-top-theme-options-default-vi":-1,"main-menu-vi":-1,"customer-login-page":-1,"theme-options-header-vi":-1,"footer-theme-options-vi":-1,"header-top-extras-default-vi":-1,"theme-header-extras-header-vi":-1,"footer-sidebar-vi":-1},["Reactive",251],{}]</script></body></html>
+

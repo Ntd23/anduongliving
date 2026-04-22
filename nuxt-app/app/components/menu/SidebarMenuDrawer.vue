@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { useMenu } from "~/composables/useMenu";
+import type { ThemeCurrencyLink, ThemeCustomerBlock } from "~/composables/useHeaderExtras";
 import { useThemeOptions, type ThemeSocialLink } from "~/composables/useThemeOptions";
 import { CMS_SIDEBAR_MENU_TOKEN, cmsAppRoutes } from "~~/shared/cms-routing";
 
 const props = defineProps<{
   open: boolean;
+  currencies?: ThemeCurrencyLink[];
+  customer?: ThemeCustomerBlock | null;
 }>();
 
 const emit = defineEmits<{
@@ -53,6 +56,17 @@ const hotline = computed(() => themeOptions.value?.hotline?.trim() || "");
 const email = computed(() => themeOptions.value?.email?.trim() || "");
 const socialLinks = computed<ThemeSocialLink[]>(() =>
   Array.isArray(themeOptions.value?.social_links) ? themeOptions.value.social_links : [],
+);
+const currencies = computed(() => props.currencies || []);
+const customer = computed(() => props.customer || null);
+const loginTo = computed(() =>
+  customer.value?.loginUrl?.startsWith("/") ? localePath(customer.value.loginUrl) : null,
+);
+const registerTo = computed(() =>
+  customer.value?.registerUrl?.startsWith("/") ? localePath(customer.value.registerUrl) : null,
+);
+const overviewTo = computed(() =>
+  customer.value?.overviewUrl?.startsWith("/") ? localePath(customer.value.overviewUrl) : null,
 );
 
 const socialIconMap: Record<string, string> = {
@@ -186,10 +200,73 @@ onBeforeUnmount(() => {
           Sidebar menu has no items yet.
         </p>
 
+        <div v-if="customer?.authenticated || customer?.loginUrl || customer?.registerUrl" class="sidebar-menu-drawer__account">
+          <NuxtLink
+            v-if="customer?.authenticated && overviewTo"
+            :to="overviewTo"
+            class="sidebar-menu-drawer__account-link"
+            @click="closeDrawer"
+          >
+            <img
+              v-if="customer.avatarUrl"
+              :src="customer.avatarUrl"
+              :alt="customer.name || 'Customer avatar'"
+              class="sidebar-menu-drawer__account-avatar"
+            >
+            <Icon v-else name="ph:user-circle-fill" class="sidebar-menu-drawer__account-icon" />
+            <span>{{ customer.name || 'My account' }}</span>
+          </NuxtLink>
+          <a
+            v-else-if="customer?.authenticated && customer.overviewUrl"
+            :href="customer.overviewUrl"
+            class="sidebar-menu-drawer__account-link"
+          >
+            <img
+              v-if="customer.avatarUrl"
+              :src="customer.avatarUrl"
+              :alt="customer.name || 'Customer avatar'"
+              class="sidebar-menu-drawer__account-avatar"
+            >
+            <Icon v-else name="ph:user-circle-fill" class="sidebar-menu-drawer__account-icon" />
+            <span>{{ customer.name || 'My account' }}</span>
+          </a>
+
+          <div v-else class="sidebar-menu-drawer__account-links">
+            <NuxtLink v-if="loginTo" :to="loginTo" class="sidebar-menu-drawer__account-link" @click="closeDrawer">
+              <Icon name="ph:sign-in" class="sidebar-menu-drawer__account-icon" />
+              <span>Login</span>
+            </NuxtLink>
+            <a v-else-if="customer?.loginUrl" :href="customer.loginUrl" class="sidebar-menu-drawer__account-link">
+              <Icon name="ph:sign-in" class="sidebar-menu-drawer__account-icon" />
+              <span>Login</span>
+            </a>
+            <NuxtLink v-if="registerTo" :to="registerTo" class="sidebar-menu-drawer__account-link" @click="closeDrawer">
+              <Icon name="ph:user-plus" class="sidebar-menu-drawer__account-icon" />
+              <span>Register</span>
+            </NuxtLink>
+            <a v-else-if="customer?.registerUrl" :href="customer.registerUrl" class="sidebar-menu-drawer__account-link">
+              <Icon name="ph:user-plus" class="sidebar-menu-drawer__account-icon" />
+              <span>Register</span>
+            </a>
+          </div>
+        </div>
+
         <div
-          v-if="hotline || email || socialLinks.length"
+          v-if="hotline || email || socialLinks.length || currencies.length || customer?.logoutUrl"
           class="sidebar-menu-drawer__footer"
         >
+          <div v-if="currencies.length" class="sidebar-menu-drawer__currencies">
+            <a
+              v-for="currency in currencies"
+              :key="currency.title"
+              :href="currency.href"
+              class="sidebar-menu-drawer__currency-link"
+              :class="{ 'sidebar-menu-drawer__currency-link--active': currency.active }"
+            >
+              {{ currency.title }}
+            </a>
+          </div>
+
           <div v-if="hotline || email" class="sidebar-menu-drawer__contact">
             <a v-if="hotline" :href="`tel:${hotline}`" class="sidebar-menu-drawer__contact-link">
               {{ hotline }}
@@ -198,6 +275,14 @@ onBeforeUnmount(() => {
               {{ email }}
             </a>
           </div>
+
+          <a
+            v-if="customer?.authenticated && customer.logoutUrl"
+            :href="customer.logoutUrl"
+            class="sidebar-menu-drawer__contact-link"
+          >
+            Logout
+          </a>
 
           <div v-if="socialLinks.length" class="sidebar-menu-drawer__socials">
             <a
@@ -320,11 +405,68 @@ onBeforeUnmount(() => {
   color: #efb4a8;
 }
 
+.sidebar-menu-drawer__account {
+  padding-top: 0.25rem;
+}
+
+.sidebar-menu-drawer__account-links {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sidebar-menu-drawer__account-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: rgba(255, 246, 232, 0.92);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.sidebar-menu-drawer__account-avatar {
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.sidebar-menu-drawer__account-icon {
+  font-size: 1.1rem;
+}
+
 .sidebar-menu-drawer__footer {
   display: grid;
   gap: 1rem;
   padding-top: 1.25rem;
   border-top: 1px solid rgba(255, 246, 232, 0.1);
+}
+
+.sidebar-menu-drawer__currencies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.sidebar-menu-drawer__currency-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0 0.8rem;
+  border: 1px solid rgba(255, 246, 232, 0.14);
+  border-radius: 999px;
+  color: rgba(255, 246, 232, 0.84);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.sidebar-menu-drawer__currency-link--active {
+  border-color: rgba(210, 175, 113, 0.42);
+  color: #e7d3b1;
 }
 
 .sidebar-menu-drawer__contact {

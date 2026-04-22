@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MobileMenuCollapse from "~/components/menu/MobileMenuCollapse.vue";
 import SidebarMenuDrawer from "~/components/menu/SidebarMenuDrawer.vue";
+import { useHeaderExtras } from "~/composables/useHeaderExtras";
 import { useMenu } from "~/composables/useMenu";
 import { useThemeOptions, type ThemeSocialLink } from "~/composables/useThemeOptions";
 import { CMS_MAIN_MENU_TOKEN, cmsAppRoutes } from "~~/shared/cms-routing";
@@ -37,6 +38,12 @@ const { data: themeOptions } = await useAsyncData(
   { watch: [activeLocale] },
 );
 
+const { data: headerExtras } = await useAsyncData(
+  () => `theme-header-extras-${props.variant}-${activeLocale.value}`,
+  () => useHeaderExtras(activeLocale.value),
+  { watch: [activeLocale] },
+);
+
 const menu = computed(() => data.value);
 const menuError = computed(() => {
   const statusMessage = error.value?.statusMessage || error.value?.message;
@@ -60,6 +67,8 @@ const brandLogo = computed(() => {
 const socialLinks = computed<ThemeSocialLink[]>(() =>
   Array.isArray(themeOptions.value?.social_links) ? themeOptions.value.social_links : [],
 );
+const currencies = computed(() => headerExtras.value?.currencies || []);
+const customer = computed(() => headerExtras.value?.customer || null);
 const headerButtonLabel = computed(() => themeOptions.value?.header_button_label?.trim() || "");
 const headerButtonUrl = computed(() => themeOptions.value?.header_button_url?.trim() || "");
 const showHeaderButton = computed(() =>
@@ -76,6 +85,15 @@ const wrapperClass = computed(() => {
 });
 const showMobileToggle = computed(() => props.variant === "header" || props.variant === "side");
 const showOffcanvasTrigger = computed(() => props.variant === "header" && props.fullWidth);
+const loginTo = computed(() =>
+  customer.value?.loginUrl?.startsWith("/") ? localePath(customer.value.loginUrl) : null,
+);
+const registerTo = computed(() =>
+  customer.value?.registerUrl?.startsWith("/") ? localePath(customer.value.registerUrl) : null,
+);
+const overviewTo = computed(() =>
+  customer.value?.overviewUrl?.startsWith("/") ? localePath(customer.value.overviewUrl) : null,
+);
 
 const socialIconMap: Record<string, string> = {
   facebook: "ph:facebook-logo-fill",
@@ -195,6 +213,44 @@ onBeforeUnmount(() => {
         </ul>
       </nav>
 
+      <div v-if="variant === 'side' && (customer?.authenticated || customer?.loginUrl || customer?.registerUrl)" class="main-navigation__side-account">
+        <NuxtLink
+          v-if="customer?.authenticated && overviewTo"
+          :to="overviewTo"
+          class="main-navigation__side-account-link"
+        >
+          <img
+            v-if="customer.avatarUrl"
+            :src="customer.avatarUrl"
+            :alt="customer.name || 'Customer avatar'"
+            class="main-navigation__side-account-avatar"
+          >
+          <Icon v-else name="ph:user-circle-fill" class="main-navigation__side-account-icon" />
+          <span>{{ customer.name || "My account" }}</span>
+        </NuxtLink>
+        <a
+          v-else-if="customer?.authenticated && customer.overviewUrl"
+          :href="customer.overviewUrl"
+          class="main-navigation__side-account-link"
+        >
+          <img
+            v-if="customer.avatarUrl"
+            :src="customer.avatarUrl"
+            :alt="customer.name || 'Customer avatar'"
+            class="main-navigation__side-account-avatar"
+          >
+          <Icon v-else name="ph:user-circle-fill" class="main-navigation__side-account-icon" />
+          <span>{{ customer.name || "My account" }}</span>
+        </a>
+
+        <div v-else class="main-navigation__side-account-links">
+          <NuxtLink v-if="loginTo" :to="loginTo" class="main-navigation__side-account-link">Login</NuxtLink>
+          <a v-else-if="customer?.loginUrl" :href="customer.loginUrl" class="main-navigation__side-account-link">Login</a>
+          <NuxtLink v-if="registerTo" :to="registerTo" class="main-navigation__side-account-link">Register</NuxtLink>
+          <a v-else-if="customer?.registerUrl" :href="customer.registerUrl" class="main-navigation__side-account-link">Register</a>
+        </div>
+      </div>
+
       <div class="main-navigation__actions">
         <a
           v-if="showHeaderButton"
@@ -231,6 +287,26 @@ onBeforeUnmount(() => {
         v-if="variant === 'side'"
         class="main-navigation__meta"
       >
+        <div v-if="currencies.length" class="main-navigation__currencies">
+          <a
+            v-for="currency in currencies"
+            :key="currency.title"
+            :href="currency.href"
+            class="main-navigation__currency-link"
+            :class="{ 'main-navigation__currency-link--active': currency.active }"
+          >
+            {{ currency.title }}
+          </a>
+        </div>
+
+        <a
+          v-if="customer?.authenticated && customer.logoutUrl"
+          :href="customer.logoutUrl"
+          class="main-navigation__logout-link"
+        >
+          Logout
+        </a>
+
         <div v-if="socialLinks.length" class="main-navigation__socials">
           <a
             v-for="social in socialLinks"
@@ -272,11 +348,15 @@ onBeforeUnmount(() => {
       :hotline="themeOptions?.hotline || null"
       :email="themeOptions?.email || null"
       :social-links="socialLinks"
+      :currencies="currencies"
+      :customer="customer"
     />
 
     <SidebarMenuDrawer
       v-if="showOffcanvasTrigger"
       v-model:open="sidebarMenuOpen"
+      :currencies="currencies"
+      :customer="customer"
     />
   </header>
 </template>
@@ -477,8 +557,69 @@ onBeforeUnmount(() => {
 .main-navigation__meta {
   margin-top: auto;
   width: 100%;
+  display: grid;
+  gap: 1rem;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(50, 35, 25, 0.08);
+}
+
+.main-navigation__side-account {
+  width: 100%;
+}
+
+.main-navigation__side-account-links {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.main-navigation__side-account-link,
+.main-navigation__logout-link,
+.main-navigation__currency-link {
+  color: var(--retreat-ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.main-navigation__side-account-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.main-navigation__side-account-avatar {
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.main-navigation__side-account-icon {
+  font-size: 1.15rem;
+}
+
+.main-navigation__currencies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.main-navigation__currency-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0 0.8rem;
+  border: 1px solid rgba(50, 35, 25, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 252, 247, 0.74);
+}
+
+.main-navigation__currency-link--active {
+  border-color: rgba(167, 122, 84, 0.28);
+  color: var(--retreat-clay);
 }
 
 .main-navigation__socials {

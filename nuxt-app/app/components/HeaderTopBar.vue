@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useHeaderExtras } from "~/composables/useHeaderExtras";
 import { useThemeOptions, type ThemeSocialLink } from "~/composables/useThemeOptions";
 
 const props = withDefaults(defineProps<{
@@ -8,12 +9,19 @@ const props = withDefaults(defineProps<{
 });
 
 const { locale, locales } = useI18n();
+const localePath = useLocalePath();
 
 const activeLocale = computed(() => locale.value);
 
 const { data: themeOptions } = await useAsyncData(
   () => `header-top-theme-options-${props.fullWidth ? "fluid" : "default"}-${activeLocale.value}`,
   () => useThemeOptions(activeLocale.value),
+  { watch: [activeLocale] },
+);
+
+const { data: headerExtras } = await useAsyncData(
+  () => `header-top-extras-${props.fullWidth ? "fluid" : "default"}-${activeLocale.value}`,
+  () => useHeaderExtras(activeLocale.value),
   { watch: [activeLocale] },
 );
 
@@ -35,6 +43,14 @@ const openingHours = computed(() => themeOptions.value?.opening_hours?.trim() ||
 const hotline = computed(() => themeOptions.value?.hotline?.trim() || "");
 const socialLinks = computed<ThemeSocialLink[]>(() =>
   Array.isArray(themeOptions.value?.social_links) ? themeOptions.value.social_links : [],
+);
+const currencies = computed(() => headerExtras.value?.currencies || []);
+const currentCurrency = computed(() => currencies.value.find((item) => item.active) || currencies.value[0] || null);
+const otherCurrencies = computed(() => currencies.value.filter((item) => !item.active));
+const customer = computed(() => headerExtras.value?.customer || null);
+const hasCurrencySwitcher = computed(() => currencies.value.length > 0);
+const hasCustomerBlock = computed(() =>
+  Boolean(customer.value?.authenticated || customer.value?.loginUrl || customer.value?.overviewUrl),
 );
 const hasLanguageSwitcher = computed(() => (locales.value || []).length > 1);
 const wrapperClass = computed(() =>
@@ -61,7 +77,26 @@ const resolveSocialIcon = (social: ThemeSocialLink) => {
 };
 
 const hasContent = computed(() =>
-  Boolean(openingHours.value || hotline.value || socialLinks.value.length || hasLanguageSwitcher.value),
+  Boolean(
+    openingHours.value ||
+    hotline.value ||
+    socialLinks.value.length ||
+    hasLanguageSwitcher.value ||
+    hasCurrencySwitcher.value ||
+    hasCustomerBlock.value,
+  ),
+);
+
+const loginTo = computed(() =>
+  customer.value?.loginUrl?.startsWith("/") ? localePath(customer.value.loginUrl) : null,
+);
+
+const registerTo = computed(() =>
+  customer.value?.registerUrl?.startsWith("/") ? localePath(customer.value.registerUrl) : null,
+);
+
+const overviewTo = computed(() =>
+  customer.value?.overviewUrl?.startsWith("/") ? localePath(customer.value.overviewUrl) : null,
 );
 </script>
 
@@ -82,6 +117,69 @@ const hasContent = computed(() =>
 
       <div class="header-top-bar__right">
         <LanguageSwitcher mode="inline" />
+
+        <div v-if="hasCurrencySwitcher" class="header-top-bar__currency">
+          <span class="header-top-bar__currency-current">{{ currentCurrency?.title }}</span>
+
+          <div v-if="otherCurrencies.length" class="header-top-bar__currency-list">
+            <a
+              v-for="currency in otherCurrencies"
+              :key="currency.title"
+              :href="currency.href"
+              class="header-top-bar__currency-link"
+            >
+              {{ currency.title }}
+            </a>
+          </div>
+        </div>
+
+        <div v-if="hasCustomerBlock" class="header-top-bar__account">
+          <NuxtLink
+            v-if="customer?.authenticated && overviewTo"
+            :to="overviewTo"
+            class="header-top-bar__account-link"
+          >
+            <img
+              v-if="customer.avatarUrl"
+              :src="customer.avatarUrl"
+              :alt="customer.name || 'Customer avatar'"
+              class="header-top-bar__account-avatar"
+            >
+            <Icon v-else name="ph:user-circle-fill" class="header-top-bar__account-icon" />
+            <span>{{ customer.name || "My account" }}</span>
+          </NuxtLink>
+          <a
+            v-else-if="customer?.authenticated && customer.overviewUrl"
+            :href="customer.overviewUrl"
+            class="header-top-bar__account-link"
+          >
+            <img
+              v-if="customer.avatarUrl"
+              :src="customer.avatarUrl"
+              :alt="customer.name || 'Customer avatar'"
+              class="header-top-bar__account-avatar"
+            >
+            <Icon v-else name="ph:user-circle-fill" class="header-top-bar__account-icon" />
+            <span>{{ customer.name || "My account" }}</span>
+          </a>
+
+          <div v-else class="header-top-bar__account-guest">
+            <NuxtLink v-if="loginTo" :to="loginTo" class="header-top-bar__account-link">
+              <Icon name="ph:sign-in" class="header-top-bar__account-icon" />
+              <span>Login</span>
+            </NuxtLink>
+            <a v-else-if="customer?.loginUrl" :href="customer.loginUrl" class="header-top-bar__account-link">
+              <Icon name="ph:sign-in" class="header-top-bar__account-icon" />
+              <span>Login</span>
+            </a>
+            <NuxtLink v-if="registerTo" :to="registerTo" class="header-top-bar__account-secondary">
+              Register
+            </NuxtLink>
+            <a v-else-if="customer?.registerUrl" :href="customer.registerUrl" class="header-top-bar__account-secondary">
+              Register
+            </a>
+          </div>
+        </div>
 
         <div v-if="socialLinks.length" class="header-top-bar__socials">
           <a
@@ -160,7 +258,10 @@ const hasContent = computed(() =>
 }
 
 .header-top-bar__item--link:hover,
-.header-top-bar__social-link:hover {
+.header-top-bar__social-link:hover,
+.header-top-bar__currency-link:hover,
+.header-top-bar__account-link:hover,
+.header-top-bar__account-secondary:hover {
   color: #d6c09b;
 }
 
@@ -173,6 +274,57 @@ const hasContent = computed(() =>
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+.header-top-bar__currency,
+.header-top-bar__account,
+.header-top-bar__account-guest {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.header-top-bar__currency {
+  padding-left: 0.4rem;
+  margin-left: 0.15rem;
+  border-left: 1px solid rgba(255, 249, 241, 0.12);
+}
+
+.header-top-bar__currency-current,
+.header-top-bar__currency-link,
+.header-top-bar__account-link,
+.header-top-bar__account-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.header-top-bar__currency-current {
+  color: #e3c8a8;
+}
+
+.header-top-bar__currency-list {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.header-top-bar__account-avatar {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.header-top-bar__account-icon {
+  font-size: 0.95rem;
 }
 
 .header-top-bar__social-link {

@@ -31,6 +31,8 @@ export const fetchCmsApi = async <T>(
       headers: {
         Accept: "application/json",
         "X-API-KEY": String(config.apiKey || ""),
+        cookie: getHeader(event, "cookie") || "",
+        "user-agent": getHeader(event, "user-agent") || "",
       },
     });
   } catch (error: any) {
