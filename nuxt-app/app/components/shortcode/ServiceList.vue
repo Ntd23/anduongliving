@@ -3,19 +3,72 @@ import { parseServiceListBlock, type ShortcodeBlock } from "~/utils/shortcode";
 import { useResolvedCmsLink } from "~/composables/useResolvedCmsLink";
 import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
+import { parseShortcodeAttributes } from "~/utils/shortcode/core";
 
 const props = defineProps<{ block: ShortcodeBlock }>();
 const section = computed(() => parseServiceListBlock(props.block.raw));
+const rawAttributes = computed(() => parseShortcodeAttributes(props.block.raw));
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 const resolveLink = useResolvedCmsLink();
 const resolveAsset = useResolvedCmsAsset();
+
+const sectionBackgroundSrc = computed(() =>
+  section.value.backgroundImage?.src || rawAttributes.value.background_image?.trim() || null,
+);
+
+const sectionStyle = computed(() =>
+  sectionBackgroundSrc.value
+    ? {
+        backgroundImage: `linear-gradient(180deg, rgba(250, 245, 238, 0.84), rgba(241, 231, 217, 0.9)), url(${resolveAsset(sectionBackgroundSrc.value) || sectionBackgroundSrc.value})`,
+      }
+    : {},
+);
+
+const resolveServiceLink = (href?: string | null) => {
+  return resolveLink(href);
+};
 </script>
 
 <template>
-  <section v-if="section.items.length" class="shortcode-service-list-native">
+  <section v-if="section.items.length" class="shortcode-service-list-native" :style="sectionStyle">
     <div class="container service-list-grid">
       <article v-for="item in section.items" :key="item.title" class="service-list-card">
+        <NuxtLink
+          v-if="item.image?.src && resolveServiceLink(item.href)?.isInternal"
+          :to="resolveServiceLink(item.href)!.href"
+          class="service-list-card__media-link"
+          :aria-label="item.title"
+        >
+          <div
+            class="service-list-card__media"
+            :style="{ backgroundImage: `url(${resolveAsset(item.image.src) || item.image.src})` }"
+          >
+            <img
+              :src="resolveAsset(item.image.src) || item.image.src"
+              :alt="item.image.alt || item.title"
+              class="service-list-card__image"
+            >
+          </div>
+        </NuxtLink>
+        <a
+          v-else-if="item.image?.src && resolveServiceLink(item.href)"
+          :href="resolveServiceLink(item.href)!.href"
+          class="service-list-card__media-link"
+          :aria-label="item.title"
+        >
+          <div
+            class="service-list-card__media"
+            :style="{ backgroundImage: `url(${resolveAsset(item.image.src) || item.image.src})` }"
+          >
+            <img
+              :src="resolveAsset(item.image.src) || item.image.src"
+              :alt="item.image.alt || item.title"
+              class="service-list-card__image"
+            >
+          </div>
+        </a>
         <div
+          v-else
           class="service-list-card__media"
           :style="item.image?.src ? { backgroundImage: `url(${resolveAsset(item.image.src) || item.image.src})` } : undefined"
         >
@@ -32,13 +85,13 @@ const resolveAsset = useResolvedCmsAsset();
           <p v-if="item.description" class="service-list-card__description">{{ item.description }}</p>
 
           <NuxtLink
-            v-if="item.href && resolveLink(item.href)?.isInternal"
-            :to="resolveLink(item.href)!.href"
+            v-if="resolveServiceLink(item.href)?.isInternal"
+            :to="resolveServiceLink(item.href)!.href"
             class="service-list-card__link"
           >
             {{ item.actionLabel || "Read more" }}
           </NuxtLink>
-          <a v-else-if="item.href" :href="item.href" class="service-list-card__link">
+          <a v-else-if="resolveServiceLink(item.href)" :href="resolveServiceLink(item.href)!.href" class="service-list-card__link">
             {{ item.actionLabel || "Read more" }}
           </a>
         </div>
@@ -53,10 +106,17 @@ const resolveAsset = useResolvedCmsAsset();
 
 <style scoped>
 .shortcode-service-list-native {
+  position: relative;
   padding: clamp(4rem, 8vw, 7rem) 0;
   background: linear-gradient(180deg, #faf5ee, #f1e7d9);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
 }
 .service-list-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 1.5rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -76,6 +136,12 @@ const resolveAsset = useResolvedCmsAsset();
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  transition: transform 0.45s ease;
+}
+.service-list-card__media-link {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 .service-list-card__media::after {
   content: "";
@@ -89,6 +155,10 @@ const resolveAsset = useResolvedCmsAsset();
   width: 0;
   height: 0;
   opacity: 0;
+}
+.service-list-card:hover .service-list-card__media {
+  transform: scale(1.03);
+  transition: transform 0.45s ease;
 }
 .service-list-card__body {
   position: relative;

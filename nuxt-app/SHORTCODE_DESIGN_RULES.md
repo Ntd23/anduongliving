@@ -184,9 +184,9 @@ Rule giao việc:
 
 ### Ưu tiên cao - đang có lỗi hoặc cần làm lại sớm
 - [ ] `SimpleSlider.vue`
-- [ ] `CuisineShowcase.vue`
-- [ ] `ForestFacilityShowcase.vue`
-- [ ] `BlogPosts.vue`
+- [x] `CuisineShowcase.vue`
+- [x] `ForestFacilityShowcase.vue`
+- [x] `BlogPosts.vue`
 - [ ] `ServiceList.vue`
 - [ ] `Pricing.vue`
 - [ ] `Services.vue`

@@ -3,12 +3,31 @@ import { parseBlogPostsBlock, type ShortcodeBlock } from "~/utils/shortcode";
 import { useResolvedCmsLink } from "~/composables/useResolvedCmsLink";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
+import { normalizeCmsInternalPath } from "~~/shared/cms-routing";
 
 const props = defineProps<{ block: ShortcodeBlock }>();
 const section = computed(() => parseBlogPostsBlock(props.block.raw));
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 const resolveLink = useResolvedCmsLink();
 const resolveAsset = useResolvedCmsAsset();
+
+const resolvePostLink = (href?: string | null) => {
+  const resolved = resolveLink(href);
+
+  if (!resolved) {
+    return null;
+  }
+
+  if (!resolved.isInternal) {
+    return resolved;
+  }
+
+  return resolveLink(
+    normalizeCmsInternalPath(resolved.href, {
+      referenceType: "Post",
+    }),
+  );
+};
 </script>
 
 <template>
@@ -16,8 +35,32 @@ const resolveAsset = useResolvedCmsAsset();
     <div class="container blog-posts-shell">
       <div class="blog-posts-grid">
         <article v-for="item in section.items" :key="item.title" class="blog-posts-card">
+          <NuxtLink
+            v-if="item.image?.src && resolvePostLink(item.href)?.isInternal"
+            :to="resolvePostLink(item.href)!.href"
+            class="blog-posts-card__media-link"
+            :aria-label="item.title"
+          >
+            <img
+              :src="resolveAsset(item.image.src) || item.image.src"
+              :alt="item.image.alt || item.title"
+              class="blog-posts-card__image"
+            >
+          </NuxtLink>
+          <a
+            v-else-if="item.image?.src && resolvePostLink(item.href)"
+            :href="resolvePostLink(item.href)!.href"
+            class="blog-posts-card__media-link"
+            :aria-label="item.title"
+          >
+            <img
+              :src="resolveAsset(item.image.src) || item.image.src"
+              :alt="item.image.alt || item.title"
+              class="blog-posts-card__image"
+            >
+          </a>
           <img
-            v-if="item.image?.src"
+            v-else-if="item.image?.src"
             :src="resolveAsset(item.image.src) || item.image.src"
             :alt="item.image.alt || item.title"
             class="blog-posts-card__image"
@@ -28,13 +71,13 @@ const resolveAsset = useResolvedCmsAsset();
             <p v-if="item.description" class="blog-posts-card__description">{{ item.description }}</p>
 
             <NuxtLink
-              v-if="item.href && resolveLink(item.href)?.isInternal"
-              :to="resolveLink(item.href)!.href"
+              v-if="resolvePostLink(item.href)?.isInternal"
+              :to="resolvePostLink(item.href)!.href"
               class="blog-posts-card__link"
             >
               {{ item.actionLabel || "Read more" }}
             </NuxtLink>
-            <a v-else-if="item.href" :href="item.href" class="blog-posts-card__link">
+            <a v-else-if="resolvePostLink(item.href)" :href="resolvePostLink(item.href)!.href" class="blog-posts-card__link">
               {{ item.actionLabel || "Read more" }}
             </a>
           </div>
@@ -74,11 +117,21 @@ const resolveAsset = useResolvedCmsAsset();
   box-shadow: 0 18px 44px rgba(48, 35, 27, 0.08);
 }
 
+.blog-posts-card__media-link {
+  display: block;
+  overflow: hidden;
+}
+
 .blog-posts-card__image {
   width: 100%;
   aspect-ratio: 16 / 10;
   display: block;
   object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+.blog-posts-card__media-link:hover .blog-posts-card__image {
+  transform: scale(1.03);
 }
 
 .blog-posts-card__body {

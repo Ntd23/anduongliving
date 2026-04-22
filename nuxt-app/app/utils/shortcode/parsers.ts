@@ -583,6 +583,7 @@ export const parseLocationTourismShowcaseBlock = (html: string): LocationTourism
 };
 
 export const parseCuisineShowcaseBlock = (html: string): CuisineShowcaseSectionData => {
+  const attributes = parseShortcodeAttributes(html);
   const section = extractFirstBlockByClass(html, "section", "shortcode-cuisine-showcase") || html;
   const titleBlock = extractFirstBlockByClass(section, "div", "cuisine__copy") || section;
   const imagesBlock = extractFirstBlockByClass(section, "div", "cuisine__images") || section;
@@ -592,27 +593,49 @@ export const parseCuisineShowcaseBlock = (html: string): CuisineShowcaseSectionD
   const labelTag = extractFirstTag(footerBlock || section, "span", "cuisine__label")
     || extractFirstTag(footerBlock || section, "div", "cuisine__label");
   const sectionParagraphs = extractParagraphTexts(titleBlock);
+  const footerAction = buildAction(extractLinks(footerBlock || "")[0]);
+  const buttonLabel = normalizeText(attributes.button_label || "");
+  const buttonUrl = normalizeText(attributes.button_url || "");
+  const descriptionFromAttributes = normalizeText((attributes.description || "").replace(/\{\{NEWLINE\}\}/g, "\n"));
+  const sectionLabelFromAttributes = normalizeText(attributes.section_label || "");
+  const parsedImages = extractBlocksByTag(imagesBlock, "div", "cuisine__img")
+    .map((block) => extractFirstImage(block))
+    .filter((image): image is NonNullable<typeof image> => Boolean(image?.src));
+  const imagesFromAttributes = [attributes.image_1, attributes.image_2]
+    .map((src) => normalizeText(src || ""))
+    .filter(Boolean)
+    .map((src) => ({ src, alt: "" }));
 
   return {
     title:
+      normalizeText(attributes.title || "") ||
       (titleTag ? extractTextFromTag(titleTag, "h2") || extractTextFromTag(titleTag, "h3") : null) ||
       extractTextFromTag(titleBlock, "h2", "cuisine__title") ||
       extractTextFromTag(titleBlock, "h2") ||
       extractTextFromTag(titleBlock, "h3"),
     description:
+      descriptionFromAttributes ||
       (descriptionTag ? extractTextFromTag(descriptionTag, "p") : null) ||
       extractTextFromTag(titleBlock, "p", "cuisine__desc") ||
       extractTextFromTag(titleBlock, "p") ||
       sectionParagraphs[0] ||
       null,
-    images: extractBlocksByTag(imagesBlock, "div", "cuisine__img")
-      .map((block) => extractFirstImage(block))
-      .filter((image): image is NonNullable<typeof image> => Boolean(image?.src)),
+    images: parsedImages.length ? parsedImages : imagesFromAttributes,
     sectionLabel:
+      sectionLabelFromAttributes ||
       (labelTag ? extractTextFromTag(labelTag, "span") || extractTextFromTag(labelTag, "div") : null) ||
       extractTextFromTag(footerBlock || section, "span", "cuisine__label") ||
       extractTextFromTag(footerBlock || section, "div", "cuisine__label"),
-    action: buildAction(extractLinks(footerBlock || "")[0]),
+    action:
+      footerAction ||
+      (buttonUrl && buttonLabel
+        ? {
+            href: buttonUrl,
+            label: buttonLabel,
+          }
+        : null),
+    buttonLabel: buttonLabel || footerAction?.label || null,
+    buttonUrl: buttonUrl || footerAction?.href || null,
   };
 };
 
