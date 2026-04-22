@@ -21,6 +21,12 @@ const action = computed(() => resolveLink(section.value.action?.href));
     v-if="(section.leftImage?.src || section.rightImages.length) && (section.title || section.description || section.sectionLabel || section.action?.label)"
     class="shortcode-forest-facility-native"
   >
+    <header v-if="section.title" class="forest-header">
+      <h2 class="forest-header__title">
+        {{ section.title }}
+      </h2>
+    </header>
+
     <div class="forest-shell">
       <div class="forest-media">
         <figure v-if="section.leftImage?.src" class="forest-media__primary">
@@ -39,12 +45,6 @@ const action = computed(() => resolveLink(section.value.action?.href));
       </div>
 
       <div class="forest-copy">
-        <p v-if="section.sectionLabel" class="forest-copy__eyebrow">
-          {{ section.sectionLabel }}
-        </p>
-        <h2 v-if="section.title" class="forest-copy__title">
-          {{ section.title }}
-        </h2>
         <p v-if="section.description" class="forest-copy__description">
           {{ section.description }}
         </p>
@@ -57,6 +57,12 @@ const action = computed(() => resolveLink(section.value.action?.href));
         </a>
       </div>
     </div>
+
+    <footer v-if="section.sectionLabel" class="forest-footer">
+      <p class="forest-footer__label">
+        {{ section.sectionLabel }}
+      </p>
+    </footer>
   </section>
 
   <section v-else class="shortcode-forest-facility-native">
@@ -70,12 +76,27 @@ const action = computed(() => resolveLink(section.value.action?.href));
   padding: clamp(4rem, 8vw, 7rem) 0;
 }
 
+.forest-header {
+  width: min(calc(100% - 2rem), 76rem);
+  margin: 0 auto 2.5rem;
+  text-align: center;
+}
+
+.forest-header__title {
+  margin: 0;
+  color: #2f241d;
+  font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
+  font-size: clamp(3.3rem, 7vw, 6.2rem);
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+}
+
 .forest-shell {
   width: min(calc(100% - 2rem), 76rem);
   margin: 0 auto;
   display: grid;
   gap: clamp(2rem, 4vw, 4rem);
-  grid-template-columns: minmax(0, 1.25fr) minmax(20rem, 0.95fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
 }
 
@@ -114,26 +135,12 @@ const action = computed(() => resolveLink(section.value.action?.href));
   min-height: 16rem;
 }
 
-.forest-copy__eyebrow {
-  margin: 0 0 0.8rem;
-  color: #8a6e48;
-  font-size: 0.78rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-}
-
-.forest-copy__title {
-  margin: 0;
-  color: #2f241d;
-  font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  line-height: 0.96;
-}
-
 .forest-copy__description {
-  margin: 1.25rem 0 0;
+  margin: 0;
+  max-width: 36rem;
   color: rgba(47, 36, 29, 0.78);
-  line-height: 1.95;
+  font-size: 1.08rem;
+  line-height: 2;
 }
 
 .forest-copy__button {
@@ -149,13 +156,34 @@ const action = computed(() => resolveLink(section.value.action?.href));
   text-decoration: none;
 }
 
+.forest-footer {
+  width: min(calc(100% - 2rem), 76rem);
+  margin: 2.25rem auto 0;
+}
+
+.forest-footer__label {
+  margin: 0;
+  color: #8a6e48;
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
 @media (max-width: 991px) {
   .forest-shell {
     grid-template-columns: 1fr;
   }
+
+  .forest-header {
+    margin-bottom: 2rem;
+  }
 }
 
 @media (max-width: 640px) {
+  .forest-header__title {
+    font-size: clamp(2.6rem, 11vw, 4rem);
+  }
+
   .forest-media {
     grid-template-columns: 1fr;
   }

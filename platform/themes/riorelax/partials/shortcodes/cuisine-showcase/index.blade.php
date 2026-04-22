@@ -1,6 +1,8 @@
 @php
     $image1 = $shortcode->image_1 ? RvMedia::getImageUrl($shortcode->image_1) : null;
     $image2 = $shortcode->image_2 ? RvMedia::getImageUrl($shortcode->image_2) : null;
+    $buttonLabel = $shortcode->button_label ? BaseHelper::clean($shortcode->button_label) : null;
+    $buttonUrl = $shortcode->button_url ?: null;
 @endphp
 
 <section class="shortcode-cuisine-showcase cuisine">
@@ -118,6 +120,15 @@
             color: #fff;
         }
 
+        .cuisine__btn.is-disabled {
+            cursor: default;
+            opacity: 0.92;
+        }
+
+        .cuisine__btn.is-disabled:hover {
+            background: #b19143;
+        }
+
         /* ── RESPONSIVE ───────────────────────────────────────── */
         @media (max-width: 768px) {
             .cuisine {
@@ -165,8 +176,14 @@
         @if($shortcode->section_label)
             <span class="cuisine__label">{!! BaseHelper::clean($shortcode->section_label) !!}</span>
         @endif
-        @if($shortcode->button_label && $shortcode->button_url)
-            <a href="{{ $shortcode->button_url }}" class="cuisine__btn">{{ $shortcode->button_label }}</a>
+        @if($buttonLabel)
+            <a
+                href="{{ $buttonUrl ?: '#' }}"
+                class="cuisine__btn{{ $buttonUrl ? '' : ' is-disabled' }}"
+                @if(!$buttonUrl) aria-disabled="true" tabindex="-1" @endif
+            >
+                {{ $buttonLabel }}
+            </a>
         @endif
     </div>
 

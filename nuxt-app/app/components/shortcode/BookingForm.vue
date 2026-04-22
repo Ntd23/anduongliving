@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { parseBookingFormBlock, type ShortcodeBlock } from "~/utils/shortcode";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
+import { useScrollAnimation } from "~/composables/useScrollAnimation";
 
 const props = defineProps<{
   block: ShortcodeBlock;
@@ -90,6 +92,17 @@ const endDate = ref(toIsoDate(section.value.endDate));
 const adults = ref(selectedAdultOption.value?.value || "1");
 const roomId = ref(selectedRoomOption.value?.value || "");
 
+const { setupScrollAnimations } = useScrollAnimation()
+
+onMounted(async () => {
+  await nextTick()
+  setupScrollAnimations()
+})
+
+onUnmounted(() => {
+  // Cleanup handled by composable
+})
+
 watch(
   () => section.value,
   (value) => {
@@ -136,52 +149,68 @@ const submit = () => {
 
 <template>
   <section v-if="section.actionUrl || section.title || section.image?.src" class="shortcode-booking-form-native">
-    <div class="booking-shell">
-      <div class="booking-copy">
-        <img
-          v-if="section.shapeImage?.src"
-          :src="section.shapeImage.src"
-          :alt="section.shapeImage.alt || 'Decorative shape'"
-          class="booking-copy__shape"
-        >
-        <p v-if="section.subtitle" class="booking-copy__eyebrow">{{ section.subtitle }}</p>
-        <h2 v-if="section.title" class="booking-copy__title">{{ section.title }}</h2>
+    <div class="booking-backdrop" />
+    <div class="booking-veil" />
+    
+    <div class="container booking-shell animate-on-scroll">
+      <div class="booking-grid">
+        <div class="booking-content animate-on-scroll" style="--delay: 100ms">
+          <header class="booking-header animate-on-scroll" style="--delay: 200ms">
+            <img
+              v-if="section.shapeImage?.src"
+              :src="section.shapeImage.src"
+              :alt="section.shapeImage.alt || 'Decorative shape'"
+              class="booking-header__shape animate-on-scroll"
+              style="--delay: 300ms"
+            >
+            <p v-if="section.subtitle" class="booking-header__eyebrow animate-on-scroll" style="--delay: 400ms">
+              {{ section.subtitle }}
+            </p>
+            <h2 v-if="section.title" class="booking-header__title animate-on-scroll" style="--delay: 500ms">
+              {{ section.title }}
+            </h2>
+          </header>
 
-        <form class="booking-form" @submit.prevent="submit">
-          <label class="booking-form__field">
-            <span>Check in</span>
-            <input v-model="startDate" type="date" required>
-          </label>
-          <label class="booking-form__field">
-            <span>Check out</span>
-            <input v-model="endDate" type="date" required>
-          </label>
-          <label class="booking-form__field">
-            <span>Guests</span>
-            <select v-model="adults" required>
-              <option v-for="option in section.adultOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
-          </label>
-          <label class="booking-form__field">
-            <span>Room</span>
-            <select v-model="roomId" required>
-              <option v-for="option in section.roomOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
-          </label>
+          <form class="booking-form animate-on-scroll" style="--delay: 600ms" @submit.prevent="submit">
+            <div class="booking-form__row">
+              <label class="booking-form__field animate-on-scroll" style="--delay: 700ms">
+                <span class="booking-form__label">Check in</span>
+                <input v-model="startDate" type="date" class="booking-form__input" required>
+              </label>
+              <label class="booking-form__field animate-on-scroll" style="--delay: 800ms">
+                <span class="booking-form__label">Check out</span>
+                <input v-model="endDate" type="date" class="booking-form__input" required>
+              </label>
+            </div>
+            <div class="booking-form__row">
+              <label class="booking-form__field animate-on-scroll" style="--delay: 900ms">
+                <span class="booking-form__label">Guests</span>
+                <select v-model="adults" class="booking-form__select" required>
+                  <option v-for="option in section.adultOptions" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </label>
+              <label class="booking-form__field animate-on-scroll" style="--delay: 1000ms">
+                <span class="booking-form__label">Room</span>
+                <select v-model="roomId" class="booking-form__select" required>
+                  <option v-for="option in section.roomOptions" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </label>
+            </div>
 
-          <button type="submit" class="booking-form__button">
-            {{ section.submitLabel || "Book now" }}
-          </button>
-        </form>
+            <button type="submit" class="booking-form__button animate-on-scroll" style="--delay: 1100ms">
+              {{ section.submitLabel || "Book now" }}
+            </button>
+          </form>
+        </div>
+
+        <figure v-if="section.image?.src" class="booking-media animate-on-scroll" style="--delay: 1200ms">
+          <img :src="section.image.src" :alt="section.image.alt || section.title || 'Booking image'" class="booking-media__image">
+        </figure>
       </div>
-
-      <figure v-if="section.image?.src" class="booking-media">
-        <img :src="section.image.src" :alt="section.image.alt || section.title || 'Booking image'">
-      </figure>
     </div>
   </section>
 
@@ -194,100 +223,338 @@ const submit = () => {
 .shortcode-booking-form-native {
   position: relative;
   padding: clamp(4rem, 8vw, 7rem) 0;
-  background: linear-gradient(180deg, #f9f3e9, #efe4d5);
-}
-
-.booking-shell {
-  width: min(calc(100% - 2rem), 76rem);
-  margin: 0 auto;
-  display: grid;
-  gap: 2rem;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  min-height: 100vh;
+  display: flex;
   align-items: center;
 }
 
-.booking-copy {
+.booking-backdrop {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #faf8f5 0%, #f5f2ed 100%);
+  z-index: 1;
+}
+
+.booking-veil {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at top, rgba(138, 110, 72, 0.08) 0%, transparent 50%);
+  z-index: 2;
+}
+
+.booking-shell {
   position: relative;
-  padding: 2rem;
-  border-radius: 1.8rem;
-  background: rgba(255, 252, 246, 0.82);
-  box-shadow: 0 24px 60px rgba(48, 35, 27, 0.08);
+  z-index: 3;
+  max-width: min(72rem, 92vw);
+  margin: 0 auto;
 }
 
-.booking-copy__shape {
-  width: 3.5rem;
-  margin-bottom: 1rem;
+.booking-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: 3rem;
+  align-items: center;
 }
 
-.booking-copy__eyebrow {
-  margin: 0 0 0.8rem;
+.booking-content {
+  position: relative;
+}
+
+.booking-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.booking-header__shape {
+  width: 4rem;
+  height: auto;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.booking-header__shape.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.6s ease-out;
+  transition-delay: var(--delay, 0ms);
+}
+
+.booking-header__eyebrow {
+  margin: 0 0 1rem 0;
   color: #8a6e48;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  font-size: 0.76rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(20px);
 }
 
-.booking-copy__title {
+.booking-header__eyebrow.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.6s ease-out;
+  transition-delay: var(--delay, 0ms);
+}
+
+.booking-header__title {
   margin: 0;
-  color: #2f241d;
+  color: #2d2018;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: clamp(2.4rem, 4.8vw, 4rem);
-  line-height: 0.98;
+  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  font-weight: 600;
+  line-height: 0.95;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.booking-header__title.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.8s ease-out;
+  transition-delay: var(--delay, 0ms);
 }
 
 .booking-form {
   display: grid;
-  gap: 0.9rem;
-  margin-top: 1.5rem;
+  gap: 1.5rem;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.booking-form.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.8s ease-out;
+  transition-delay: var(--delay, 0ms);
+}
+
+.booking-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
 .booking-form__field {
-  display: grid;
-  gap: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateY(20px);
 }
 
-.booking-form__field span {
-  color: #6a5948;
+.booking-form__field.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.6s ease-out;
+  transition-delay: var(--delay, 0ms);
+}
+
+.booking-form__label {
+  color: rgba(45, 32, 24, 0.7);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
-.booking-form__field input,
-.booking-form__field select {
-  min-height: 3.25rem;
-  padding: 0 0.95rem;
-  border: 1px solid rgba(107, 116, 79, 0.18);
-  border-radius: 999px;
-  background: #fff;
-  color: #2f241d;
+.booking-form__input,
+.booking-form__select {
+  min-height: 3.5rem;
+  padding: 0 1.25rem;
+  border: 1px solid rgba(45, 32, 24, 0.15);
+  border-radius: 1.5rem;
+  background: rgba(255, 252, 248, 0.9);
+  backdrop-filter: blur(10px);
+  color: #2d2018;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+/* Style date input calendar icons */
+.booking-form__input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5) sepia(1) saturate(2) hue-rotate(15deg);
+  opacity: 0.7;
+}
+
+.booking-form__input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.booking-form__input[type="date"]::-moz-calendar-picker-indicator {
+  filter: invert(0.5) sepia(1) saturate(2) hue-rotate(15deg);
+  opacity: 0.7;
+}
+
+.booking-form__input:focus,
+.booking-form__select:focus {
+  outline: none;
+  border-color: rgba(138, 110, 72, 0.4);
+  background: rgba(255, 252, 248, 0.95);
+  box-shadow: 0 0 0 3px rgba(138, 110, 72, 0.1);
 }
 
 .booking-form__button {
-  min-height: 3.25rem;
+  min-height: 3.5rem;
+  padding: 0 2.5rem;
   border: 0;
-  border-radius: 999px;
-  background: #6c744f;
-  color: #fffaf1;
+  border-radius: 1.5rem;
+  background: #8a6e48;
+  color: #ffffff;
+  font-size: 1rem;
   font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.booking-form__button.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.6s ease-out;
+  transition-delay: var(--delay, 0ms);
+}
+
+.booking-form__button:hover {
+  background: #6d583a;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(138, 110, 72, 0.2);
 }
 
 .booking-media {
   margin: 0;
   overflow: hidden;
   border-radius: 2rem;
-  box-shadow: 0 30px 70px rgba(48, 35, 27, 0.12);
+  box-shadow: 0 30px 80px rgba(45, 32, 24, 0.15);
+  opacity: 0;
+  transform: translateX(30px);
 }
 
-.booking-media img {
+.booking-media.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.8s ease-out;
+  transition-delay: var(--delay, 0ms);
+}
+
+.booking-media__image {
   width: 100%;
+  height: 100%;
+  min-height: 500px;
   display: block;
   object-fit: cover;
+  transition: transform 0.6s ease;
 }
 
-@media (max-width: 991px) {
-  .booking-shell {
+.booking-media:hover .booking-media__image {
+  transform: scale(1.05);
+}
+
+/* Scroll animations */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+
+.animate-on-scroll.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.animate-on-scroll.animate-out {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .booking-grid {
     grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .booking-header {
+    margin-bottom: 2rem;
+  }
+  
+  .booking-form {
+    gap: 1.25rem;
+  }
+  
+  .booking-form__row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .booking-media__image {
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .shortcode-booking-form-native {
+    padding: clamp(3rem, 6vw, 5rem) 0;
+    min-height: auto;
+  }
+  
+  .booking-shell {
+    max-width: min(60rem, 92vw);
+  }
+  
+  .booking-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .booking-header__title {
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+  }
+  
+  .booking-form {
+    gap: 1rem;
+  }
+  
+  .booking-form__row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .booking-form__input,
+  .booking-form__select {
+    min-height: 3.25rem;
+    padding: 0 1rem;
+  }
+  
+  .booking-form__button {
+    min-height: 3.25rem;
+    padding: 0 2rem;
+  }
+  
+  .booking-media__image {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .booking-form__input,
+  .booking-form__select {
+    min-height: 3rem;
+    padding: 0 0.875rem;
+    font-size: 0.95rem;
+  }
+  
+  .booking-form__button {
+    min-height: 3rem;
+    padding: 0 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .booking-media__image {
+    min-height: 250px;
   }
 }
 </style>

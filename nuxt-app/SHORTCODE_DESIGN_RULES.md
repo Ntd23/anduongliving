@@ -184,22 +184,23 @@ Rule giao việc:
 
 ### Ưu tiên cao - đang có lỗi hoặc cần làm lại sớm
 - [ ] `SimpleSlider.vue`
-- [ ] `CuisineShowcase.vue`
-- [ ] `ForestFacilityShowcase.vue`
-- [ ] `BlogPosts.vue`
+- [x] `CuisineShowcase.vue`
+- [x] `ForestFacilityShowcase.vue`
+- [x] `BlogPosts.vue`
 - [ ] `ServiceList.vue`
 - [ ] `Pricing.vue`
 - [ ] `Services.vue`
 
 ### Danh sách shortcode còn lại để QA / redesign nếu cần
 - [ ] `AllRooms.vue`
-- [ ] `BookingForm.vue`
+- [x] `BookingForm.vue`
 - [ ] `Brands.vue`
 - [ ] `CheckAvailabilityForm.vue`
-- [ ] `Faqs.vue`
+- [x] `Faqs.vue`
+  - `Parser changed : extract answer from paragraph instead of card-body`
 - [ ] `FeatureArea.vue`
-- [ ] `FeaturedAmenities.vue`
-- [ ] `FeaturedRooms.vue`
+- [x] `FeaturedAmenities.vue`
+- [x] `FeaturedRooms.vue`
 - [ ] `Galleries.vue`
 - [ ] `HeroBannerWithBookingForm.vue`
 - [ ] `HotelPlaces.vue`
