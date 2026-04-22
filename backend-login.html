@@ -1,0 +1,2308 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=5, user-scalable=1" name="viewport" />
+    <meta name="csrf-token" content="vaJFmQFMwihHtymf3hw1YfBLClGEaFeEbkilIteH">
+
+    <link href="https://fonts.googleapis.com/css?family=Epilogue:400,500,600,700" rel="stylesheet" type="text/css">
+
+    <style>
+        :root {
+            --primary-color: #fec201;
+            --secondary-color: #034460;
+            --input-border-color: #d7cfc8;
+            --primary-color-hover: #066a4c;
+            --btn-text-color-hover: #101010;
+            --heading-font: 'Jost', sans-serif;
+            --primary-font: 'Roboto', sans-serif;
+        }
+    </style>
+    <title>Ðang nh?p</title>
+<meta property="og:site_name" content="">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ðang nh?p">
+<meta property="og:image" content="http://127.0.0.1:8000/storage/logo/new-project.png">
+<meta name="twitter:title" content="Ðang nh?p">
+<link
+    rel="sitemap"
+    title="Sitemap"
+    href="http://127.0.0.1:8000/sitemap.xml"
+    type="application/xml"
+>
+
+    <link rel="icon" type="image/x-icon" href="http://127.0.0.1:8000/storage/logo/favicon-1.png">
+
+
+
+
+    <style >
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2jl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia0zl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2zl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia1pl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2pl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia25l7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia1zl7w0q5nw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2jl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia0zl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2zl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia1pl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2pl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia25l7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia1zl7w0q5nw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2jl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia0zl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2zl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia1pl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2pl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia25l7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia1zl7w0q5nw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2jl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia0zl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2zl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia1pl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2pl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia25l7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia1zl7w0q5nw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2jl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia0zl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2zl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia1pl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia2pl7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia25l7w0q5n-wu.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(http://127.0.0.1:8000/storage/fonts/2832c0ff63/sinterv20ucc73fwrk3iltehus-nvmrmxcp50sjia1zl7w0q5nw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style><style>:root{--primary-font: "Inter", sans-serif;}</style>
+
+
+<link media="all" type="text/css" rel="stylesheet" href="http://127.0.0.1:8000/vendor/core/plugins/language/css/language-public.css?v=2.2.0">
+<link media="all" type="text/css" rel="stylesheet" href="http://127.0.0.1:8000/vendor/core/plugins/hotel/css/front-auth.css">
+<link media="all" type="text/css" rel="stylesheet" href="http://127.0.0.1:8000/themes/riorelax/plugins/bootstrap/bootstrap.min.css">
+<link media="all" type="text/css" rel="stylesheet" href="http://127.0.0.1:8000/themes/riorelax/plugins/animate.min.css">
+<link media="all" type="text/css" rel="stylesheet" href="http://127.0.0.1:8000/themes/riorelax/plugins/fontawesome-all.min.css">
+<link media="all" type="text/css" rel="stylesheet" href="http://127.0.0.1:8000/themes/riorelax/plugins/slick/slick.css">
+<link media="all" type="text/css" rel="stylesheet" href="http://127.0.0.1:8000/themes/riorelax/plugins/magnific-popup/magnific-popup.css">
+<link media="all" type="text/css" rel="stylesheet" href="http://127.0.0.1:8000/themes/riorelax/plugins/toastr/toastr.min.css">
+<link media="all" type="text/css" rel="stylesheet" href="http://127.0.0.1:8000/themes/riorelax/css/theme.css">
+<link media="all" type="text/css" rel="stylesheet" href="http://127.0.0.1:8000/themes/riorelax/plugins/default.css">
+<link media="all" type="text/css" rel="stylesheet" href="http://127.0.0.1:8000/themes/riorelax/plugins/responsive.css">
+<link media="all" type="text/css" rel="stylesheet" href="http://127.0.0.1:8000/themes/riorelax/plugins/datepicker/bootstrap-datepicker.css">
+
+
+<script data-pagespeed-no-defer="1" src="http://127.0.0.1:8000/themes/riorelax/plugins/jquery.min.js"></script>
+<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Trang ch?","item":"http:\/\/127.0.0.1:8000"},{"@type":"ListItem","position":2,"name":"Ðang nh?p","item":"http:\/\/127.0.0.1:8000\/login"}]}</script><script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"WebSite","name":"","url":"http:\/\/127.0.0.1:8000"}</script>
+
+
+
+
+
+<script>
+    window.siteUrl = "http://127.0.0.1:8000";
+</script>
+
+    
+<script id="browser-logger-active">
+(function() {
+    const ENDPOINT = 'http://127.0.0.1:8000/_boost/browser-logs';
+    const logQueue = [];
+    let flushTimeout = null;
+
+    console.log('?? Browser logger active (MCP server detected). Posting to: ' + ENDPOINT);
+
+    // Store original console methods
+    const originalConsole = {
+        log: console.log,
+        info: console.info,
+        error: console.error,
+        warn: console.warn,
+        table: console.table
+    };
+
+    // Helper to safely stringify values
+    function safeStringify(obj) {
+        const seen = new WeakSet();
+        return JSON.stringify(obj, (key, value) => {
+            if (typeof value === 'object' && value !== null) {
+                if (seen.has(value)) return '[Circular]';
+                seen.add(value);
+            }
+            if (value instanceof Error) {
+                return {
+                    name: value.name,
+                    message: value.message,
+                    stack: value.stack
+                };
+            }
+            return value;
+        });
+    }
+
+    // Batch and send logs
+    function flushLogs() {
+        if (logQueue.length === 0) return;
+
+        const batch = logQueue.splice(0, logQueue.length);
+
+        fetch(ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ logs: batch })
+        }).catch(err => {
+            // Silently fail to avoid infinite loops
+            originalConsole.error('Failed to send logs:', err);
+        });
+    }
+
+    // Debounced flush (100ms)
+    function scheduleFlush() {
+        if (flushTimeout) clearTimeout(flushTimeout);
+        flushTimeout = setTimeout(flushLogs, 100);
+    }
+
+    // Intercept console methods
+    ['log', 'info', 'error', 'warn', 'table'].forEach(method => {
+        console[method] = function(...args) {
+            // Call original method
+            originalConsole[method].apply(console, args);
+
+            // Capture log data
+            try {
+                logQueue.push({
+                    type: method,
+                    timestamp: new Date().toISOString(),
+                    data: args.map(arg => {
+                        try {
+                            return typeof arg === 'object' ? JSON.parse(safeStringify(arg)) : arg;
+                        } catch (e) {
+                            return String(arg);
+                        }
+                    }),
+                    url: window.location.href,
+                    userAgent: navigator.userAgent
+                });
+
+                scheduleFlush();
+            } catch (e) {
+                // Fail silently
+            }
+        };
+    });
+
+    // Global error handlers for uncaught errors
+    const originalOnError = window.onerror;
+    window.onerror = function boostErrorHandler(errorMsg, url, lineNumber, colNumber, error) {
+        try {
+            logQueue.push({
+                type: 'uncaught_error',
+                timestamp: new Date().toISOString(),
+                data: [{
+                    message: errorMsg,
+                    filename: url,
+                    lineno: lineNumber,
+                    colno: colNumber,
+                    error: error ? {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    } : null
+                }],
+                url: window.location.href,
+                userAgent: navigator.userAgent
+            });
+
+            scheduleFlush();
+        } catch (e) {
+            // Fail silently
+        }
+
+        // Call original handler if it exists
+        if (originalOnError && typeof originalOnError === 'function') {
+            return originalOnError(errorMsg, url, lineNumber, colNumber, error);
+        }
+
+        // Let the error continue to propagate
+        return false;
+    }
+    window.addEventListener('error', (event) => {
+        try {
+            logQueue.push({
+                type: 'window_error',
+                timestamp: new Date().toISOString(),
+                data: [{
+                    message: event.message,
+                    filename: event.filename,
+                    lineno: event.lineno,
+                    colno: event.colno,
+                    error: event.error ? {
+                        name: event.error.name,
+                        message: event.error.message,
+                        stack: event.error.stack
+                    } : null
+                }],
+                url: window.location.href,
+                userAgent: navigator.userAgent
+            });
+
+            scheduleFlush();
+        } catch (e) {
+            // Fail silently
+        }
+
+        // Let the error continue to propagate
+        return false;
+    });
+    window.addEventListener('unhandledrejection', (event) => {
+        try {
+            logQueue.push({
+                type: 'error',
+                timestamp: new Date().toISOString(),
+                data: [{
+                    message: 'Unhandled Promise Rejection',
+                    reason: event.reason instanceof Error ? {
+                        name: event.reason.name,
+                        message: event.reason.message,
+                        stack: event.reason.stack
+                    } : event.reason
+                }],
+                url: window.location.href,
+                userAgent: navigator.userAgent
+            });
+
+            scheduleFlush();
+        } catch (e) {
+            // Fail silently
+        }
+
+        // Let the rejection continue to propagate
+        return false;
+    });
+
+    // Flush on page unload
+    window.addEventListener('beforeunload', () => {
+        if (logQueue.length > 0) {
+            navigator.sendBeacon(ENDPOINT, JSON.stringify({ logs: logQueue }));
+        }
+    });
+})();
+</script>
+</head>
+<body >
+
+
+    <header class="header-area header-three">
+                    <div class="header-top second-header d-none d-md-block">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 col-md-6 d-none d-lg-block header-top-left">
+                <div class="header-cta">
+                    <ul>
+                        
+                                            </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 d-none d-lg-block text-end header-top-end">
+                <div class="header-social">
+                    <div class="dropdown language-switcher d-inline-flex align-items-center">
+                <a class="dropdown-toggle" type="button" id="language-switcher-dropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <svg style="height: 16px; width: auto;" class="flag" xmlns="http://www.w3.org/2000/svg" width="20" height="15" fill="none"><mask id="flags_vn_a" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" d="M0 0h20v15H0z"/></mask><g mask="url(#flags_vn_a)"><path fill="#F7FCFF" fill-rule="evenodd" d="M0 0h20v15H0V0z" clip-rule="evenodd"/><path fill="#E31D1C" fill-rule="evenodd" d="M0 0v15h20V0H0z" clip-rule="evenodd"/><mask id="flags_vn_b" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" fill-rule="evenodd" d="M0 0v15h20V0H0z" clip-rule="evenodd"/></mask><g mask="url(#flags_vn_b)"><path fill="#FFD221" fill-rule="evenodd" d="m10.039 9.987-3.22 2.047L7.9 8.451l-2.296-2.34 3.166-.07 1.4-3.537 1.277 3.584 3.158.055-2.373 2.384 1.108 3.409-3.3-1.949z" clip-rule="evenodd"/></g></g></svg>
+                        <span class="ms-1">Ti?ng Vi?t</span>
+                    
+                                    </a>
+                <div class="dropdown-menu language-switcher-list" aria-labelledby="language-switcher-dropdown">
+                                                                        <li>
+                                <a class="language-item" href="http://127.0.0.1:8000/en/login" target="_self">
+                                                                            <svg style="height: 16px; width: auto;" class="flag" xmlns="http://www.w3.org/2000/svg" width="20" height="15" fill="none"><mask id="flags_us_a" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" d="M0 0h20v15H0z"/></mask><g mask="url(#flags_us_a)"><path fill="#E31D1C" fill-rule="evenodd" d="M0 0h20v15H0V0z" clip-rule="evenodd"/><path fill="#F7FCFF" fill-rule="evenodd" d="M0 1.25V2.5h20V1.25H0zm0 2.5V5h20V3.75H0zM0 7.5V6.25h20V7.5H0zm0 1.25V10h20V8.75H0zm0 3.75v-1.25h20v1.25H0zM0 15v-1.25h20V15H0z" clip-rule="evenodd"/><path fill="#2E42A5" d="M0 0h11.25v8.75H0z"/><path fill="#F7FCFF" fill-rule="evenodd" d="m1.3 2.717.662-.461.514.37h-.29l.588.52-.2.73h-.31l-.303-.67-.257.67H.935l.589.52-.224.821.662-.461.514.37h-.29l.588.52-.2.73h-.31l-.303-.67-.257.67H.935l.589.52-.224.821.662-.461.641.461-.199-.82.515-.521H2.68l.531-.37.514.37h-.29l.588.52-.224.821.662-.461.641.461-.199-.82.515-.521H5.18l.531-.37.514.37h-.29l.588.52-.224.821.662-.461.641.461-.199-.82.515-.521H7.68l.531-.37.514.37h-.29l.588.52-.224.821.662-.461.641.461-.199-.82.515-.521h-.655l-.303-.67-.257.67H8.83l-.177-.73.515-.52H8.93l.531-.37.641.461-.199-.82.515-.521h-.655l-.303-.67-.257.67H8.83l-.177-.73.515-.52H8.93l.531-.37.641.461-.199-.82.515-.521h-.655L9.46.706l-.257.67h-.769l.589.52-.2.73h-.31l-.303-.67-.257.67H7.58l-.177-.73.515-.52h-.655L6.96.706l-.257.67h-.769l.589.52-.2.73h-.31l-.303-.67-.257.67H5.08l-.177-.73.515-.52h-.655L4.46.706l-.257.67h-.769l.589.52-.2.73h-.31l-.303-.67-.257.67H2.58l-.177-.73.515-.52h-.655L1.96.706l-.257.67H.935l.589.52-.224.821zm7.525 2.409.199-.73-.589-.52h.291l-.514-.37-.53.37h.237l-.515.52.177.73h.373l.257-.67.303.67h.31zm-1.349 0-.514-.37-.53.37h.237l-.515.52.177.73h.373l.257-.67.303.67h.31l.2-.73-.589-.52h.291zm-2.202.52-.2.73h-.31l-.303-.67-.257.67H3.83l-.177-.73.515-.52H3.93l.531-.37.514.37h-.29l.588.52zm.18-.52H5.08l-.177-.73.515-.52H5.18l.531-.37.514.37h-.29l.588.52-.2.73h-.31l-.303-.67-.257.67zm-1.63 0 .2-.73-.589-.52h.291l-.514-.37-.53.37h.237l-.515.52.177.73h.373l.257-.67.303.67h.31zm3.95-1.98-.2.73h-.31l-.303-.67-.257.67H6.33l-.177-.73.515-.52H6.43l.531-.37.514.37h-.29l.588.52zm-2.798-.52-.514-.37-.53.37h.237l-.515.52.177.73h.373l.257-.67.303.67h.31l.2-.73-.589-.52h.291z" clip-rule="evenodd"/></g></svg> <span>English</span>
+                                                                                                        </a>
+                            </li>
+                                                                                                                                            <li>
+                                <a class="language-item" href="http://127.0.0.1:8000/ja/login" target="_self">
+                                                                            <svg style="height: 16px; width: auto;" class="flag" xmlns="http://www.w3.org/2000/svg" width="20" height="15" fill="none"><mask id="flags_jp_a" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" d="M0 0h20v15H0z"/></mask><g mask="url(#flags_jp_a)"><path fill="#F7FCFF" fill-rule="evenodd" d="M0 0v15h20V0H0z" clip-rule="evenodd"/><mask id="flags_jp_b" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" fill-rule="evenodd" d="M0 0v15h20V0H0z" clip-rule="evenodd"/></mask><g mask="url(#flags_jp_b)"><path fill="#E31D1C" fill-rule="evenodd" d="M10 12.188a4.688 4.688 0 1 0 0-9.376 4.688 4.688 0 0 0 0 9.376z" clip-rule="evenodd"/></g></g></svg> <span>???</span>
+                                                                                                        </a>
+                            </li>
+                                                            </div>
+            </div>
+            
+                    <div class="dropdown currencies-switcher d-inline-flex align-items-center">
+        <a class="dropdown-toggle" type="button" id="currency-switcher-dropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            USD
+        </a>
+        <div class="dropdown-menu currency-switcher-list" aria-labelledby="currency-switcher-dropdown">
+                                            <li>
+                    <a class="currency-item" href="http://127.0.0.1:8000/currency/switch/VND">VND</a>
+                </li>
+                                            <li>
+                    <a class="currency-item" href="http://127.0.0.1:8000/currency/switch/EUR">EUR</a>
+                </li>
+                                    </div>
+    </div>
+
+
+                                                                        <a href="http://127.0.0.1:8000/login" class="ms-3">
+                                <i class="fa fa-sign-in-alt"></i>
+                                <span class="text-white customer-name-header ms-1">Ðang nh?p</span>
+                            </a>
+                                                                                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="language-switcher-mobile d-none">
+    <li>
+                <a class="language-item d-flex" href="http://127.0.0.1:8000/en/login" target="_self">
+                                            <svg style="height: 16px; width: auto;" class="flag" xmlns="http://www.w3.org/2000/svg" width="20" height="15" fill="none"><mask id="flags_us_a" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" d="M0 0h20v15H0z"/></mask><g mask="url(#flags_us_a)"><path fill="#E31D1C" fill-rule="evenodd" d="M0 0h20v15H0V0z" clip-rule="evenodd"/><path fill="#F7FCFF" fill-rule="evenodd" d="M0 1.25V2.5h20V1.25H0zm0 2.5V5h20V3.75H0zM0 7.5V6.25h20V7.5H0zm0 1.25V10h20V8.75H0zm0 3.75v-1.25h20v1.25H0zM0 15v-1.25h20V15H0z" clip-rule="evenodd"/><path fill="#2E42A5" d="M0 0h11.25v8.75H0z"/><path fill="#F7FCFF" fill-rule="evenodd" d="m1.3 2.717.662-.461.514.37h-.29l.588.52-.2.73h-.31l-.303-.67-.257.67H.935l.589.52-.224.821.662-.461.514.37h-.29l.588.52-.2.73h-.31l-.303-.67-.257.67H.935l.589.52-.224.821.662-.461.641.461-.199-.82.515-.521H2.68l.531-.37.514.37h-.29l.588.52-.224.821.662-.461.641.461-.199-.82.515-.521H5.18l.531-.37.514.37h-.29l.588.52-.224.821.662-.461.641.461-.199-.82.515-.521H7.68l.531-.37.514.37h-.29l.588.52-.224.821.662-.461.641.461-.199-.82.515-.521h-.655l-.303-.67-.257.67H8.83l-.177-.73.515-.52H8.93l.531-.37.641.461-.199-.82.515-.521h-.655l-.303-.67-.257.67H8.83l-.177-.73.515-.52H8.93l.531-.37.641.461-.199-.82.515-.521h-.655L9.46.706l-.257.67h-.769l.589.52-.2.73h-.31l-.303-.67-.257.67H7.58l-.177-.73.515-.52h-.655L6.96.706l-.257.67h-.769l.589.52-.2.73h-.31l-.303-.67-.257.67H5.08l-.177-.73.515-.52h-.655L4.46.706l-.257.67h-.769l.589.52-.2.73h-.31l-.303-.67-.257.67H2.58l-.177-.73.515-.52h-.655L1.96.706l-.257.67H.935l.589.52-.224.821zm7.525 2.409.199-.73-.589-.52h.291l-.514-.37-.53.37h.237l-.515.52.177.73h.373l.257-.67.303.67h.31zm-1.349 0-.514-.37-.53.37h.237l-.515.52.177.73h.373l.257-.67.303.67h.31l.2-.73-.589-.52h.291zm-2.202.52-.2.73h-.31l-.303-.67-.257.67H3.83l-.177-.73.515-.52H3.93l.531-.37.514.37h-.29l.588.52zm.18-.52H5.08l-.177-.73.515-.52H5.18l.531-.37.514.37h-.29l.588.52-.2.73h-.31l-.303-.67-.257.67zm-1.63 0 .2-.73-.589-.52h.291l-.514-.37-.53.37h.237l-.515.52.177.73h.373l.257-.67.303.67h.31zm3.95-1.98-.2.73h-.31l-.303-.67-.257.67H6.33l-.177-.73.515-.52H6.43l.531-.37.514.37h-.29l.588.52zm-2.798-.52-.514-.37-.53.37h.237l-.515.52.177.73h.373l.257-.67.303.67h.31l.2-.73-.589-.52h.291z" clip-rule="evenodd"/></g></svg> <span class="ms-1">English</span>
+                                                        </a>
+            </li>
+                    <li>
+                <a class="language-item d-flex active" href="http://127.0.0.1:8000/vi/login" target="_self">
+                                            <svg style="height: 16px; width: auto;" class="flag" xmlns="http://www.w3.org/2000/svg" width="20" height="15" fill="none"><mask id="flags_vn_a" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" d="M0 0h20v15H0z"/></mask><g mask="url(#flags_vn_a)"><path fill="#F7FCFF" fill-rule="evenodd" d="M0 0h20v15H0V0z" clip-rule="evenodd"/><path fill="#E31D1C" fill-rule="evenodd" d="M0 0v15h20V0H0z" clip-rule="evenodd"/><mask id="flags_vn_b" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" fill-rule="evenodd" d="M0 0v15h20V0H0z" clip-rule="evenodd"/></mask><g mask="url(#flags_vn_b)"><path fill="#FFD221" fill-rule="evenodd" d="m10.039 9.987-3.22 2.047L7.9 8.451l-2.296-2.34 3.166-.07 1.4-3.537 1.277 3.584 3.158.055-2.373 2.384 1.108 3.409-3.3-1.949z" clip-rule="evenodd"/></g></g></svg> <span class="ms-1">Ti?ng Vi?t</span>
+                                                        </a>
+            </li>
+                    <li>
+                <a class="language-item d-flex" href="http://127.0.0.1:8000/ja/login" target="_self">
+                                            <svg style="height: 16px; width: auto;" class="flag" xmlns="http://www.w3.org/2000/svg" width="20" height="15" fill="none"><mask id="flags_jp_a" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" d="M0 0h20v15H0z"/></mask><g mask="url(#flags_jp_a)"><path fill="#F7FCFF" fill-rule="evenodd" d="M0 0v15h20V0H0z" clip-rule="evenodd"/><mask id="flags_jp_b" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" fill-rule="evenodd" d="M0 0v15h20V0H0z" clip-rule="evenodd"/></mask><g mask="url(#flags_jp_b)"><path fill="#E31D1C" fill-rule="evenodd" d="M10 12.188a4.688 4.688 0 1 0 0-9.376 4.688 4.688 0 0 0 0 9.376z" clip-rule="evenodd"/></g></g></svg> <span class="ms-1">???</span>
+                                                        </a>
+            </li>
+            
+
+</div>
+
+<div class="currency-switcher-mobile d-none">
+    <li>
+            <a class="" class="currency-item" href="http://127.0.0.1:8000/currency/switch/VND">VND</a>
+        </li>
+            <li>
+            <a class="" class="currency-item" href="http://127.0.0.1:8000/currency/switch/EUR">EUR</a>
+        </li>
+            <li>
+            <a class="active" class="currency-item" href="http://127.0.0.1:8000/currency/switch/USD">USD</a>
+        </li>
+    
+</div>
+
+        
+        <div  id="header-sticky"  class="menu-area">
+    <div class="container">
+        <div class="second-menu">
+            <div class="row align-items-center">
+                <div class="col-8 col-md-4 col-lg-2 col-xl-2">
+                                            <div class="logo">
+                            <a href="http://127.0.0.1:8000"><img src="http://127.0.0.1:8000/storage/logo/new-project.png" alt=""></a>
+                        </div>
+                                    </div>
+                <div class="col-4 col-md-8  col-lg-8 col-xl-8">
+                    <div class="main-menu text-center">
+                        <nav id="mobile-menu">
+                            <ul  class="main-menu">
+            <li class="">
+            <a class="" href="http://127.0.0.1:8000/" target="_self">
+                
+                Trang ch?
+            </a>
+                    </li>
+            <li class="has-sub ">
+            <a class="" href="http://127.0.0.1:8000/services" target="_self">
+                
+                D?ch v?
+            </a>
+                            <ul  class="sub-menu">
+            <li class="">
+            <a class="" href="http://127.0.0.1:8000/trai-nghiem" target="_self">
+                
+                TR?I NGHI?M
+            </a>
+                    </li>
+            <li class="">
+            <a class="" href="http://127.0.0.1:8000/services/phong-chat-luong-cao" target="_self">
+                
+                PHÒNG CH?T LU?NG CAO
+            </a>
+                    </li>
+            <li class="">
+            <a class="" href="http://127.0.0.1:8000/services/nha-hang-va-quay-bar" target="_self">
+                
+                NHÀ HÀNG VÀ QU?Y BAR
+            </a>
+                    </li>
+            <li class="">
+            <a class="" href="http://127.0.0.1:8000/services/bai-bien-rieng" target="_self">
+                
+                BÃI BI?N RIÊNG
+            </a>
+                    </li>
+    </ul>
+
+                    </li>
+            <li class="">
+            <a class="" href="http://127.0.0.1:8000/blog" target="_self">
+                
+                Bài vi?t
+            </a>
+                    </li>
+            <li class="has-sub ">
+            <a class="" href="http://127.0.0.1:8000/" target="_self">
+                
+                AN U?NG
+            </a>
+                            <ul  class="sub-menu">
+            <li class="">
+            <a class="" href="http://127.0.0.1:8000/nha-hang" target="_self">
+                
+                NHÀ HÀNG
+            </a>
+                    </li>
+            <li class="">
+            <a class="" href="http://127.0.0.1:8000/am-thuc-tren-may" target="_self">
+                
+                ?M TH?C TRÊN MÂY
+            </a>
+                    </li>
+    </ul>
+
+                    </li>
+            <li class="">
+            <a class="" href="http://127.0.0.1:8000/rooms" target="_self">
+                
+                Phòng
+            </a>
+                    </li>
+            <li class="has-sub ">
+            <a class="" href="http://127.0.0.1:8000/about-us" target="_self">
+                
+                V? AnduongLiving
+            </a>
+                            <ul  class="sub-menu">
+            <li class="">
+            <a class="" href="http://127.0.0.1:8000/cau-chuyen-ve-chung-toi" target="_self">
+                
+                Câu chuy?n v? chúng tôi
+            </a>
+                    </li>
+            <li class="">
+            <a class="" href="http://127.0.0.1:8000/su-da-dang-sinh-hoc" target="_self">
+                
+                S? da d?ng sinh h?c
+            </a>
+                    </li>
+    </ul>
+
+                    </li>
+            <li class="has-sub ">
+            <a class="" href="http://127.0.0.1:8000/uu-dai-dac-biet" target="_self">
+                
+                Uu dãi d?c bi?t
+            </a>
+                            <ul  class="sub-menu">
+            <li class="">
+            <a class="" href="http://127.0.0.1:8000/uu-dai-dac-biet" target="_self">
+                
+                Gói d?c bi?t
+            </a>
+                    </li>
+            <li class="">
+            <a class="" href="http://127.0.0.1:8000/goi-dac-quyen" target="_self">
+                
+                Uu dãi d?c quy?n
+            </a>
+                    </li>
+    </ul>
+
+                    </li>
+    </ul>
+
+                        </nav>
+                    </div>
+                    <button class="navbar-toggler text-white float-end d-lg-none btn btn-toggle-menu-mobile" type="button" data-bs-toggle="collapse" data-bs-target="#menu-mobile-nav" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fa fa-list"></i>
+                    </button>
+                </div>
+
+                            </div>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary menu-mobile d-lg-none">
+    <div class="collapse navbar-collapse" id="menu-mobile-nav" >
+        <div class="menu">
+            <div class="menu-title">
+                <span>Menu</span>
+            </div>
+            <ul  class="navbar-nav mb-2 mb-lg-0 me-3 ms-3">
+            <li class="nav-item">
+            <a href="http://127.0.0.1:8000/"
+               class="nav-link collapsed"
+               target="_self"
+                           >Trang ch?</a>
+        </li>
+
+                    <li class="nav-item">
+            <a href="http://127.0.0.1:8000/services"
+               class="nav-link collapsed has-sub"
+               target="_self"
+                                  data-bs-toggle="collapse"
+                   data-bs-target="#menu-collapse-128"
+                   aria-expanded="false"
+                   aria-controls="menu-collapse-128"
+                           >D?ch v?</a>
+        </li>
+
+                    <div class="collapse" id="menu-collapse-128">
+                <ul  class="navbar-nav me-auto mb-2 mb-lg-0 ms-3">
+            <li class="nav-item">
+            <a href="http://127.0.0.1:8000/trai-nghiem"
+               class="nav-link collapsed"
+               target="_self"
+                           >TR?I NGHI?M</a>
+        </li>
+
+                    <li class="nav-item">
+            <a href="http://127.0.0.1:8000/services/phong-chat-luong-cao"
+               class="nav-link collapsed"
+               target="_self"
+                           >PHÒNG CH?T LU?NG CAO</a>
+        </li>
+
+                    <li class="nav-item">
+            <a href="http://127.0.0.1:8000/services/nha-hang-va-quay-bar"
+               class="nav-link collapsed"
+               target="_self"
+                           >NHÀ HÀNG VÀ QU?Y BAR</a>
+        </li>
+
+                    <li class="nav-item">
+            <a href="http://127.0.0.1:8000/services/bai-bien-rieng"
+               class="nav-link collapsed"
+               target="_self"
+                           >BÃI BI?N RIÊNG</a>
+        </li>
+
+            </ul>
+
+            </div>
+                    <li class="nav-item">
+            <a href="http://127.0.0.1:8000/blog"
+               class="nav-link collapsed"
+               target="_self"
+                           >Bài vi?t</a>
+        </li>
+
+                    <li class="nav-item">
+            <a href="http://127.0.0.1:8000/"
+               class="nav-link collapsed has-sub"
+               target="_self"
+                                  data-bs-toggle="collapse"
+                   data-bs-target="#menu-collapse-143"
+                   aria-expanded="false"
+                   aria-controls="menu-collapse-143"
+                           >AN U?NG</a>
+        </li>
+
+                    <div class="collapse" id="menu-collapse-143">
+                <ul  class="navbar-nav me-auto mb-2 mb-lg-0 ms-3">
+            <li class="nav-item">
+            <a href="http://127.0.0.1:8000/nha-hang"
+               class="nav-link collapsed"
+               target="_self"
+                           >NHÀ HÀNG</a>
+        </li>
+
+                    <li class="nav-item">
+            <a href="http://127.0.0.1:8000/am-thuc-tren-may"
+               class="nav-link collapsed"
+               target="_self"
+                           >?M TH?C TRÊN MÂY</a>
+        </li>
+
+            </ul>
+
+            </div>
+                    <li class="nav-item">
+            <a href="http://127.0.0.1:8000/rooms"
+               class="nav-link collapsed"
+               target="_self"
+                           >Phòng</a>
+        </li>
+
+                    <li class="nav-item">
+            <a href="http://127.0.0.1:8000/about-us"
+               class="nav-link collapsed has-sub"
+               target="_self"
+                                  data-bs-toggle="collapse"
+                   data-bs-target="#menu-collapse-88"
+                   aria-expanded="false"
+                   aria-controls="menu-collapse-88"
+                           >V? AnduongLiving</a>
+        </li>
+
+                    <div class="collapse" id="menu-collapse-88">
+                <ul  class="navbar-nav me-auto mb-2 mb-lg-0 ms-3">
+            <li class="nav-item">
+            <a href="http://127.0.0.1:8000/cau-chuyen-ve-chung-toi"
+               class="nav-link collapsed"
+               target="_self"
+                           >Câu chuy?n v? chúng tôi</a>
+        </li>
+
+                    <li class="nav-item">
+            <a href="http://127.0.0.1:8000/su-da-dang-sinh-hoc"
+               class="nav-link collapsed"
+               target="_self"
+                           >S? da d?ng sinh h?c</a>
+        </li>
+
+            </ul>
+
+            </div>
+                    <li class="nav-item">
+            <a href="http://127.0.0.1:8000/uu-dai-dac-biet"
+               class="nav-link collapsed has-sub"
+               target="_self"
+                                  data-bs-toggle="collapse"
+                   data-bs-target="#menu-collapse-163"
+                   aria-expanded="false"
+                   aria-controls="menu-collapse-163"
+                           >Uu dãi d?c bi?t</a>
+        </li>
+
+                    <div class="collapse" id="menu-collapse-163">
+                <ul  class="navbar-nav me-auto mb-2 mb-lg-0 ms-3">
+            <li class="nav-item">
+            <a href="http://127.0.0.1:8000/uu-dai-dac-biet"
+               class="nav-link collapsed"
+               target="_self"
+                           >Gói d?c bi?t</a>
+        </li>
+
+                    <li class="nav-item">
+            <a href="http://127.0.0.1:8000/goi-dac-quyen"
+               class="nav-link collapsed"
+               target="_self"
+                           >Uu dãi d?c quy?n</a>
+        </li>
+
+            </ul>
+
+            </div>
+            </ul>
+
+                            <div class="menu-title mt-20">
+                    <span>Languages</span>
+                </div>
+                <ul class="navbar-nav mb-2 mb-lg-0 me-3 ms-3">
+                    <li>
+                <a class="language-item d-flex" href="http://127.0.0.1:8000/en/login" target="_self">
+                                            <svg style="height: 16px; width: auto;" class="flag" xmlns="http://www.w3.org/2000/svg" width="20" height="15" fill="none"><mask id="flags_us_a" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" d="M0 0h20v15H0z"/></mask><g mask="url(#flags_us_a)"><path fill="#E31D1C" fill-rule="evenodd" d="M0 0h20v15H0V0z" clip-rule="evenodd"/><path fill="#F7FCFF" fill-rule="evenodd" d="M0 1.25V2.5h20V1.25H0zm0 2.5V5h20V3.75H0zM0 7.5V6.25h20V7.5H0zm0 1.25V10h20V8.75H0zm0 3.75v-1.25h20v1.25H0zM0 15v-1.25h20V15H0z" clip-rule="evenodd"/><path fill="#2E42A5" d="M0 0h11.25v8.75H0z"/><path fill="#F7FCFF" fill-rule="evenodd" d="m1.3 2.717.662-.461.514.37h-.29l.588.52-.2.73h-.31l-.303-.67-.257.67H.935l.589.52-.224.821.662-.461.514.37h-.29l.588.52-.2.73h-.31l-.303-.67-.257.67H.935l.589.52-.224.821.662-.461.641.461-.199-.82.515-.521H2.68l.531-.37.514.37h-.29l.588.52-.224.821.662-.461.641.461-.199-.82.515-.521H5.18l.531-.37.514.37h-.29l.588.52-.224.821.662-.461.641.461-.199-.82.515-.521H7.68l.531-.37.514.37h-.29l.588.52-.224.821.662-.461.641.461-.199-.82.515-.521h-.655l-.303-.67-.257.67H8.83l-.177-.73.515-.52H8.93l.531-.37.641.461-.199-.82.515-.521h-.655l-.303-.67-.257.67H8.83l-.177-.73.515-.52H8.93l.531-.37.641.461-.199-.82.515-.521h-.655L9.46.706l-.257.67h-.769l.589.52-.2.73h-.31l-.303-.67-.257.67H7.58l-.177-.73.515-.52h-.655L6.96.706l-.257.67h-.769l.589.52-.2.73h-.31l-.303-.67-.257.67H5.08l-.177-.73.515-.52h-.655L4.46.706l-.257.67h-.769l.589.52-.2.73h-.31l-.303-.67-.257.67H2.58l-.177-.73.515-.52h-.655L1.96.706l-.257.67H.935l.589.52-.224.821zm7.525 2.409.199-.73-.589-.52h.291l-.514-.37-.53.37h.237l-.515.52.177.73h.373l.257-.67.303.67h.31zm-1.349 0-.514-.37-.53.37h.237l-.515.52.177.73h.373l.257-.67.303.67h.31l.2-.73-.589-.52h.291zm-2.202.52-.2.73h-.31l-.303-.67-.257.67H3.83l-.177-.73.515-.52H3.93l.531-.37.514.37h-.29l.588.52zm.18-.52H5.08l-.177-.73.515-.52H5.18l.531-.37.514.37h-.29l.588.52-.2.73h-.31l-.303-.67-.257.67zm-1.63 0 .2-.73-.589-.52h.291l-.514-.37-.53.37h.237l-.515.52.177.73h.373l.257-.67.303.67h.31zm3.95-1.98-.2.73h-.31l-.303-.67-.257.67H6.33l-.177-.73.515-.52H6.43l.531-.37.514.37h-.29l.588.52zm-2.798-.52-.514-.37-.53.37h.237l-.515.52.177.73h.373l.257-.67.303.67h.31l.2-.73-.589-.52h.291z" clip-rule="evenodd"/></g></svg> <span class="ms-1">English</span>
+                                                        </a>
+            </li>
+                    <li>
+                <a class="language-item d-flex active" href="http://127.0.0.1:8000/vi/login" target="_self">
+                                            <svg style="height: 16px; width: auto;" class="flag" xmlns="http://www.w3.org/2000/svg" width="20" height="15" fill="none"><mask id="flags_vn_a" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" d="M0 0h20v15H0z"/></mask><g mask="url(#flags_vn_a)"><path fill="#F7FCFF" fill-rule="evenodd" d="M0 0h20v15H0V0z" clip-rule="evenodd"/><path fill="#E31D1C" fill-rule="evenodd" d="M0 0v15h20V0H0z" clip-rule="evenodd"/><mask id="flags_vn_b" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" fill-rule="evenodd" d="M0 0v15h20V0H0z" clip-rule="evenodd"/></mask><g mask="url(#flags_vn_b)"><path fill="#FFD221" fill-rule="evenodd" d="m10.039 9.987-3.22 2.047L7.9 8.451l-2.296-2.34 3.166-.07 1.4-3.537 1.277 3.584 3.158.055-2.373 2.384 1.108 3.409-3.3-1.949z" clip-rule="evenodd"/></g></g></svg> <span class="ms-1">Ti?ng Vi?t</span>
+                                                        </a>
+            </li>
+                    <li>
+                <a class="language-item d-flex" href="http://127.0.0.1:8000/ja/login" target="_self">
+                                            <svg style="height: 16px; width: auto;" class="flag" xmlns="http://www.w3.org/2000/svg" width="20" height="15" fill="none"><mask id="flags_jp_a" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" d="M0 0h20v15H0z"/></mask><g mask="url(#flags_jp_a)"><path fill="#F7FCFF" fill-rule="evenodd" d="M0 0v15h20V0H0z" clip-rule="evenodd"/><mask id="flags_jp_b" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#fff" fill-rule="evenodd" d="M0 0v15h20V0H0z" clip-rule="evenodd"/></mask><g mask="url(#flags_jp_b)"><path fill="#E31D1C" fill-rule="evenodd" d="M10 12.188a4.688 4.688 0 1 0 0-9.376 4.688 4.688 0 0 0 0 9.376z" clip-rule="evenodd"/></g></g></svg> <span class="ms-1">???</span>
+                                                        </a>
+            </li>
+            
+
+                </ul>
+                        <div class="menu-title mt-20">
+                <span>Currencies</span>
+            </div>
+            <ul class="navbar-nav mb-2 mb-lg-0 me-3 ms-3">
+                <li>
+            <a class="" class="currency-item" href="http://127.0.0.1:8000/currency/switch/VND">VND</a>
+        </li>
+            <li>
+            <a class="" class="currency-item" href="http://127.0.0.1:8000/currency/switch/EUR">EUR</a>
+        </li>
+            <li>
+            <a class="active" class="currency-item" href="http://127.0.0.1:8000/currency/switch/USD">USD</a>
+        </li>
+    
+            </ul>
+
+                            <div class="menu-title mt-20">
+                    <span>Tài kho?n</span>
+                </div>
+                <ul class="navbar-nav mb-2 mb-lg-0 me-3 ms-3">
+                    <li><a href="http://127.0.0.1:8000/login">Ðang nh?p</a></li>
+                    <li><a href="http://127.0.0.1:8000/register">Ðang ký</a></li>
+                </ul>
+                    </div>
+    </div>
+</nav>
+
+</div>
+
+
+    </header>
+
+            <section class="breadcrumb-area d-flex align-items-center" style="background-image:url(http://127.0.0.1:8000/themes/riorelax/images/breadcrumb-bg.jpg);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-xl-12 col-lg-12">
+                <div class="breadcrumb-wrap text-center">
+                    <div class="breadcrumb-title">
+                                                    <h2>Ðang nh?p</h2>
+                        
+                                                        <div class="breadcrumb-wrap">
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                                                                                                                                <li class="breadcrumb-item"><a href="http://127.0.0.1:8000">Trang ch?</a></li>
+                                                                                                                                                                                                <li class="breadcrumb-item active" aria-current="page">Ðang nh?p</li>
+                                                                                                                                    </ol>
+                                    </nav>
+                                </div>
+                                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    
+    <section class="pt-40 pb-40">
+        <div class="container">
+            <section class="about-area about-p pt-120 pb-120 p-relative fix">
+    <div class="container">
+        <div class="row flex-row-reverse justify-content-center align-items-center">
+            
+            <div class="col-xxl-5 col-xl-12 col-lg-12">
+                <div class="about-content s-about-content wow fadeInRight animated" data-animation="fadeInRight" data-delay=".4s" style="visibility: visible; animation-name: fadeInRight;">
+                    <div class="about-title second-title pb-25">
+                        <h1>Welcome back</h1>
+                    </div>
+                    <div class="form-border-box">
+                        <form method="POST" action="http://127.0.0.1:8000/login" accept-charset="UTF-8" id="botble-hotel-forms-fronts-auth-login-form" class="js-base-form auth-form dirty-check" icon="ti ti-lock" heading="Ðang nh?p vào tài kho?n c?a b?n" description="D? li?u cá nhân c?a b?n s? du?c s? d?ng d? h? tr? tr?i nghi?m c?a b?n trên trang web này, d? qu?n lý quy?n truy c?p vào tài kho?n c?a b?n."><input name="_token" type="hidden" value="vaJFmQFMwihHtymf3hw1YfBLClGEaFeEbkilIteH">
+
+    
+
+            
+        
+            
+        <div class="mb-3 position-relative" >
+    
+            <label class="form-label form-label required" for="email">
+    Email
+
+    
+    </label>
+    
+            <div class="position-relative"><span class="auth-input-icon input-group-text"><svg class="icon svg-icon-ti-ti-mail"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+  <path d="M3 7l9 6l9 -6" />
+</svg></span>
+    
+    <input class="form-control ps-5" data-counter="60" placeholder="Ví d?: example@gmail.com" autocomplete="email" required="required" name="email" type="email" id="email">
+
+            </div>
+    
+    
+
+            </div>
+    
+
+            
+        <div class="mb-3 position-relative" >
+    
+            <label class="form-label" for="password">
+    M?t kh?u
+
+    
+    </label>
+    
+            <div class="position-relative"><span class="auth-input-icon input-group-text"><svg class="icon svg-icon-ti-ti-lock"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z" />
+  <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" />
+  <path d="M8 11v-4a4 4 0 1 1 8 0v4" />
+</svg></span>
+    
+    <div class="input-group">
+        <input
+            type="password"
+            name="password"
+            id="password"
+            value=""
+             class="form-control ps-5" data-counter="250" placeholder="M?t kh?u"
+            data-bb-password
+        >
+        <span
+            class="input-password-toggle"
+            data-bb-toggle-password
+        >
+            <svg class="icon svg-icon-ti-ti-eye"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+  <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+</svg>        </span>
+    </div>
+
+            </div>
+    
+    
+
+            </div>
+    
+    <style>
+    .input-password-toggle {
+        position: absolute;
+        right: 0;
+        top: 0;
+        cursor: pointer;
+        padding: 10px 15px;
+        z-index: 9;
+        height: 100%;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    input[data-bb-password]:valid,
+    input[data-bb-password].is-valid {
+        background-image: unset;
+    }
+
+    body[dir="rtl"] .input-password-toggle {
+        right: unset;
+        left: 0;
+    }
+</style>
+
+<script>
+    (function() {
+        if (window.bbPasswordToggleInitialized) {
+            return;
+        }
+
+        window.bbPasswordToggleInitialized = true;
+
+        function initPasswordToggles() {
+            document.querySelectorAll('[data-bb-toggle-password]').forEach(function(button) {
+                if (button.dataset.initialized === 'true') {
+                    return;
+                }
+
+                button.dataset.initialized = 'true';
+
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const inputGroup = this.closest('.input-group');
+                    const passwordField = inputGroup ? inputGroup.querySelector(
+                        '[data-bb-password]') : null;
+
+                    if (!passwordField) {
+                        console.warn('Password field not found for toggle button');
+                        return;
+                    }
+
+                    if (passwordField.getAttribute('type') === 'password') {
+                        passwordField.setAttribute('type', 'text');
+                        this.innerHTML = `<svg class="icon svg-icon-ti-ti-eye-off"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" />
+  <path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" />
+  <path d="M3 3l18 18" />
+</svg>`;
+                    } else {
+                        passwordField.setAttribute('type', 'password');
+                        this.innerHTML = `<svg class="icon svg-icon-ti-ti-eye"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+  <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+</svg>`;
+                    }
+                });
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initPasswordToggles);
+        } else {
+            initPasswordToggles();
+        }
+    })();
+</script>
+
+
+            
+        <div class="row g-0 mb-3">
+
+    
+    
+
+    
+
+            
+        <div class="col-6" >
+    
+
+    
+    <input
+        type="hidden"
+        name="remember"
+        value="0"
+    >
+
+    <label  class="form-check">
+    <input
+        type="checkbox" id="remember_dc3c99bb4e249a95567a2bf7d5f327ed" name="remember" class="form-check-input"
+        value="1"
+            >
+
+            <span class="form-check-label">
+            Ghi nh? dang nh?p
+        </span>
+    
+    </label>
+
+    
+    
+
+            </div>
+    
+
+            
+        <div class="col-6 text-end" >
+    
+
+    
+    <a href="http://127.0.0.1:8000/password/request" class="text-decoration-underline">Qu&ecirc;n m?t kh?u?</a>
+
+    
+    
+
+            </div>
+    
+
+            
+        </div>
+
+    
+    
+
+    
+
+            
+        <div class="d-grid">
+
+    
+    
+
+    
+
+            
+        
+            
+        <button class="btn btn-primary btn-auth-submit" type="submit">Ðang nh?p <svg class="icon svg-icon-ti-ti-arrow-narrow-right"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M5 12l14 0" />
+  <path d="M15 16l4 -4" />
+  <path d="M15 8l4 4" />
+</svg></button>
+
+
+            
+        </div>
+
+    
+    
+
+    
+
+            
+        <div class="mt-3 text-center">B?n chua có tài kho?n? <a href="http://127.0.0.1:8000/register" class="text-decoration-underline">Ðang ký ngay</a></div>
+
+    
+    
+
+    
+
+            
+        
+            
+        
+    
+    
+
+    </form>
+
+    
+                    </div>
+                </div>
+                <div class="col-lg-12 mt-20">
+                    <span class="color-grey-500 d-inline-block align-middle font-sm">
+                        Don’t have an account?
+                    </span>
+                    <a class="d-inline-block align-middle color-success ms-1 custom-register-label" href="http://127.0.0.1:8000/register">Sign up now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+        </div>
+    </section>
+
+    <footer class="footer-bg footer-p">
+    <div class="footer-top  pt-90 pb-40"
+             >
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-xl-4 col-lg-4 col-sm-6">
+    <div class="footer-widget mb-30">
+                    <div class="f-widget-title mb-30">
+                <img src="http://127.0.0.1:8000/storage/logo/new-project.png" alt="">
+            </div>
+                <div class="f-contact">
+            <ul>
+                                    <li>
+                        <i class="icon fal fa-phone"></i>
+                        <span>0989692323</span>
+                    </li>
+                
+                                    <li>
+                        <i class="icon fal fa-envelope"></i>
+                        <span>Vnsgroup.vns@gmail.com</span>
+                    </li>
+                
+                                    <li>
+                        <i class="icon fal fa-map-marker-check"></i>
+                        <span>104/54 du?ng Lê Quang Ð?o, Phu?ng T? Liêm, Thành ph? Hà N?i, Vi?t Nam </span>
+                    </li>
+                            </ul>
+
+        </div>
+    </div>
+</div>
+<div class="col-xl-2 col-lg-2 col-sm-6">
+    <div class="footer-widget mb-30">
+        <div class="f-widget-title">
+            <h2>Liên k?t</h2>
+        </div>
+        <div class="footer-link">
+            <ul >
+            <li>
+            <a target="_self" class="font-sm color-grey-200" href="http://127.0.0.1:8000/about-us">V? chúng tôi</a>
+        </li>
+            <li>
+            <a target="_self" class="font-sm color-grey-200" href="http://127.0.0.1:8000/services">D?ch v?</a>
+        </li>
+            <li>
+            <a target="_self" class="font-sm color-grey-200" href="http://127.0.0.1:8000/contact-us">Liên h? v?i chúng tôi</a>
+        </li>
+            <li>
+            <a target="_self" class="font-sm color-grey-200" href="http://127.0.0.1:8000/blog">Bài vi?t</a>
+        </li>
+    </ul>
+
+        </div>
+    </div>
+</div>
+<div class="col-xl-2 col-lg-2 col-sm-6">
+    <div class="footer-widget mb-30">
+        <div class="f-widget-title">
+            <h2>D?ch v?</h2>
+        </div>
+        <div class="footer-link">
+            <ul >
+            <li>
+            <a target="_self" class="font-sm color-grey-200" href="http://127.0.0.1:8000/faq">Câu h?i thu?ng g?p</a>
+        </li>
+            <li>
+            <a target="_self" class="font-sm color-grey-200" href="http://127.0.0.1:8000/privacy">Riêng tu</a>
+        </li>
+            <li>
+            <a target="_self" class="font-sm color-grey-200" href="http://127.0.0.1:8000/term-and-conditions">Ði?u kho?n &amp; Ði?u ki?n</a>
+        </li>
+    </ul>
+
+        </div>
+    </div>
+</div>
+<div class="col-xl-4 col-lg-4 col-sm-6">
+        <div class="footer-widget mb-30">
+                            <div class="f-widget-title">
+                    <h2>Ðang ký nh?n b?n tin</h2>
+                </div>
+            
+            <div class="footer-link" dir="ltr">
+                <div class="subricbe p-relative form-newsletter" data-animation="fadeInDown" data-delay=".4s" >
+                    <form method="POST" action="http://127.0.0.1:8000/newsletter/subscribe" accept-charset="UTF-8" id="botble-newsletter-forms-fronts-newsletter-form" class="subscribe-form dirty-check"><input name="_token" type="hidden" value="vaJFmQFMwihHtymf3hw1YfBLClGEaFeEbkilIteH">
+
+    
+
+            
+        
+            
+        <div class="input-group mb-3">
+
+    
+    
+
+    
+
+            
+        <input class="form-control" placeholder="Nh?p email c?a b?n" id="newsletter-email" required="required" name="email" type="email">
+
+    
+    
+
+    
+
+            
+        
+            
+        </div>
+
+    
+    
+
+    
+
+            
+        <div class="newsletter-message newsletter-success-message" style="display: none"></div>
+    <div class="newsletter-message newsletter-error-message" style="display: none"></div>
+
+    
+    
+
+    
+
+            
+        
+            
+        <button class="btn header-btn" type="submit"><i class="fas fa-location-arrow"></i></button>
+
+
+    
+    
+
+    </form>
+
+    
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- <div class="copyright-wrap">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6">
+                    
+                </div>
+                <div class="col-lg-6 col-md-6 text-end text-xl-right">
+                                    </div>
+
+            </div>
+        </div>
+    </div> -->
+</footer>
+
+
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/imagesloaded.min.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/jquery.counterup.min.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/jquery.scrollUp.min.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/jquery.waypoints.min.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/js_isotope.pkgd.min.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/one-page-nav-min.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/parallax.min.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/popper.min.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/slick/slick.min.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/wow.min.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/datepicker/bootstrap-datepicker.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/plugins/toastr/toastr.min.js"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/js/main.js"></script>
+<script src="http://127.0.0.1:8000/vendor/core/plugins/language/js/language-public.js?v=2.2.0"></script>
+<script src="http://127.0.0.1:8000/themes/riorelax/js/script.js"></script>
+<script src="http://127.0.0.1:8000/vendor/core/core/js-validation/js/js-validation.js?v=1.0.1"></script>
+<script>
+    jQuery(document).ready(function() {
+        'use strict';
+        $("#botble-hotel-forms-fronts-auth-login-form").each(function() {
+            $(this).validate({
+                errorElement: 'div',
+                errorClass: 'invalid-feedback',
+
+                errorPlacement: function(error, element) {
+                    if (element.closest('[data-bb-toggle="tree-checkboxes"]').length) {
+                        error.insertAfter(element.closest(
+                            '[data-bb-toggle="tree-checkboxes"]'));
+                    } else if (element.parent('.input-group').length || element.prop(
+                        'type') === 'checkbox' || element.prop('type') === 'radio') {
+                        error.insertAfter(element.parent());
+                    } else if ($(element).data('select2')) {
+                        error.insertAfter(element.next('span'));
+                    } else {
+                        error.insertAfter(element);
+                    }
+                },
+
+                highlight: function(element) {
+                    $(element).closest('.form-control').removeClass('is-valid').addClass(
+                        'is-invalid');
+                },
+
+                
+                unhighlight: function(element) {
+                    $(element).closest('.form-control').removeClass('is-invalid').addClass(
+                        'is-valid');
+                },
+
+                success: function(element) {
+                    $(element).closest('.form-control').removeClass('is-invalid').addClass(
+                        'is-valid');
+                },
+
+                focusInvalid: false,
+                
+                rules: JSON.parse('{\u0022email\u0022:{\u0022laravelValidation\u0022:[[\u0022Required\u0022,[],\u0022The Email field is required.\u0022,true]],\u0022laravelValidationRemote\u0022:[[{},[\u0022email\u0022,\u0022eyJpdiI6ImRrSkxCTFlIbUsyYmpPT20vZ0ZONGc9PSIsInZhbHVlIjoidVcrQnp5Q215ZEVCUXdqMjhTNWFyY3BtRkZ2dm1pWUtBbk5lMDVIc3RMMXdnTkFNWFBzMEdlQ2JJekwwUkNpbWtxUnRKZTkyZXNjUG1jWFBNeS9EUnc9PSIsIm1hYyI6IjZkYjAzNDdlNTI1MjE3YTIxZTY0NTgwMzFiYmRmYTcxZjBhN2I4ZjllYTMyNmJiZmI3YTA0OWVlODdmNDExNWEiLCJ0YWciOiIifQ==\u0022,false],\u0022validation.illuminate\\\\_validation\\\\_invokable_validation_rule\u0022,false]]},\u0022password\u0022:{\u0022laravelValidation\u0022:[[\u0022Required\u0022,[],\u0022The M\\u1eadt kh\\u1ea9u field is required.\u0022,true],[\u0022Min\u0022,[\u00226\u0022],\u0022The M\\u1eadt kh\\u1ea9u must be at least 6 characters.\u0022,false],[\u0022Max\u0022,[\u0022255\u0022],\u0022The M\\u1eadt kh\\u1ea9u must not be greater than 255 characters.\u0022,false]]}}')
+            });
+        });
+    });
+</script>
+<script>
+    jQuery(document).ready(function() {
+        'use strict';
+        $("#botble-newsletter-forms-fronts-newsletter-form").each(function() {
+            $(this).validate({
+                errorElement: 'div',
+                errorClass: 'invalid-feedback',
+
+                errorPlacement: function(error, element) {
+                    if (element.closest('[data-bb-toggle="tree-checkboxes"]').length) {
+                        error.insertAfter(element.closest(
+                            '[data-bb-toggle="tree-checkboxes"]'));
+                    } else if (element.parent('.input-group').length || element.prop(
+                        'type') === 'checkbox' || element.prop('type') === 'radio') {
+                        error.insertAfter(element.parent());
+                    } else if ($(element).data('select2')) {
+                        error.insertAfter(element.next('span'));
+                    } else {
+                        error.insertAfter(element);
+                    }
+                },
+
+                highlight: function(element) {
+                    $(element).closest('.form-control').removeClass('is-valid').addClass(
+                        'is-invalid');
+                },
+
+                
+                unhighlight: function(element) {
+                    $(element).closest('.form-control').removeClass('is-invalid').addClass(
+                        'is-valid');
+                },
+
+                success: function(element) {
+                    $(element).closest('.form-control').removeClass('is-invalid').addClass(
+                        'is-valid');
+                },
+
+                focusInvalid: false,
+                
+                rules: JSON.parse('{\u0022email\u0022:{\u0022laravelValidation\u0022:[[\u0022Required\u0022,[],\u0022The email field is required.\u0022,true],[\u0022Email\u0022,[],\u0022The email must be a valid email address.\u0022,false]],\u0022laravelValidationRemote\u0022:[[\u0022Unique\u0022,[\u0022email\u0022,\u0022eyJpdiI6IjdiVmc2R2hvTkVmRzBhZVBxRzJmTVE9PSIsInZhbHVlIjoibkJmMkJuQUZpV1lGcHlVWi8vUVBVN2prUmp2MVROZzByQStTcEk4TjAwOThoZUFMRU1mbk5ObzR0bGpLMnl0Ymh5UXVETXl0V00zSzBBTWttaTBFVkE9PSIsIm1hYyI6IjgyMmFiNmFhM2Q5OTY5NTA0M2MxN2RjMzBmZTczMWZkNTk1YjNkOGI3YTgwMDZhODFjOTA3ODYwNGRhNjEzMTEiLCJ0YWciOiIifQ==\u0022,false],\u0022The email has already been taken.\u0022,false]]},\u0022status\u0022:{\u0022laravelValidation\u0022:[[\u0022In\u0022,[\u0022subscribed\u0022,\u0022unsubscribed\u0022],\u0022The selected status is invalid.\u0022,false]]}}')
+            });
+        });
+    });
+</script>
+
+
+
+<style>
+    .site-notice {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 8px;
+        z-index: 99999;
+        display: none;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .site-notice.site-notice--visible {
+        display: block;
+    }
+
+    .site-notice.site-notice-full-width .site-notice-body {
+        margin: 0 auto;
+    }
+
+    .site-notice.site-notice-minimal {
+        padding: 0;
+        right: unset;
+        border-radius: 5px;
+        bottom: 1em;
+        flex-direction: column;
+        left: 1em;
+    }
+
+    .site-notice.site-notice-minimal .site-notice-body {
+        margin: 0 16px 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-width: 400px !important;
+    }
+
+    .site-notice.site-notice-minimal .site-notice__inner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 4px;
+    }
+
+    .site-notice.site-notice-minimal .site-notice__message {
+        font-size: 13px;
+        line-height: 1.5;
+        padding: 12px 12px 0;
+    }
+
+    .site-notice.site-notice-minimal .site-notice__actions {
+        margin: 0;
+        padding: 8px 12px 12px;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    .site-notice.site-notice-minimal .site-notice__actions button {
+        min-width: auto;
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .site-notice.site-notice-minimal .site-notice__categories {
+        padding: 12px;
+        margin-top: 0;
+    }
+
+    .site-notice.site-notice-minimal .site-notice__categories .cookie-category {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+
+    .site-notice.site-notice-minimal .site-notice__categories .cookie-category:last-child {
+        margin-bottom: 0;
+    }
+
+    .site-notice.site-notice-minimal .site-notice__categories .cookie-category__description {
+        font-size: 12px;
+    }
+
+    .site-notice.site-notice-minimal .site-notice__categories .cookie-consent__save {
+        padding: 8px 0 0;
+        margin-top: 8px;
+    }
+
+    .site-notice.site-notice-minimal .site-notice__categories .cookie-consent__save .cookie-consent__save-button {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .site-notice .site-notice-body {
+        padding: 8px 15px;
+        border-radius: 4px;
+    }
+
+    .site-notice .site-notice__inner {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .site-notice .site-notice__message {
+        margin: 0;
+        line-height: 1.4;
+        font-size: 14px;
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .site-notice .site-notice__message a {
+        color: inherit;
+        text-decoration: underline;
+    }
+
+    .site-notice .site-notice__message a:hover {
+        text-decoration: none;
+    }
+
+    .site-notice .site-notice__categories {
+        display: none;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .site-notice .site-notice__categories .cookie-category {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+    }
+
+    .site-notice .site-notice__categories .cookie-category__label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+    }
+
+    .site-notice .site-notice__categories .cookie-category__label input[type="checkbox"] {
+        margin: 0;
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        font-size: initial;
+        height: initial;
+        width: auto;
+    }
+
+    .site-notice .site-notice__categories .cookie-category__label input[type="checkbox"]:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .site-notice .site-notice__categories .cookie-category__name {
+        font-weight: bold;
+    }
+
+    .site-notice .site-notice__categories .cookie-category__description {
+        margin: 0;
+        font-size: 0.9em;
+        opacity: 0.8;
+    }
+
+    .site-notice .site-notice__categories .cookie-consent__save {
+        margin-top: 1rem;
+        padding: .75rem;
+    }
+
+    [dir="rtl"] .site-notice .site-notice__categories .cookie-consent__save {
+        text-align: left;
+    }
+
+    .site-notice .site-notice__categories .cookie-consent__save .cookie-consent__save-button {
+        padding: 6px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 13px;
+        min-width: 100px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .site-notice .site-notice__categories .cookie-consent__save .cookie-consent__save-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .site-notice .site-notice__categories .cookie-consent__save .cookie-consent__save-button:active {
+        transform: translateY(0);
+    }
+
+    .site-notice .site-notice__actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        margin-left: auto;
+    }
+
+    [dir="rtl"] .site-notice .site-notice__actions {
+        margin-left: 0;
+        margin-right: auto;
+    }
+
+    .site-notice .site-notice__actions button {
+        padding: 6px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 13px;
+        min-width: 100px;
+        text-align: center;
+    }
+
+    .site-notice .site-notice__actions button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .site-notice .site-notice__actions button:active {
+        transform: translateY(0);
+    }
+
+    .site-notice .cookie-consent__actions .site-notice__reject {
+        font-weight: 500;
+        opacity: 0.95;
+    }
+
+    .site-notice .cookie-consent__actions .site-notice__reject:hover {
+        opacity: 1;
+    }
+
+    .site-notice .cookie-consent__actions .site-notice__customize {
+        font-weight: 500;
+        opacity: 0.95;
+    }
+
+    .site-notice .cookie-consent__actions .site-notice__customize:hover {
+        opacity: 1;
+    }
+
+    .site-notice .cookie-consent__actions .site-notice__customize.active {
+        opacity: 0.8;
+        transform: translateY(0);
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .site-notice .cookie-consent__actions .site-notice__agree {
+        font-weight: bold;
+        position: relative;
+    }
+
+    .site-notice .cookie-consent__actions .site-notice__agree:before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        z-index: -1;
+    }
+
+    @media (max-width: 767px) {
+        .site-notice .site-notice__inner {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.75rem;
+        }
+
+        [dir="rtl"] .site-notice .site-notice__inner {
+            flex-direction: column;
+        }
+
+        .site-notice .site-notice__actions {
+            justify-content: center;
+            margin-left: 0;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        [dir="rtl"] .site-notice .site-notice__actions {
+            margin-right: 0;
+        }
+
+        .site-notice .site-notice__actions button {
+            flex: none;
+            min-width: 70px;
+            max-width: 100px;
+            padding: 6px 10px;
+            font-size: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-radius: 3px;
+        }
+    }
+</style>
+
+<div
+    class="js-site-notice site-notice site-notice-full-width"
+    style="background-color: #000; color: #fff;"
+    dir="ltr"
+    data-nosnippet
+>
+    <div
+        class="site-notice-body"
+        style="max-width: 1170px;"
+    >
+        <div class="site-notice__inner">
+            <div class="site-notice__message">
+                Tr?i nghi?m c?a b?n trên trang web này s? du?c c?i thi?n b?ng cách cho phép cookie.
+                            </div>
+
+            <div class="site-notice__actions">
+                                                <button
+                    class="js-site-notice-agree site-notice__agree"
+                    style="background-color: #000; color: #fff; border: 1px solid #fff;"
+                >
+                    Ch?p nh?n cookie
+                </button>
+            </div>
+        </div>
+
+                    <div class="site-notice__categories">
+                                    <div class="cookie-category">
+                        <label class="cookie-category__label">
+                            <input
+                                type="checkbox"
+                                name="cookie_category[]"
+                                value="essential"
+                                class="js-cookie-category"
+                                 checked disabled                             >
+                            <span
+                                class="cookie-category__name">Thi?t y?u</span>
+                        </label>
+                        <p class="cookie-category__description">
+                            Nh?ng cookie này là c?n thi?t d? trang web ho?t d?ng dúng cách.
+                        </p>
+                    </div>
+                                    <div class="cookie-category">
+                        <label class="cookie-category__label">
+                            <input
+                                type="checkbox"
+                                name="cookie_category[]"
+                                value="analytics"
+                                class="js-cookie-category"
+                                                            >
+                            <span
+                                class="cookie-category__name">Phân tích</span>
+                        </label>
+                        <p class="cookie-category__description">
+                            Nh?ng cookie này giúp chúng tôi hi?u cách khách truy c?p tuong tác v?i trang web.
+                        </p>
+                    </div>
+                                    <div class="cookie-category">
+                        <label class="cookie-category__label">
+                            <input
+                                type="checkbox"
+                                name="cookie_category[]"
+                                value="marketing"
+                                class="js-cookie-category"
+                                                            >
+                            <span
+                                class="cookie-category__name">Ti?p th?</span>
+                        </label>
+                        <p class="cookie-category__description">
+                            Nh?ng cookie này du?c s? d?ng d? cung c?p qu?ng cáo cá nhân hóa.
+                        </p>
+                    </div>
+                
+                <div class="site-notice__save">
+                    <button
+                        class="js-site-notice-save site-notice__save-button"
+                        style="background-color: #000; color: #fff; border: 1px solid #fff;"
+                    >
+                        Luu tùy ch?n
+                    </button>
+                </div>
+            </div>
+            </div>
+</div>
+
+<div data-site-cookie-name="cookie_for_consent"></div>
+<div data-site-cookie-lifetime="7300"></div>
+<div data-site-cookie-domain="127.0.0.1"></div>
+<div data-site-session-secure=""></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function checkCookie(name) {
+            return document.cookie.split(';').some((item) => item.trim().startsWith(name + '='));
+        }
+
+        setTimeout(function() {
+            const cookieName = document.querySelector('div[data-site-cookie-name]').getAttribute(
+                'data-site-cookie-name') || 'cookie_for_consent';
+            if (!checkCookie(cookieName)) {
+                const siteNotice = document.querySelector('.js-site-notice');
+                if (siteNotice) {
+                    siteNotice.classList.add('site-notice--visible');
+                }
+            }
+        }, 1000);
+    });
+
+    window.addEventListener('load', function() {
+        if (typeof gtag !== 'undefined') {
+            gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'analytics_storage': 'denied'
+            });
+
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('js-site-notice-agree')) {
+                    const categories = document.querySelectorAll('.js-cookie-category:checked');
+                    const consents = {
+                        'ad_storage': 'denied',
+                        'analytics_storage': 'denied'
+                    };
+
+                    categories.forEach(function(category) {
+                        if (category.value === 'marketing') {
+                            consents.ad_storage = 'granted';
+                        }
+                        if (category.value === 'analytics') {
+                            consents.analytics_storage = 'granted';
+                        }
+                    });
+
+                    gtag('consent', 'update', consents);
+                }
+            });
+        }
+
+        window.botbleCookieConsent = (function() {
+            const COOKIE_NAME = document.querySelector('div[data-site-cookie-name]').getAttribute(
+                'data-site-cookie-name') || 'cookie_for_consent';
+            const COOKIE_DOMAIN = document.querySelector('div[data-site-cookie-domain]').getAttribute(
+                'data-site-cookie-domain') || window.location.hostname;
+            const COOKIE_LIFETIME = parseInt(document.querySelector('div[data-site-cookie-lifetime]')
+                .getAttribute('data-site-cookie-lifetime') || '36000', 10);
+            const SESSION_SECURE = document.querySelector('div[data-site-session-secure]').getAttribute(
+                'data-site-session-secure') || '';
+
+            const cookieDialog = document.querySelector('.js-site-notice');
+            const cookieCategories = document.querySelector('.site-notice__categories');
+            const customizeButton = document.querySelector('.js-site-notice-customize');
+
+            if (cookieDialog) {
+                if (cookieCategories) {
+                    cookieCategories.style.display = 'none';
+                }
+
+                if (!cookieExists(COOKIE_NAME)) {
+                    setTimeout(function() {
+                        cookieDialog.classList.add('site-notice--visible');
+                    }, 800);
+                }
+            }
+
+            function consentWithCookies() {
+                const categories = {};
+                document.querySelectorAll('.js-cookie-category:checked').forEach(function(checkbox) {
+                    categories[checkbox.value] = true;
+                });
+                setCookie(COOKIE_NAME, JSON.stringify(categories), COOKIE_LIFETIME);
+                hideCookieDialog();
+            }
+
+            function savePreferences() {
+                consentWithCookies();
+
+                if (cookieCategories) {
+                    const slideUpAnimation = cookieCategories.animate(
+                        [{
+                                opacity: 1,
+                                height: cookieCategories.offsetHeight + 'px'
+                            },
+                            {
+                                opacity: 0,
+                                height: 0
+                            }
+                        ], {
+                            duration: 300,
+                            easing: 'ease-out'
+                        }
+                    );
+
+                    slideUpAnimation.onfinish = function() {
+                        cookieCategories.style.display = 'none';
+                    };
+                }
+
+                if (customizeButton) {
+                    customizeButton.classList.remove('active');
+                }
+            }
+
+            function rejectAllCookies() {
+                if (cookieExists(COOKIE_NAME)) {
+                    const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+                    document.cookie = COOKIE_NAME +
+                        '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=' +
+                        COOKIE_DOMAIN +
+                        '; path=/; SameSite=Lax' +
+                        secure +
+                        SESSION_SECURE;
+                }
+
+                if (typeof gtag !== 'undefined') {
+                    gtag('consent', 'update', {
+                        'ad_storage': 'denied',
+                        'analytics_storage': 'denied'
+                    });
+                }
+
+                hideCookieDialog();
+            }
+
+            function cookieExists(name) {
+                const cookie = getCookie(name);
+                return cookie !== null && cookie !== undefined;
+            }
+
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) {
+                    return parts.pop().split(';').shift();
+                }
+                return null;
+            }
+
+            function hideCookieDialog() {
+                if (cookieDialog) {
+                    cookieDialog.classList.remove('site-notice--visible');
+                    cookieDialog.style.display = 'none';
+                }
+            }
+
+            function setCookie(name, value, expirationInDays) {
+                const date = new Date();
+                date.setTime(date.getTime() + expirationInDays * 24 * 60 * 60 * 1000);
+                const secure = window.location.protocol === 'https:' ? ';Secure' : '';
+                document.cookie =
+                    name +
+                    '=' +
+                    value +
+                    ';expires=' +
+                    date.toUTCString() +
+                    ';domain=' +
+                    COOKIE_DOMAIN +
+                    ';path=/' +
+                    ';SameSite=Lax' +
+                    secure +
+                    SESSION_SECURE;
+            }
+
+            function toggleCustomizeView() {
+                if (!cookieCategories) return;
+
+                if (cookieCategories.style.display === 'none') {
+                    cookieCategories.style.height = '0';
+                    cookieCategories.style.opacity = '0';
+                    cookieCategories.style.display = 'block';
+
+                    const height = cookieCategories.scrollHeight;
+                    const slideDownAnimation = cookieCategories.animate(
+                        [{
+                                opacity: 0,
+                                height: 0
+                            },
+                            {
+                                opacity: 1,
+                                height: height + 'px'
+                            }
+                        ], {
+                            duration: 300,
+                            easing: 'ease-in'
+                        }
+                    );
+
+                    slideDownAnimation.onfinish = function() {
+                        cookieCategories.style.height = 'auto';
+                        cookieCategories.style.opacity = '1';
+                    };
+
+                    if (customizeButton) {
+                        customizeButton.classList.add('active');
+                    }
+                } else {
+                    const slideUpAnimation = cookieCategories.animate(
+                        [{
+                                opacity: 1,
+                                height: cookieCategories.offsetHeight + 'px'
+                            },
+                            {
+                                opacity: 0,
+                                height: 0
+                            }
+                        ], {
+                            duration: 300,
+                            easing: 'ease-out'
+                        }
+                    );
+
+                    slideUpAnimation.onfinish = function() {
+                        cookieCategories.style.display = 'none';
+                    };
+
+                    if (customizeButton) {
+                        customizeButton.classList.remove('active');
+                    }
+                }
+            }
+
+            if (cookieExists(COOKIE_NAME)) {
+                hideCookieDialog();
+            }
+
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('js-site-notice-agree')) {
+                    consentWithCookies();
+                } else if (event.target.classList.contains('js-site-notice-reject')) {
+                    rejectAllCookies();
+                } else if (event.target.classList.contains('js-site-notice-customize')) {
+                    toggleCustomizeView();
+                } else if (event.target.classList.contains('js-site-notice-save')) {
+                    savePreferences();
+                }
+            });
+
+            return {
+                consentWithCookies: consentWithCookies,
+                rejectAllCookies: rejectAllCookies,
+                hideCookieDialog: hideCookieDialog,
+                savePreferences: savePreferences,
+            };
+        })();
+    });
+</script>
+
+
+</body>
+</html>
+
+

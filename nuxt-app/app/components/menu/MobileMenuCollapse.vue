@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { MenuData } from "~/composables/useMenu";
+import type { ThemeCurrencyLink, ThemeCustomerBlock } from "~/composables/useHeaderExtras";
 import type { ThemeSocialLink } from "~/composables/useThemeOptions";
 
 const props = defineProps<{
@@ -12,6 +13,8 @@ const props = defineProps<{
   hotline?: string | null;
   email?: string | null;
   socialLinks?: ThemeSocialLink[];
+  currencies?: ThemeCurrencyLink[];
+  customer?: ThemeCustomerBlock | null;
 }>();
 
 const emit = defineEmits<{
@@ -43,6 +46,19 @@ const languages = computed(() =>
 
 const hasLanguages = computed(() => languages.value.length > 1);
 const hasSocialLinks = computed(() => (props.socialLinks || []).length > 0);
+const hasCurrencies = computed(() => (props.currencies || []).length > 0);
+const hasCustomerLinks = computed(() =>
+  Boolean(props.customer?.authenticated || props.customer?.loginUrl || props.customer?.registerUrl),
+);
+const loginTo = computed(() =>
+  props.customer?.loginUrl?.startsWith("/") ? localePath(props.customer.loginUrl) : null,
+);
+const registerTo = computed(() =>
+  props.customer?.registerUrl?.startsWith("/") ? localePath(props.customer.registerUrl) : null,
+);
+const overviewTo = computed(() =>
+  props.customer?.overviewUrl?.startsWith("/") ? localePath(props.customer.overviewUrl) : null,
+);
 
 const closeMenu = () => emit("update:open", false);
 
@@ -177,6 +193,76 @@ onBeforeUnmount(() => {
                 >
                   {{ item.label }}
                 </NuxtLink>
+              </li>
+            </ul>
+          </section>
+
+          <section v-if="hasCurrencies" class="mobile-menu-collapse__section">
+            <ul class="mobile-menu-collapse__plain-list">
+              <li v-for="currency in currencies" :key="currency.title">
+                <a
+                  :href="currency.href"
+                  class="mobile-menu-collapse__plain-link"
+                  :class="{ 'mobile-menu-collapse__plain-link--active': currency.active }"
+                >
+                  {{ currency.title }}
+                </a>
+              </li>
+            </ul>
+          </section>
+
+          <section v-if="hasCustomerLinks" class="mobile-menu-collapse__section">
+            <ul class="mobile-menu-collapse__plain-list">
+              <li v-if="customer?.authenticated && overviewTo">
+                <NuxtLink :to="overviewTo" class="mobile-menu-collapse__plain-link mobile-menu-collapse__plain-link--account" @click="closeMenu">
+                  <img
+                    v-if="customer.avatarUrl"
+                    :src="customer.avatarUrl"
+                    :alt="customer.name || 'Customer avatar'"
+                    class="mobile-menu-collapse__account-avatar"
+                  >
+                  <Icon v-else name="ph:user-circle-fill" class="mobile-menu-collapse__account-icon" />
+                  <span>{{ customer.name || 'My account' }}</span>
+                </NuxtLink>
+              </li>
+              <li v-else-if="customer?.authenticated && customer.overviewUrl">
+                <a :href="customer.overviewUrl" class="mobile-menu-collapse__plain-link mobile-menu-collapse__plain-link--account">
+                  <img
+                    v-if="customer.avatarUrl"
+                    :src="customer.avatarUrl"
+                    :alt="customer.name || 'Customer avatar'"
+                    class="mobile-menu-collapse__account-avatar"
+                  >
+                  <Icon v-else name="ph:user-circle-fill" class="mobile-menu-collapse__account-icon" />
+                  <span>{{ customer.name || 'My account' }}</span>
+                </a>
+              </li>
+              <li v-else-if="loginTo">
+                <NuxtLink :to="loginTo" class="mobile-menu-collapse__plain-link mobile-menu-collapse__plain-link--account" @click="closeMenu">
+                  <Icon name="ph:sign-in" class="mobile-menu-collapse__account-icon" />
+                  <span>Login</span>
+                </NuxtLink>
+              </li>
+              <li v-else-if="customer?.loginUrl">
+                <a :href="customer.loginUrl" class="mobile-menu-collapse__plain-link mobile-menu-collapse__plain-link--account">
+                  <Icon name="ph:sign-in" class="mobile-menu-collapse__account-icon" />
+                  <span>Login</span>
+                </a>
+              </li>
+              <li v-if="!customer?.authenticated && registerTo">
+                <NuxtLink :to="registerTo" class="mobile-menu-collapse__plain-link" @click="closeMenu">
+                  Register
+                </NuxtLink>
+              </li>
+              <li v-else-if="!customer?.authenticated && customer?.registerUrl">
+                <a :href="customer.registerUrl" class="mobile-menu-collapse__plain-link">
+                  Register
+                </a>
+              </li>
+              <li v-if="customer?.authenticated && customer?.logoutUrl">
+                <a :href="customer.logoutUrl" class="mobile-menu-collapse__plain-link">
+                  Logout
+                </a>
               </li>
             </ul>
           </section>
@@ -329,6 +415,23 @@ onBeforeUnmount(() => {
   letter-spacing: 0.16em;
   text-decoration: none;
   text-transform: uppercase;
+}
+
+.mobile-menu-collapse__plain-link--account {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.mobile-menu-collapse__account-avatar {
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.mobile-menu-collapse__account-icon {
+  font-size: 1.1rem;
 }
 
 .mobile-menu-collapse__plain-link--active {

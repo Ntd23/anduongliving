@@ -11,6 +11,7 @@ export const CMS_LOCALE_MAP = {
 const DEFAULT_DEV_HOST = "127.0.0.1";
 const DEFAULT_DEV_PORT = 3000;
 const DEFAULT_API_BASE_URL = "http://anduongliving.test/api";
+const DEFAULT_LOCAL_BACKEND_URL = "http://127.0.0.1:8000";
 
 type LocalePathResolver = (path: string, locale?: string) => string;
 
@@ -101,6 +102,32 @@ export const resolveCmsProxyBaseUrl = (options?: {
 export const resolveCmsApiBaseUrl = (value?: string | null) =>
   normalizeSiteUrl(value) || DEFAULT_API_BASE_URL;
 
+export const resolveBackendSiteUrl = (options?: {
+  explicitBaseUrl?: string | null;
+  apiBaseUrl?: string | null;
+  publicSiteUrl?: string | null;
+  isDevelopment?: boolean;
+}) => {
+  const explicitBaseUrl = normalizeSiteUrl(options?.explicitBaseUrl);
+
+  if (explicitBaseUrl) {
+    return explicitBaseUrl;
+  }
+
+  const apiOrigin = resolveUrlOrigin(resolveCmsApiBaseUrl(options?.apiBaseUrl));
+  const publicOrigin = resolveUrlOrigin(options?.publicSiteUrl);
+
+  if (apiOrigin && apiOrigin !== publicOrigin) {
+    return apiOrigin;
+  }
+
+  if (options?.isDevelopment) {
+    return DEFAULT_LOCAL_BACKEND_URL;
+  }
+
+  return "";
+};
+
 export const buildCmsApiUrl = (apiBaseUrl: string, path: string) =>
   `${resolveCmsApiBaseUrl(apiBaseUrl)}/v1/${stripLeadingSlash(path)}`;
 
@@ -120,6 +147,13 @@ export const resolveCmsLocale = (locale?: string) => {
 
 export const cmsAppRoutes = {
   home: () => "/",
+  auth: {
+    login: () => "/login",
+    register: () => "/register",
+  },
+  customer: {
+    overview: () => "/customer/overview",
+  },
   page: (slug?: string | null) => {
     const normalizedSlug = stripLeadingSlash(slug);
     return normalizedSlug ? `/${normalizedSlug}` : "/";
@@ -131,9 +165,18 @@ export const cmsAppRoutes = {
     tag: (slug?: string | null) => `/blog/tag/${stripLeadingSlash(slug)}`,
     search: () => "/blog/search",
   },
+  services: {
+    detail: (slug?: string | null) => `/services/${stripLeadingSlash(slug)}`,
+  },
 } as const;
 
 export const cmsProxyRoutes = {
+  customer: {
+    authPage: () => "/api/cms/customer/auth-page",
+    login: () => "/api/cms/customer/login",
+    register: () => "/api/cms/customer/register",
+    session: () => "/api/cms/customer/session",
+  },
   pages: {
     homepage: () => "/api/cms/pages/homepage",
     detail: (slug: string) => `/api/cms/pages/${stripLeadingSlash(slug)}`,
@@ -155,6 +198,10 @@ export const cmsProxyRoutes = {
   },
   theme: {
     options: () => "/api/cms/theme/options",
+    headerExtras: () => "/api/cms/theme/header-extras",
+  },
+  services: {
+    detail: (slug: string) => `/api/cms/services/${stripLeadingSlash(slug)}`,
   },
   widgets: {
     sidebar: (sidebarId: string) => `/api/cms/widgets/sidebar/${stripLeadingSlash(sidebarId)}`,
