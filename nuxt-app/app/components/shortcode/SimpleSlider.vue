@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { parseSimpleSliderBlock, type ShortcodeBlock } from "~/utils/shortcode";
+import { decodeHtmlEntities } from "~/utils/shortcode/core";
 import { useResolvedCmsLink } from "~/composables/useResolvedCmsLink";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
@@ -10,13 +12,30 @@ const props = defineProps<{
 const section = computed(() => parseSimpleSliderBlock(props.block.raw));
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 const resolveLink = useResolvedCmsLink();
+const resolveAsset = useResolvedCmsAsset();
 const activeIndex = ref(0);
 let autoplayTimer: ReturnType<typeof setInterval> | null = null;
+
+const normalizeCaptionText = (value: string | null | undefined) =>
+  decodeHtmlEntities((value || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
+
+const fallbackCaptions = computed(() =>
+  Array.from(
+    props.block.raw.matchAll(
+      /<p\b[^>]*class=(["'])[^"'<>]*slider-showcase-caption[^"'<>]*\1[^>]*>([\s\S]*?)<\/p>/gi,
+    ),
+  ).map((match) => normalizeCaptionText(match[2])),
+);
 
 const slides = computed(() =>
   section.value.slides.map((slide, index) => ({
     ...slide,
     id: `${index}-${slide.image?.src || slide.caption || "slide"}`,
+    caption:
+      normalizeCaptionText(slide.caption) ||
+      fallbackCaptions.value[index] ||
+      normalizeCaptionText(slide.image?.alt) ||
+      "",
     link: resolveLink(slide.href),
   })),
 );
@@ -44,7 +63,6 @@ const goToSlide = (index: number) => {
   activeIndex.value = index;
   startAutoplay();
 };
-
 onMounted(() => {
   startAutoplay();
 });
@@ -74,7 +92,7 @@ watch(
         <div class="simple-slider-media">
           <img
             v-if="slide.image?.src"
-            :src="slide.image.src"
+            :src="resolveAsset(slide.image.src) || slide.image.src"
             :alt="slide.image.alt || slide.caption || 'Slide image'"
             loading="eager"
           >
@@ -96,20 +114,11 @@ watch(
         <div class="simple-slider-overlay" />
 
         <div v-if="slide.caption" class="simple-slider-caption">
-          <p>{{ slide.caption }}</p>
+          <p class="simple-slider-caption__inner">{{ slide.caption }}</p>
         </div>
       </article>
 
       <div v-if="slides.length > 1" class="simple-slider-controls">
-        <button
-          type="button"
-          class="simple-slider-arrow"
-          aria-label="Previous slide"
-          @click="goToSlide((activeIndex - 1 + slides.length) % slides.length)"
-        >
-          <span>&larr;</span>
-        </button>
-
         <div class="simple-slider-dots">
           <button
             v-for="(slide, index) in slides"
@@ -121,15 +130,6 @@ watch(
             @click="goToSlide(index)"
           />
         </div>
-
-        <button
-          type="button"
-          class="simple-slider-arrow"
-          aria-label="Next slide"
-          @click="goToSlide((activeIndex + 1) % slides.length)"
-        >
-          <span>&rarr;</span>
-        </button>
       </div>
     </div>
   </section>
@@ -187,30 +187,37 @@ watch(
 .simple-slider-overlay {
   z-index: 1;
   background:
-    linear-gradient(180deg, rgba(14, 10, 8, 0.16), rgba(14, 10, 8, 0.45)),
-    radial-gradient(circle at center, rgba(255, 255, 255, 0.05), transparent 40%);
+    linear-gradient(180deg, rgba(14, 10, 8, 0.03), rgba(14, 10, 8, 0.18)),
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.04), transparent 40%);
 }
 
 .simple-slider-caption {
   position: absolute;
-  left: 50%;
-  right: auto;
-  bottom: clamp(2rem, 7vw, 4.5rem);
+  left: clamp(1.5rem, 4vw, 4rem);
+  right: clamp(1.5rem, 4vw, 4rem);
+  bottom: clamp(3.5rem, 9vw, 6rem);
   z-index: 3;
-  width: min(92vw, 68rem);
-  transform: translateX(-50%);
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
 }
 
-.simple-slider-caption p {
+.simple-slider-caption__inner {
+  width: min(100%, 58rem);
   margin: 0;
-  color: rgba(250, 245, 236, 0.96);
+  padding: clamp(1rem, 2vw, 1.4rem) clamp(1.1rem, 2.5vw, 1.8rem);
+  border: 1px solid rgba(255, 248, 237, 0.14);
+  border-radius: 1.5rem;
+  background: linear-gradient(180deg, rgba(24, 15, 10, 0.72), rgba(24, 15, 10, 0.82));
+  color: #fff7ef;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: clamp(1.5rem, 3.1vw, 3rem);
-  line-height: 1.14;
-  letter-spacing: 0.04em;
-  text-wrap: balance;
+  font-size: clamp(1.55rem, 3vw, 2.8rem);
+  font-weight: 600;
+  line-height: 1.28;
+  letter-spacing: 0.015em;
   text-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+  text-align: center;
+  text-wrap: balance;
 }
 
 .simple-slider-controls {
@@ -220,32 +227,12 @@ watch(
   z-index: 4;
   display: flex;
   align-items: center;
-  gap: 1rem;
   transform: translateX(-50%);
 }
 
-.simple-slider-arrow,
 .simple-slider-dot {
   border: 0;
   cursor: pointer;
-}
-
-.simple-slider-arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.9rem;
-  height: 2.9rem;
-  border-radius: 999px;
-  background: rgba(252, 247, 238, 0.16);
-  color: #fff5e8;
-  backdrop-filter: blur(14px);
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.simple-slider-arrow:hover {
-  background: rgba(252, 247, 238, 0.28);
-  transform: translateY(-1px);
 }
 
 .simple-slider-dots {
@@ -274,12 +261,12 @@ watch(
 
   .simple-slider-controls {
     bottom: 0.9rem;
-    gap: 0.75rem;
   }
 
-  .simple-slider-arrow {
-    width: 2.55rem;
-    height: 2.55rem;
+  .simple-slider-caption {
+    left: 1rem;
+    right: 1rem;
+    bottom: 4.4rem;
   }
 }
 </style>

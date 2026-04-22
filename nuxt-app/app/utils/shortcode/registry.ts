@@ -1,5 +1,6 @@
 import {
   parseAboutUsBlock,
+  parseBlogPostsBlock,
   parseBrandsBlock,
   parseBookingFormBlock,
   parseCheckAvailabilityFormBlock,
@@ -38,6 +39,12 @@ import {
 import type { ShortcodeDefinition, ShortcodeName } from "./types";
 
 export const shortcodeRegistry = [
+  {
+    name: "blog-posts",
+    aliases: ["blog-posts", "blog__btn"],
+    componentName: "BlogPosts",
+    parser: parseBlogPostsBlock,
+  },
   {
     name: "hero-banner-with-booking-form",
     aliases: ["shortcode-hero-banner-with-booking-form"],
@@ -260,6 +267,10 @@ export const findShortcodeDefinition = (name?: string | null): ShortcodeDefiniti
 
 export const detectShortcodeName = (html: string): ShortcodeName | null => {
   const lowerHtml = html.toLowerCase();
+
+  if (lowerHtml.includes("bsingle__post") && lowerHtml.includes("blog__btn")) {
+    return "blog-posts";
+  }
 
   for (const definition of shortcodeRegistry) {
     if (definition.aliases.some((alias) => lowerHtml.includes(alias.toLowerCase()))) {

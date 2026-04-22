@@ -2,6 +2,7 @@
 import type { BlogPostSummary } from "~/composables/useBlog";
 import { cmsAppRoutes } from "~~/shared/cms-routing";
 import { formatCmsDate } from "~/utils/locale-format";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
 
 const props = defineProps<{
   post: BlogPostSummary;
@@ -9,8 +10,10 @@ const props = defineProps<{
 
 const { locale } = useI18n();
 const localePath = useLocalePath();
+const resolveAsset = useResolvedCmsAsset();
 
 const postUrl = computed(() => localePath(cmsAppRoutes.blog.post(props.post.slug)));
+const postImage = computed(() => resolveAsset(props.post.image) || null);
 const formattedDate = computed(() => {
   if (!props.post.created_at) {
     return null;
@@ -26,8 +29,8 @@ const firstCategory = computed(() => props.post.categories?.[0]?.name || "Journa
     <div class="blog-post-card__media cms-editorial-frame">
       <NuxtLink :to="postUrl" class="blog-post-card__image-link">
         <img
-          v-if="post.image"
-          :src="post.image"
+          v-if="postImage"
+          :src="postImage"
           :alt="post.name"
           class="blog-post-card__image"
         >

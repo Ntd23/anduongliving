@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { parseCuisineShowcaseBlock, type ShortcodeBlock } from "~/utils/shortcode";
 import { useResolvedCmsLink } from "~/composables/useResolvedCmsLink";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
@@ -10,12 +11,13 @@ const props = defineProps<{
 const section = computed(() => parseCuisineShowcaseBlock(props.block.raw));
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 const resolveLink = useResolvedCmsLink();
+const resolveAsset = useResolvedCmsAsset();
 const action = computed(() => resolveLink(section.value.action?.href));
 </script>
 
 <template>
   <section
-    v-if="section.title || section.description || section.images.length"
+    v-if="section.images.length && (section.title || section.description || section.sectionLabel || section.action?.label)"
     class="shortcode-cuisine-native"
   >
     <div class="cuisine-shell">
@@ -31,7 +33,7 @@ const action = computed(() => resolveLink(section.value.action?.href));
           class="cuisine-gallery__item"
           :class="{ 'is-offset': index % 2 === 1 }"
         >
-          <img :src="image.src" :alt="image.alt || `Cuisine image ${index + 1}`">
+          <img :src="resolveAsset(image.src) || image.src" :alt="image.alt || `Cuisine image ${index + 1}`">
         </figure>
       </div>
 

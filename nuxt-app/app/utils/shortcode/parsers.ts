@@ -7,6 +7,7 @@ import {
   extractFirstDirectImage,
   extractFirstImage,
   extractFirstNthBlockByClass,
+  extractInnerHtmlFromTag,
   extractFirstParagraphText,
   extractFirstTag,
   extractLinks,
@@ -23,6 +24,7 @@ import type {
   BrandsSectionData,
   BrandItem,
   AvailabilityBookingFormSectionData,
+  BlogPostsSectionData,
   BookingFormSectionData,
   BookingSelectOption,
   CheckAvailabilityFormSectionData,
@@ -205,6 +207,7 @@ const parseFeatureGridItem = (html: string): FeatureGridItem | null => {
     extractTextFromTag(html, "h3") ||
     extractTextFromTag(html, "h2") ||
     extractTextFromTag(html, "h4");
+  const paragraphs = extractParagraphTexts(html);
 
   if (!title) {
     return null;
@@ -212,9 +215,11 @@ const parseFeatureGridItem = (html: string): FeatureGridItem | null => {
 
   return {
     title,
-    description: extractTextFromTag(html, "p"),
+    description: paragraphs[0] || null,
     image:
       extractFirstImage(extractFirstBlockByClass(html, "div", "services-08-thumb") || "") ||
+      extractFirstImage(extractFirstBlockByClass(html, "div", "slide-post") || "") ||
+      extractFirstImage(extractFirstBlockByClass(html, "div", "services-icon2") || "") ||
       extractFirstImage(extractFirstBlockByClass(html, "figure", "gallery-image") || "") ||
       extractFirstImage(html),
     href: titleLink?.url || actionLink?.url || null,
@@ -365,7 +370,10 @@ export const parseHeroStoryBlock = (html: string): HeroStorySectionData => {
 
 export const parseSimpleSliderBlock = (html: string): SimpleSliderSectionData => {
   const section = extractFirstBlockByClass(html, "section", "slider-showcase-area") || html;
-  const slides = extractBlocksByTag(section, "div", "slider-showcase-slide");
+  const showcaseSlides = extractBlocksByTag(section, "div", "slider-showcase-slide");
+  const slides = showcaseSlides.length
+    ? showcaseSlides
+    : extractBlocksByTag(section, "div", "single-slider");
 
   return {
     slides: slides
@@ -375,10 +383,21 @@ export const parseSimpleSliderBlock = (html: string): SimpleSliderSectionData =>
           extractFirstBlockByClass(slide, "a", "slider-showcase-media") ||
           extractFirstBlockByClass(slide, "div", "slider-showcase-media") ||
           slide;
+        const captionHtml =
+          extractInnerHtmlFromTag(slide, "p", "slider-showcase-caption") ||
+          extractInnerHtmlFromTag(slide, "h1", "slider-showcase-title") ||
+          extractInnerHtmlFromTag(slide, "h2", "slider-showcase-title");
+        const caption =
+          extractTextFromTag(slide, "p", "slider-showcase-caption") ||
+          extractTextFromTag(slide, "h1", "slider-showcase-title") ||
+          extractTextFromTag(slide, "h2", "slider-showcase-title") ||
+          extractFirstParagraphText(slide) ||
+          extractAttribute(mediaBlock, "aria-label");
 
         return {
           image: extractFirstImage(mediaBlock),
-          caption: extractTextFromTag(slide, "p", "slider-showcase-caption"),
+          caption,
+          captionHtml: captionHtml || caption || null,
           href: mediaLink?.url || null,
         } satisfies SimpleSliderSlide;
       })
@@ -498,17 +517,39 @@ export const parseSpecialStoryShowcaseBlock = (html: string): SpecialStoryShowca
 export const parseForestFacilityShowcaseBlock = (html: string): ForestFacilityShowcaseSectionData => {
   const section = extractFirstBlockByClass(html, "section", "shortcode-forest-facility-showcase") || html;
   const imagesBlock = extractFirstBlockByClass(section, "div", "rfs__images");
-  const infoBlock = extractFirstBlockByClass(section, "div", "rfs__info");
+  const titleLayer = extractFirstBlockByClass(section, "div", "rfs__title-layer");
+  const infoLayer = extractFirstBlockByClass(section, "div", "rfs__info-layer");
+  const infoBlock = extractFirstBlockByClass(infoLayer || section, "div", "rfs__info") || infoLayer || "";
+  const titleTag = extractFirstTag(titleLayer || section, "h2", "rfs__heading");
+  const descriptionTag = extractFirstTag(infoBlock || section, "p", "rfs__desc");
+  const labelTag = extractFirstTag(infoBlock || section, "span", "rfs__label")
+    || extractFirstTag(infoBlock || section, "div", "rfs__label");
   const actionLink = extractLinks(infoBlock || "")[0];
+  const sectionParagraphs = extractParagraphTexts(section);
+  const infoParagraphs = extractParagraphTexts(infoBlock || "");
 
   return {
     leftImage: extractFirstImage(extractFirstBlockByClass(imagesBlock || "", "div", "rfs__img-left") || ""),
     rightImages: extractBlocksByTag(imagesBlock || "", "div", "rfs__img-right-item")
       .map((block) => extractStyleImage(block))
       .filter((image): image is NonNullable<typeof image> => Boolean(image?.src)),
-    title: extractTextFromTag(section, "h2", "rfs__heading"),
-    description: extractTextFromTag(section, "p", "rfs__desc"),
-    sectionLabel: extractTextFromTag(section, "div", "rfs__label"),
+    title:
+      (titleTag ? extractTextFromTag(titleTag, "h2") : null) ||
+      extractTextFromTag(titleLayer || section, "h2", "rfs__heading") ||
+      extractTextFromTag(titleLayer || section, "h2") ||
+      extractTextFromTag(section, "h2") ||
+      extractTextFromTag(section, "h3"),
+    description:
+      (descriptionTag ? extractTextFromTag(descriptionTag, "p") : null) ||
+      extractTextFromTag(infoBlock || section, "p", "rfs__desc") ||
+      extractTextFromTag(infoBlock || section, "p") ||
+      infoParagraphs[0] ||
+      sectionParagraphs[0] ||
+      null,
+    sectionLabel:
+      (labelTag ? extractTextFromTag(labelTag, "span") || extractTextFromTag(labelTag, "div") : null) ||
+      extractTextFromTag(infoBlock || section, "div", "rfs__label") ||
+      extractTextFromTag(infoBlock || section, "span", "rfs__label"),
     action: buildAction(actionLink),
   };
 };
@@ -543,15 +584,34 @@ export const parseLocationTourismShowcaseBlock = (html: string): LocationTourism
 
 export const parseCuisineShowcaseBlock = (html: string): CuisineShowcaseSectionData => {
   const section = extractFirstBlockByClass(html, "section", "shortcode-cuisine-showcase") || html;
+  const titleBlock = extractFirstBlockByClass(section, "div", "cuisine__copy") || section;
+  const imagesBlock = extractFirstBlockByClass(section, "div", "cuisine__images") || section;
   const footerBlock = extractFirstBlockByClass(section, "div", "cuisine__footer");
+  const titleTag = extractFirstTag(titleBlock, "h2", "cuisine__title") || extractFirstTag(titleBlock, "h3", "cuisine__title");
+  const descriptionTag = extractFirstTag(titleBlock, "p", "cuisine__desc");
+  const labelTag = extractFirstTag(footerBlock || section, "span", "cuisine__label")
+    || extractFirstTag(footerBlock || section, "div", "cuisine__label");
+  const sectionParagraphs = extractParagraphTexts(titleBlock);
 
   return {
-    title: extractTextFromTag(section, "h2", "cuisine__title"),
-    description: extractTextFromTag(section, "p", "cuisine__desc"),
-    images: extractBlocksByTag(section, "div", "cuisine__img")
+    title:
+      (titleTag ? extractTextFromTag(titleTag, "h2") || extractTextFromTag(titleTag, "h3") : null) ||
+      extractTextFromTag(titleBlock, "h2", "cuisine__title") ||
+      extractTextFromTag(titleBlock, "h2") ||
+      extractTextFromTag(titleBlock, "h3"),
+    description:
+      (descriptionTag ? extractTextFromTag(descriptionTag, "p") : null) ||
+      extractTextFromTag(titleBlock, "p", "cuisine__desc") ||
+      extractTextFromTag(titleBlock, "p") ||
+      sectionParagraphs[0] ||
+      null,
+    images: extractBlocksByTag(imagesBlock, "div", "cuisine__img")
       .map((block) => extractFirstImage(block))
       .filter((image): image is NonNullable<typeof image> => Boolean(image?.src)),
-    sectionLabel: extractTextFromTag(section, "span", "cuisine__label"),
+    sectionLabel:
+      (labelTag ? extractTextFromTag(labelTag, "span") || extractTextFromTag(labelTag, "div") : null) ||
+      extractTextFromTag(footerBlock || section, "span", "cuisine__label") ||
+      extractTextFromTag(footerBlock || section, "div", "cuisine__label"),
     action: buildAction(extractLinks(footerBlock || "")[0]),
   };
 };
@@ -691,6 +751,19 @@ export const parseNewsBlock = (html: string): NewsSectionData => {
     items: extractBlocksByTag(section, "div", "bsingle__post")
       .map(parseFeatureGridItem)
       .filter(Boolean) as FeatureGridItem[],
+  };
+};
+
+export const parseBlogPostsBlock = (html: string): BlogPostsSectionData => {
+  const paginationBlock = extractFirstBlockByClass(html, "div", "text-center mt-30");
+  const postBlocks = extractBlocksByTag(html, "div", "bsingle__post")
+    .filter((block) => block.includes("blog__btn") || block.includes("blog-item-custom-truncate"));
+
+  return {
+    items: postBlocks
+      .map(parseFeatureGridItem)
+      .filter(Boolean) as FeatureGridItem[],
+    paginationHtml: paginationBlock ? paginationBlock.trim() : null,
   };
 };
 
@@ -915,7 +988,10 @@ export const parseNewsletterBlock = (html: string): NewsletterSectionData => {
 };
 
 export const parseServiceBlock = (html: string): ServiceSectionData => {
-  const section = extractFirstBlockByClass(html, "section", "services-area") || html;
+  const section =
+    extractFirstBlockByClass(html, "section", "services-area") ||
+    extractFirstBlockByClass(html, "section", "shortcode-all-rooms") ||
+    html;
   const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
   const serviceBlocks = extractBlocksByTag(section, "div", "single-services");
 
@@ -951,6 +1027,7 @@ export const parsePricingBlock = (html: string): PricingSectionData => {
   const attributes = parseShortcodeAttributes(html);
   const section = extractFirstBlockByClass(html, "section", "pricing-area") || html;
   const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
+  const sectionParagraphs = extractParagraphTexts(section);
 
   const pricingBlocks = [
     ...extractBlocksByTag(section, "div", "single-pricing"),
@@ -992,7 +1069,7 @@ export const parsePricingBlock = (html: string): PricingSectionData => {
         const duration = attributes[`duration_${itemIndex}`] || null;
         const description = attributes[`description_${itemIndex}`] || null;
         const features = getFeatures(attributes[`feature_list_${itemIndex}`] || null);
-        const buttonLabel = attributes[`button_label_${itemIndex}`] || "Bắt đầu ngay";
+        const buttonLabel = attributes[`button_label_${itemIndex}`] || "Bat dau ngay";
         const buttonUrl = attributes[`button_url_${itemIndex}`] || "#";
 
         if (!title || !priceText) {
@@ -1052,10 +1129,9 @@ export const parsePricingBlock = (html: string): PricingSectionData => {
             const titleBlockText = extractTextFromTag(titleBlock, "p");
             if (titleBlockText) return titleBlockText;
 
-            const sectionParagraphs = extractParagraphTexts(section);
             return sectionParagraphs.length ? sectionParagraphs[0] : null;
           })()
-        : null),
+        : (sectionParagraphs.length ? sectionParagraphs[0] : null)),
 
     items: builtItems.length
       ? builtItems
@@ -1073,14 +1149,18 @@ export const parsePricingBlock = (html: string): PricingSectionData => {
                   )
                 : extractTextFromTag(pricingBlock, "p");
 
-            const priceText = extractTextFromTag(pricingBlock, "h2");
+            const priceText =
+              extractTextFromTag(pricingBlock, "h2") ||
+              extractTextFromTag(
+                extractFirstBlockByClass(pricingBlock, "div", "price-count") || "",
+                "h2",
+              );
             const features = extractListItems(pricingBlock);
-            const buttonLink = extractLinks(pricingBlock)[0];
+            const buttonLink =
+              extractLinks(extractFirstBlockByClass(pricingBlock, "div", "pricing-btn") || "")[0] ||
+              extractLinks(pricingBlock)[0];
 
-            const period =
-              extractTextFromTag(pricingBlock, "div", "month") ||
-              extractTextFromTag(pricingBlock, "span") ||
-              "";
+            const period = extractTextFromTag(pricingBlock, "div", "month") || "";
 
             if (!title || !priceText) return null;
 
@@ -1093,7 +1173,7 @@ export const parsePricingBlock = (html: string): PricingSectionData => {
               currency: parsedPrice.currency,
               period,
               features,
-              buttonLabel: buttonLink ? normalizeText(buttonLink.raw) : "Bắt đầu ngay",
+              buttonLabel: buttonLink ? normalizeText(buttonLink.raw) : "Bat dau ngay",
               buttonUrl: buttonLink?.url || "#",
               isPopular:
                 pricingBlock.includes("popular") || pricingBlock.includes("featured"),

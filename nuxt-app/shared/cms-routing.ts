@@ -45,6 +45,35 @@ export const buildAbsoluteUrl = (baseUrl: string, path?: string | null) => {
   return `${normalizedBaseUrl}${normalizedPath}`;
 };
 
+export const resolveUrlOrigin = (value?: string | null) => {
+  const normalizedValue = normalizeSiteUrl(value);
+
+  if (!normalizedValue) {
+    return "";
+  }
+
+  try {
+    return new URL(normalizedValue).origin;
+  } catch {
+    return normalizedValue;
+  }
+};
+
+export const resolveCmsAssetBaseUrl = (apiBaseUrl?: string | null) =>
+  resolveUrlOrigin(resolveCmsApiBaseUrl(apiBaseUrl));
+
+export const buildAbsoluteAssetUrl = (baseUrl: string, value?: string | null) => {
+  if (!value) {
+    return "";
+  }
+
+  try {
+    return new URL(value).toString();
+  } catch {
+    return buildAbsoluteUrl(resolveUrlOrigin(baseUrl), value);
+  }
+};
+
 export const buildDevOrigin = (
   host: string = DEFAULT_DEV_HOST,
   port: number | string = DEFAULT_DEV_PORT,

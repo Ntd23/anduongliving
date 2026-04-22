@@ -221,7 +221,31 @@ const isInternalLink = (value?: string | null) => {
 
 @media (max-width: 640px) {
   .shortcode-services__grid {
-    grid-template-columns: minmax(0, 1fr);
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(84%, 84%);
+    grid-template-columns: none;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+  }
+
+  .shortcode-services__card {
+    scroll-snap-align: start;
+  }
+
+  .shortcode-services__media {
+    aspect-ratio: 4 / 4.6;
+  }
+
+  .shortcode-services__content {
+    padding: 1.2rem;
+    gap: 0.8rem;
+  }
+
+  .shortcode-services__card-title {
+    font-size: 1.55rem;
   }
 }
 </style>

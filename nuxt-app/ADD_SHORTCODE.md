@@ -1,306 +1,149 @@
-  # Thêm Shortcode Mới Trong Nuxt
+﻿# Them Shortcode Moi Trong Nuxt
+
+Tai lieu nay mo ta flow hien tai cua he shortcode va cach them hoac sua shortcode moi ma khong pha vo flow Botble.
 
-  Tài liệu này hướng dẫn cách thêm một shortcode CMS mới vào Nuxt theo kiến trúc hiện tại của project, sau khi đã refactor sang mô hình:
+## Muc tieu
 
-  - `registry` trung tâm
-  - `parser` tách lớp
-  - `renderer` resolve component theo registry
+- Uu tien render bang Vue component that thay vi de HTML roi vao `Fallback.vue`
+- Khong mat noi dung khi CMS tra block HTML la
+- Detect shortcode theo root block on dinh, khong detect bang item class con neu co the tranh duoc
+- Khi sua UI, biet ro luc nao chi sua 1 component va luc nao phai sua parser/registry
 
-  Mục tiêu:
+## Flow hien tai
 
-  - Không làm mất nội dung khi Botble trả HTML
-  - Ưu tiên render bằng Vue component thật thay vì `v-html`
-  - Khi thêm shortcode mới chỉ cần chạm đúng 3 nơi chính:
-    - parser
-    - registry
-    - component
+1. `usePage()` fetch noi dung page tu CMS
+2. `parseShortcodeBlocks()` trong `app/utils/shortcode/blocks.ts` tach content thanh `ShortcodeBlock[]`
+3. Moi block duoc `detectShortcodeName()` trong `app/utils/shortcode/registry.ts` nhan dien
+4. `BlockRenderer.vue` resolve component qua `app/components/shortcode/component-registry.ts`
+5. Component shortcode tu parse `block.raw` roi render UI native
+6. Neu block khong co component native hoac parser khong du chat luong, no roi vao `Fallback.vue`
+7. `Fallback.vue` hien tai bo qua cac block rong chi co `&nbsp;`, `<br>` hoac whitespace
 
-  ## 0. Hiểu flow hiện tại
+## Cac file can biet
 
-  1. URL động `/:slug` đi vào `app/pages/[slug].vue`
-  2. Page gọi `usePage(slug, locale)` trong `app/composables/usePage.ts`
-  3. `usePage()` fetch page content rồi gọi `parseShortcodeBlocks()`
-  4. `parseShortcodeBlocks()` nằm trong `app/utils/shortcode/blocks.ts`
-  5. `detectShortcodeName()` nằm trong `app/utils/shortcode/registry.ts`
-  6. `BlockRenderer.vue` resolve component qua `app/components/shortcode/component-registry.ts`
-  7. Component shortcode gọi parser riêng và render UI
-  8. Nếu shortcode chưa có trong registry hoặc parse không đủ dữ liệu, block vẫn rơi về fallback HTML
+### Data va detect
+- `app/utils/shortcode/types.ts`
+- `app/utils/shortcode/core.ts`
+- `app/utils/shortcode/parsers.ts`
+- `app/utils/shortcode/registry.ts`
+- `app/utils/shortcode/blocks.ts`
 
-  ## 1. Cấu trúc file quan trọng
+### Render
+- `app/components/shortcode/BlockRenderer.vue`
+- `app/components/shortcode/component-registry.ts`
+- `app/components/shortcode/*.vue`
+- `app/components/shortcode/Fallback.vue`
 
-  Các file chính của hệ shortcode hiện tại:
+## Quy tac them shortcode moi
 
-  - `app/utils/shortcode/types.ts`
-  - `app/utils/shortcode/core.ts`
-  - `app/utils/shortcode/parsers.ts`
-  - `app/utils/shortcode/registry.ts`
-  - `app/utils/shortcode/blocks.ts`
-  - `app/utils/shortcode/index.ts`
-  - `app/utils/shortcode-content.ts`  
-    File này chỉ còn là lớp tương thích ngược, export lại từ `~/utils/shortcode`
+Thu tu uu tien:
 
-  Phần render:
+1. Lay HTML output that tu API hoac Blade partial
+2. Xac dinh root block on dinh de detect
+3. Them type neu can trong `types.ts`
+4. Viet parser trong `parsers.ts`
+5. Them entry vao `registry.ts`
+6. Tao component trong `app/components/shortcode/`
+7. Build va test tren page that
 
-  - `app/components/shortcode/BlockRenderer.vue`
-  - `app/components/shortcode/component-registry.ts`
-  - `app/components/shortcode/*.vue`
+## Rule detect shortcode
 
-  ## 2. Quy tắc thêm shortcode mới
+- Uu tien detect bang root class cua ca block, vi du `shortcode-cuisine-showcase`
+- Khong detect bang class item con nhu `bsingle__post` neu block khac cung dung lai class do
+- Neu buoc detect bang item class khong tranh duoc, phai them dieu kien bo sung trong `detectShortcodeName()` de tranh match nham
+- Alias trong `registry.ts` chi nen la cac dau hieu nhan dien cap block, khong phai cap card con
 
-  Khi thêm một shortcode mới, đi đúng thứ tự này:
+Vi du sai:
+- detect `blog-posts` bang `bsingle__post`
 
-  1. Lấy HTML thật từ API hoặc từ Botble shortcode output
-  2. Chọn class root ổn định để detect block
-  3. Viết parser trong `parsers.ts`
-  4. Thêm entry vào `registry.ts`
-  5. Tạo component Vue trong `app/components/shortcode/`
-  6. Chạy `npm run build`
-  7. Mở page thật để kiểm tra UI
+Vi du dung hon:
+- detect `blog-posts` bang dau hieu dac trung hon nhu `blog__btn`
+- hoac them special-case trong `detectShortcodeName()` khi can nhieu dieu kien cung luc
 
-  ## 3. Bước 1: Lấy HTML thật của block
+## Rule viet parser
 
-  Nguồn lấy HTML:
+- Parser chi lo data, khong lo UI
+- Luon bo vao root section truoc khi parse neu co the
+- Field thieu thi tra `null`, `[]` hoac default an toan
+- Uu tien parse cac field can dung that su
+- Neu asset co the la relative URL, component nen resolve qua composable asset resolver truoc khi render
 
-  - API page của Botble, ví dụ:
-    - `http://anduongliving.test/api/v1/pages/about-us`
-    - `http://anduongliving.test/api/v1/pages/team`
-  - Hoặc Blade output bên theme:
-    - `platform/themes/riorelax/partials/shortcodes/`
+## Rule viet component shortcode
 
-  Khi xem HTML, cần xác định:
+Component shortcode nen:
 
-  - class root của section
-  - các field quan trọng cần parse
-  - ảnh chính, ảnh phụ
-  - nút CTA
-  - các đoạn title / subtitle / description
+- chi nhan `block`
+- goi parser tu `block.raw`
+- render native layout khi co du du lieu
+- co fallback `v-html` khi parser chua du manh
+- khong tu detect shortcode name trong component
 
-  Ví dụ root class tốt:
+Mau co ban:
 
-  - `about-area`
-  - `feature-area2`
-  - `skill-area`
-  - `newslater-area`
-  - `team-area`
-  - `hero-story`
+```vue
+<script setup lang="ts">
+import { parseSomethingBlock, type ShortcodeBlock } from "~/utils/shortcode";
+import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
-  Nguyên tắc:
+const props = defineProps<{ block: ShortcodeBlock }>();
+const section = computed(() => parseSomethingBlock(props.block.raw));
+const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
+</script>
 
-  - Ưu tiên class root của cả block
-  - Không detect bằng class nhỏ ở sâu bên trong nếu có class root ổn định
-  - Nếu cùng một shortcode có nhiều biến thể HTML, thêm nhiều alias vào registry
+<template>
+  <section v-if="section.items.length" class="shortcode-something-native">
+    <!-- native UI -->
+  </section>
 
-  ## 4. Bước 2: Viết parser
+  <section v-else class="shortcode-something-native">
+    <div v-html="sanitizedHtml" />
+  </section>
+</template>
+```
 
-  Viết trong:
+## Khi nao chi can sua 1 file shortcode
 
-  - `app/utils/shortcode/parsers.ts`
+Thuong chi sua 1 file component neu:
 
-  Các helper HTML chung đã có sẵn trong:
+- block da duoc map dung sang component native
+- chi doi layout, spacing, color, typography, card, CTA
+- khong can parse them field moi
 
-  - `app/utils/shortcode/core.ts`
+Can sua them parser/registry neu:
 
-  Ví dụ parser mới:
+- block dang roi vao fallback
+- detect sai block
+- parser khong lay du data
+- HTML thay doi structure
 
-  ```ts
-  export type TestimonialItem = {
-    name: string;
-    content: string;
-  };
+## Checklist verify
 
-  export type TestimonialSectionData = {
-    title: string | null;
-    items: TestimonialItem[];
-  };
+- block di dung component native
+- khong roi vao `Fallback.vue` neu da co native component
+- khong co khoang trong do block rong
+- asset hien thi dung o local va production
+- responsive khong vo layout
+- console khong co hydration mismatch hoac 404 asset
+- `npm run build` pass
 
-  export const parseTestimonialBlock = (html: string): TestimonialSectionData => {
-    const section = extractFirstBlockByClass(html, "section", "testimonial-area") || html;
-    const itemBlocks = extractBlocksByTag(section, "div", "single-testimonial");
+## Loi thuong gap
 
-    return {
-      title: extractTextFromTag(section, "h2"),
-      items: itemBlocks
-        .map((itemBlock) => {
-          const name = extractTextFromTag(itemBlock, "h4");
-          const content = extractTextFromTag(itemBlock, "p");
+### 1. Block van roi vao fallback
+- alias khong dung root class that
+- component name trong registry khong khop ten file
+- `detectShortcodeName()` match nham block khac
 
-          if (!name || !content) return null;
+### 2. Co native component nhung UI rong
+- parser bam sai root block
+- parser bam tag qua cung
+- data nam o layer khac cua block nhung parser chi doc root section
 
-          return { name, content };
-        })
-        .filter(Boolean) as TestimonialItem[],
-    };
-  };
-  ```
+### 3. Render sai asset
+- src la duong dan relative cua CMS
+- component render truc tiep ma khong resolve asset base URL
 
-  Quy tắc parser:
+## Handoff ngan
 
-  - Chỉ parse các field thật sự cần cho UI
-  - Field thiếu thì trả `null`, `[]`, hoặc giá trị mặc định an toàn
-  - Không đưa logic UI vào parser
-  - Không viết parser phụ thuộc vào component
+Neu can noi nhanh cho nguoi khac:
 
-  ## 5. Bước 3: Thêm vào registry
-
-  Sửa file:
-
-  - `app/utils/shortcode/registry.ts`
-
-  Mỗi shortcode phải có:
-
-  - `name`
-  - `aliases`
-  - `componentName`
-  - `parser`
-
-  Ví dụ:
-
-  ```ts
-  {
-    name: "testimonial",
-    aliases: ["testimonial-area", "testimonial-slider"],
-    componentName: "Testimonial",
-    parser: parseTestimonialBlock,
-  }
-  ```
-
-  Ý nghĩa:
-
-  - `detectShortcodeName()` sẽ nhận diện block dựa vào `aliases`
-  - `BlockRenderer.vue` sẽ resolve sang component theo `componentName`
-  - parser tương ứng sẽ là nguồn dữ liệu chuẩn cho UI
-
-  Lưu ý:
-
-  - Từ sau refactor, không thêm mapping trong `usePage.ts`
-  - Từ sau refactor, không sửa map tay trong `BlockRenderer.vue`
-  - Tất cả đi qua `registry.ts`
-
-  ## 6. Bước 4: Tạo component Vue
-
-  Tạo file trong:
-
-  - `app/components/shortcode/`
-
-  Ví dụ:
-
-  - `Testimonial.vue`
-
-  Khung chuẩn:
-
-  ```vue
-  <script setup lang="ts">
-  import { parseTestimonialBlock, type ShortcodeBlock } from "~/utils/shortcode";
-
-  const props = defineProps<{
-    block: ShortcodeBlock;
-  }>();
-
-  const section = computed(() => parseTestimonialBlock(props.block.raw));
-  </script>
-
-  <template>
-    <section v-if="section.items.length" class="shortcode-testimonial">
-      <div class="container">
-        <h2 v-if="section.title">{{ section.title }}</h2>
-
-        <article v-for="item in section.items" :key="item.name">
-          <h3>{{ item.name }}</h3>
-          <p>{{ item.content }}</p>
-        </article>
-      </div>
-    </section>
-
-    <section v-else class="shortcode-testimonial">
-      <div v-html="block.raw" />
-    </section>
-  </template>
-  ```
-
-  Nguyên tắc component:
-
-  - Chỉ nhận `block`
-  - Tự parse `block.raw`
-  - Render Vue layout khi parse đủ dữ liệu
-  - Có fallback `v-html` để tránh mất nội dung CMS
-  - Không tự detect shortcode name trong component
-
-  ## 7. Bước 5: Nếu shortcode có style narrative
-
-  Các block kiểu storytelling như:
-
-  - `About`
-  - `Feature`
-  - `Newsletter`
-  - `HeroStory`
-
-  đã dùng shared style tại:
-
-  - `app/assets/css/shortcode-narrative.css`
-
-  Nếu shortcode mới cùng nhóm này, ưu tiên dùng lại:
-
-  - `.shortcode-narrative-eyebrow`
-  - `.shortcode-narrative-title`
-
-  Không copy-paste lại cùng một rule font/letter-spacing ở nhiều component nếu không cần.
-
-  ## 8. Cách verify sau khi thêm
-
-  Chạy:
-
-  ```bash
-  npm run build
-  ```
-
-  Sau đó mở page thật để kiểm tra:
-
-  1. block render đúng thứ tự admin đã sắp
-  2. block đi đúng component mới
-  3. fallback không làm mất nội dung nếu HTML thay đổi
-  4. responsive không vỡ layout
-  5. không có hydration mismatch hoặc lỗi console
-
-  ## 9. 3 lỗi thường gặp
-
-  ### Lỗi 1: Block vẫn rơi vào fallback
-
-  Nguyên nhân thường gặp:
-
-  - chưa thêm alias vào `registry.ts`
-  - alias không đúng class root thật
-  - component name trong registry không khớp tên file Vue
-
-  ### Lỗi 2: Có detect được nhưng UI rỗng
-
-  Nguyên nhân thường gặp:
-
-  - parser đang bám sai tag
-  - HTML thật khác HTML mẫu
-  - đang parse quá cứng theo 1 structure cũ
-
-  ### Lỗi 3: Build pass nhưng UI sai dữ liệu
-
-  Nguyên nhân thường gặp:
-
-  - parser lấy nhầm ảnh đầu tiên
-  - parse title/description từ block con sai
-  - alias đang match nhầm một block khác
-
-  ## 10. Checklist ngắn cho người mới
-
-  Mỗi lần thêm shortcode mới:
-
-  - lấy HTML thật
-  - tìm class root
-  - viết parser trong `app/utils/shortcode/parsers.ts`
-  - thêm entry vào `app/utils/shortcode/registry.ts`
-  - tạo component trong `app/components/shortcode/`
-  - chạy `npm run build`
-  - test page thật
-
-  ## 11. Handoff 1 câu
-
-  Nếu cần hướng dẫn nhanh cho người khác, chỉ cần nói:
-
-  “Lấy HTML block thật từ API hoặc Blade, viết parser trong `parsers.ts`, thêm entry vào `registry.ts`, tạo component trong `app/components/shortcode/`, rồi build và test page thật.”
+"Lay HTML output that, detect bang root class on dinh, viet parser trong `parsers.ts`, them entry vao `registry.ts`, tao component native trong `app/components/shortcode/`, giu fallback de tranh mat noi dung, va test bang page that + build." 

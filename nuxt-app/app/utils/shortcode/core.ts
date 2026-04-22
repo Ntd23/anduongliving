@@ -203,6 +203,23 @@ export const extractTextFromTag = (html: string, tagName: string, classNeedle?: 
   return normalizeText(match[1]);
 };
 
+export const extractInnerHtmlFromTag = (html: string, tagName: string, classNeedle?: string): string | null => {
+  const classPattern = classNeedle
+    ? `[^>]*class=(["'])[^"']*${escapeRegExp(classNeedle)}[^"']*\\1[^>]*`
+    : "[^>]*";
+  const pattern = new RegExp(
+    `<${tagName}\\b${classPattern}>([\\s\\S]*?)</${tagName}>`,
+    "i",
+  );
+  const match = pattern.exec(html);
+
+  if (!match) {
+    return null;
+  }
+
+  return decodeHtmlEntities((match[1] || "").trim());
+};
+
 export const extractAttribute = (html: string, attribute: string): string | null => {
   const pattern = new RegExp(`${attribute}\\s*=\\s*(['"])(.*?)\\1`, "i");
   const match = pattern.exec(html);

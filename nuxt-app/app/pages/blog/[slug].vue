@@ -11,11 +11,13 @@ import {
   normalizeUiLocale,
 } from "~/utils/locale-format";
 import { useBlogSeo } from "~/composables/useBlogSeo";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
 
 const route = useRoute();
 const { locale } = useI18n();
 const localePath = useLocalePath();
 const runtimeConfig = useRuntimeConfig();
+const resolveAsset = useResolvedCmsAsset();
 
 const slug = computed(() => String(route.params.slug || ""));
 const asyncKey = computed(() => `blog-post-${slug.value}-${locale.value}`);
@@ -73,6 +75,8 @@ const resolvePostLink = (entry?: BlogPostSummary | null) =>
   entry ? localePath(cmsAppRoutes.blog.post(entry.slug)) : undefined;
 
 const relatedPosts = computed(() => post.value?.related_posts || []);
+const postImage = computed(() => resolveAsset(post.value?.image) || undefined);
+const authorAvatar = computed(() => resolveAsset(post.value?.author?.avatar_url) || null);
 const safeContent = computed(() =>
   sanitizeCmsHtmlContent(post.value?.content, runtimeConfig.public.siteUrl),
 );
@@ -83,7 +87,7 @@ const safeAuthorBio = computed(() =>
 useBlogSeo({
   title: computed(() => post.value?.name || "Blog Post"),
   description: computed(() => post.value?.description || ""),
-  image: computed(() => post.value?.image || undefined),
+  image: postImage,
   type: computed(() => "article"),
 });
 </script>
@@ -164,7 +168,7 @@ useBlogSeo({
             <NuxtLink :to="resolvePostLink(entry)" class="blog-post-detail__related-media">
               <img
                 v-if="entry.image"
-                :src="entry.image"
+                :src="resolveAsset(entry.image) || entry.image"
                 :alt="entry.name"
                 class="blog-post-detail__related-image"
               >
@@ -230,9 +234,9 @@ useBlogSeo({
       <section v-if="post.author" class="blog-post-detail__author cms-quiet-surface">
         <div class="blog-post-detail__author-avatar-wrap">
           <img
-            v-if="post.author.avatar_url"
+            v-if="authorAvatar"
             class="blog-post-detail__author-avatar"
-            :src="post.author.avatar_url"
+            :src="authorAvatar"
             :alt="post.author.name"
           >
           <div v-else class="blog-post-detail__author-avatar blog-post-detail__author-avatar--placeholder" />
