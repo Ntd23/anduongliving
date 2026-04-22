@@ -36,6 +36,37 @@
             <p class="room-item-custom-truncate" title="{{ $description }}">{!! BaseHelper::clean($description) !!}</p>
         @endif
 
+        @if ($room->size || $room->number_of_beds || $room->max_adults || $room->max_children)
+            <div class="room-specifications">
+                <ul class="d-flex justify-content-between align-items-center flex-wrap">
+                    @if ($room->size)
+                        <li class="room-spec">
+                            <i class="fas fa-ruler-combined"></i>
+                            <span>{{ $room->size }}m²</span>
+                        </li>
+                    @endif
+                    @if ($room->number_of_beds)
+                        <li class="room-spec">
+                            <i class="fas fa-bed"></i>
+                            <span>{{ $room->number_of_beds }} {{ __('Bed') . ($room->number_of_beds > 1 ? 's' : '') }}</span>
+                        </li>
+                    @endif
+                    @if ($room->max_adults)
+                        <li class="room-spec">
+                            <i class="fas fa-user"></i>
+                            <span>{{ $room->max_adults }} {{ __('Adult') . ($room->max_adults > 1 ? 's' : '') }}</span>
+                        </li>
+                    @endif
+                    @if ($room->max_children)
+                        <li class="room-spec">
+                            <i class="fas fa-child"></i>
+                            <span>{{ $room->max_children }} {{ __('Child') . ($room->max_children > 1 ? 'ren' : '') }}</span>
+                        </li>
+                    @endif
+                </ul>
+            </div>
+        @endif
+
         @if ($room->amenities->isNotEmpty())
             <div class="icon">
                 <ul class="d-flex justify-content-evenly">

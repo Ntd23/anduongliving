@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { parseAllRoomsBlock, type ShortcodeBlock } from "~/utils/shortcode";
+import { parseAllRoomsBlock, type ShortcodeBlock, type AllRoomSectionData } from "~/utils/shortcode";
 import { useResolvedCmsLink } from "~/composables/useResolvedCmsLink";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
@@ -8,7 +8,11 @@ const props = defineProps<{
   block: ShortcodeBlock;
 }>();
 
-const section = computed(() => parseAllRoomsBlock(props.block.raw));
+const section = computed(() => {
+  const parsed = parseAllRoomsBlock(props.block.raw);
+  console.log('AllRooms parsed data:', parsed);
+  return parsed;
+});
 const resolveLink = useResolvedCmsLink();
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 const sanitizedPagination = useSanitizedCmsHtml(() => section.value.paginationHtml || "");
@@ -41,6 +45,26 @@ const sanitizedPagination = useSanitizedCmsHtml(() => section.value.paginationHt
           <div class="all-rooms-card__body">
             <h3 class="all-rooms-card__title">{{ item.name }}</h3>
             <p v-if="item.description" class="all-rooms-card__description">{{ item.description }}</p>
+            
+            <div v-if="item.size || item.number_of_beds || item.max_adults || item.max_children" class="all-rooms-card__specs">
+              <div v-if="item.size" class="all-rooms-card__spec">
+                <Icon name="ph:ruler" />
+                <span>{{ item.size }}m²</span>
+              </div>
+              <div v-if="item.number_of_beds" class="all-rooms-card__spec">
+                <Icon name="ph:bed" />
+                <span>{{ item.number_of_beds }} Bed{{ item.number_of_beds > 1 ? 's' : '' }}</span>
+              </div>
+              <div v-if="item.max_adults" class="all-rooms-card__spec">
+                <Icon name="ph:user" />
+                <span>{{ item.max_adults }} Adult{{ item.max_adults > 1 ? 's' : '' }}</span>
+              </div>
+              <div v-if="item.max_children" class="all-rooms-card__spec">
+                <Icon name="ph:child" />
+                <span>{{ item.max_children }} Child{{ item.max_children > 1 ? 'ren' : '' }}</span>
+              </div>
+            </div>
+            
             <component
               :is="resolveLink(item.url)?.isInternal ? 'NuxtLink' : 'a'"
               :to="resolveLink(item.url)?.isInternal ? resolveLink(item.url)?.href : undefined"
@@ -127,6 +151,28 @@ const sanitizedPagination = useSanitizedCmsHtml(() => section.value.paginationHt
   margin: 0;
   color: rgba(58, 43, 31, 0.76);
   line-height: 1.68;
+}
+
+.all-rooms-card__specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.all-rooms-card__spec {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: rgba(58, 43, 31, 0.7);
+  font-weight: 500;
+}
+
+.all-rooms-card__spec svg {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.7;
 }
 
 .all-rooms-card__action {

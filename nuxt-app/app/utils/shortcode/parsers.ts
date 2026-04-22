@@ -21,6 +21,8 @@ import {
 } from "./core";
 import type {
   AboutUsSectionData,
+  AllRoomItem,
+  AllRoomSectionData,
   BrandsSectionData,
   BrandItem,
   AvailabilityBookingFormSectionData,
@@ -233,9 +235,15 @@ const parseFeatureGridItem = (html: string): FeatureGridItem | null => {
 
 export const parseTeamsBlock = (html: string): TeamsSectionData => {
   const section = extractFirstBlockByClass(html, "section", "team-area") || html;
+  const title = extractTextFromTag(section, "h2") || "";
+  const subtitle = extractTextFromTag(section, "h5") || "";
+  const description = extractTextFromTag(section, "p") || "";
   const memberBlocks = extractBlocksByTag(section, "div", "single-team");
 
   return {
+    title: title || "",
+    subtitle: subtitle || "",
+    description: description || "",
     members: memberBlocks
       .map((memberBlock) => {
         const socialBlock = extractFirstBlockByClass(memberBlock, "div", "team-social");
@@ -1232,5 +1240,110 @@ export const parseFeaturedRoomsBlock = (html: string): FeaturedRoomsSectionData 
 export const parseRoomListBlock = (html: string): FeaturedRoomsSectionData =>
   parseRoomsListingSection(html, "shortcode-room-list");
 
-export const parseAllRoomsBlock = (html: string): FeaturedRoomsSectionData =>
-  parseRoomsListingSection(html, "shortcode-all-rooms");
+const parseAllRoomsSection = (html: string, sectionClass: string): AllRoomSectionData => {
+  const section = extractFirstBlockByClass(html, "section", sectionClass)
+    || extractFirstBlockByClass(html, "section", "services-area")
+    || html;
+  const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
+  const serviceBlocks = extractBlocksByTag(section, "div", "single-services");
+  const paginationBlock = extractFirstBlockByClass(section, "div", "text-center mt-30");
+
+  return {
+    countLabel: extractTextFromTag(section, "h3"),
+    paginationHtml: paginationBlock ? paginationBlock.trim() : null,
+    subtitle: titleBlock ? extractTextFromTag(titleBlock, "h5") : null,
+    title: titleBlock ? extractTextFromTag(titleBlock, "h2") : null,
+    description: titleBlock ? extractTextFromTag(titleBlock, "p") : null,
+    items: serviceBlocks
+      .map((serviceBlock: string, index: number) => {
+        const title = extractTextFromTag(serviceBlock, "h4")?.trim().replace(/^["']|["']$/g, '');
+        const link = extractAttribute(extractFirstTag(serviceBlock, "h4 a") || "", "href");
+        const image = extractFirstImage(serviceBlock); 
+        const description = extractFirstParagraphText(serviceBlock);
+        const button = extractTextFromTag(serviceBlock, "button");
+        const price = button ? button.replace(/[^0-9.]/g, '') : '';
+        const amenityImages = extractBlocksByTag(serviceBlock, "li")
+          .map((amenityBlock) => extractFirstImage(amenityBlock)?.alt || null)
+          .filter((amenity): amenity is string => Boolean(amenity));
+
+        // Extract room-specific fields from room-specifications structure
+        const roomSpecsBlock = extractFirstBlockByClass(serviceBlock, "div", "room-specifications");
+        
+        let size = null;
+        let number_of_beds = null;
+        let max_adults = null;
+        let max_children = null;
+        
+        if (roomSpecsBlock) {
+          // Extract from individual room-spec li elements
+          const roomSpecs = extractBlocksByTag(roomSpecsBlock, "li", "room-spec");
+          
+          roomSpecs.forEach((spec) => {
+            const icon = extractFirstTag(spec, "i");
+            const text = extractTextFromTag(spec, "span") || "";
+            
+            if (icon?.includes('fa-ruler-combined')) {
+              size = parseInt(text) || null;
+            } else if (icon?.includes('fa-bed')) {
+              number_of_beds = parseInt(text) || null;
+            } else if (icon?.includes('fa-user')) {
+              max_adults = parseInt(text) || null;
+            } else if (icon?.includes('fa-child')) {
+              max_children = parseInt(text) || null;
+            }
+          });
+        }
+        
+        // Fallback to regex extraction if room-specifications not found
+        if (!size) {
+          const sizeText = extractFirstParagraphText(serviceBlock)?.match(/\d+(?:\.\d+)?\s*(?:m²|m²|sqm|sqft|m|meters?|metres?)/gi)?.[0] || "0";
+          size = parseInt(sizeText) || null;
+        }
+        
+        if (!number_of_beds) {
+          const bedsText = extractFirstParagraphText(serviceBlock)?.match(/\d+\s*(?:bed|beds|giuong|giuong)/gi)?.[0] || "0";
+          number_of_beds = parseInt(bedsText) || null;
+        }
+        
+        if (!max_adults) {
+          const adultsText = extractFirstParagraphText(serviceBlock)?.match(/\d+\s*(?:adult|adults|nguoi lon|nguoi)/gi)?.[0] || "0";
+          max_adults = parseInt(adultsText) || null;
+        }
+        
+        if (!max_children) {
+          const childrenText = extractFirstParagraphText(serviceBlock)?.match(/\d+\s*(?:child|children|tre em|tre)/gi)?.[0] || "0";
+          max_children = parseInt(childrenText) || null;
+        }
+
+        console.log('Room extraction results:', {
+          title,
+          size,
+          number_of_beds,
+          max_adults,
+          max_children,
+          roomSpecsBlock: roomSpecsBlock ? 'found' : 'not found'
+        });
+
+        if (!title) return null;
+
+        return {
+          id: index,
+          name: title,
+          url: link || '#',
+          image: image?.src || '',
+          description,
+          bookLabel: button || 'Book Now',
+          price: price,
+          amenities: amenityImages,
+          size: size || null,
+          number_of_beds: number_of_beds || null,
+          max_adults: max_adults || null,
+          max_children: max_children || null,
+        } satisfies AllRoomItem;
+      })
+      .filter(Boolean) as any[], // Type assertion needed due to filter
+  };
+};
+
+export const parseAllRoomsBlock = (html: string): AllRoomSectionData =>
+  parseAllRoomsSection(html, "shortcode-all-rooms");
