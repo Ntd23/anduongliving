@@ -59,6 +59,9 @@ const registerTo = computed(() =>
 const overviewTo = computed(() =>
   props.customer?.overviewUrl?.startsWith("/") ? localePath(props.customer.overviewUrl) : null,
 );
+const logoutTo = computed(() =>
+  props.customer?.logoutUrl?.startsWith("/") ? localePath(props.customer.logoutUrl) : null,
+);
 
 const closeMenu = () => emit("update:open", false);
 
@@ -259,7 +262,12 @@ onBeforeUnmount(() => {
                   Register
                 </a>
               </li>
-              <li v-if="customer?.authenticated && customer?.logoutUrl">
+              <li v-if="customer?.authenticated && logoutTo">
+                <NuxtLink :to="logoutTo" class="mobile-menu-collapse__plain-link" @click="closeMenu">
+                  Logout
+                </NuxtLink>
+              </li>
+              <li v-else-if="customer?.authenticated && customer?.logoutUrl">
                 <a :href="customer.logoutUrl" class="mobile-menu-collapse__plain-link">
                   Logout
                 </a>

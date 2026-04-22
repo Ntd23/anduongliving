@@ -40,34 +40,54 @@ const sectionStyle = computed(() =>
 
 <style scoped>
 .shortcode-brands-native {
-  padding: 3rem 0;
-  background: #f7f2e8;
+  padding: 3.5rem 0;
+  background:
+    radial-gradient(circle at center, rgba(185, 130, 90, 0.06), transparent 40%),
+    linear-gradient(180deg, #faf5ee, #f2e9de);
 }
+
 .brands-shell {
   display: grid;
-  gap: 1rem;
+  gap: 0.75rem;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   align-items: center;
 }
+
 .brands-item {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 7rem;
-  border-radius: 1.3rem;
+  border-radius: 1.35rem;
+  border: 1px solid rgba(111, 117, 83, 0.08);
   background: rgba(255, 252, 246, 0.72);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 24px rgba(47, 36, 29, 0.04);
+  transition: box-shadow 0.3s ease;
 }
+
+.brands-item:hover {
+  box-shadow: 0 12px 32px rgba(47, 36, 29, 0.08);
+}
+
 .brands-item__image {
-  max-width: 100%;
+  max-width: 80%;
   max-height: 3rem;
   object-fit: contain;
-  filter: saturate(0.7);
+  filter: saturate(0.6);
+  transition: filter 0.3s ease;
 }
+
+.brands-item:hover .brands-item__image {
+  filter: saturate(1);
+}
+
 @media (max-width: 991px) {
   .brands-shell {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
 @media (max-width: 640px) {
   .brands-shell {
     grid-template-columns: repeat(2, minmax(0, 1fr));

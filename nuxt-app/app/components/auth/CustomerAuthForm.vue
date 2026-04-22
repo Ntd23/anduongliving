@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CustomerAuthField, CustomerAuthPageData } from "~~/shared/customer-auth";
-import { cmsProxyRoutes, resolveCmsProxyRequestUrl } from "~~/shared/cms-routing";
+import { cmsProxyRoutes } from "~~/shared/cms-routing";
 
 type AuthSubmitResponse = {
   error?: boolean;
@@ -14,7 +14,6 @@ const props = defineProps<{
   page: CustomerAuthPageData;
 }>();
 
-const config = useRuntimeConfig();
 const localePath = useLocalePath();
 const submitting = ref(false);
 const formError = ref("");
@@ -41,14 +40,7 @@ const resolveFieldType = (field: CustomerAuthField) => {
   return passwordVisibility[field.name] ? "text" : "password";
 };
 
-const resolveEndpoint = () =>
-  resolveCmsProxyRequestUrl(
-    props.page.mode === "register" ? cmsProxyRoutes.customer.register() : cmsProxyRoutes.customer.login(),
-    {
-      cmsProxyBaseUrl: config.public.cmsProxyBaseUrl,
-      client: import.meta.client,
-    },
-  );
+const resolveEndpoint = () => (props.page.mode === "register" ? cmsProxyRoutes.customer.register() : cmsProxyRoutes.customer.login());
 
 const alternateInternalTo = computed(() => {
   const target = props.page.actions.alternateUrl;

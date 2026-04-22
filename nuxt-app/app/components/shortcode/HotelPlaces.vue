@@ -13,25 +13,32 @@ const resolveLink = useResolvedCmsLink();
   <section v-if="section.title || section.items.length" class="shortcode-hotel-places-native">
     <div class="container places-shell">
       <header v-if="section.subtitle || section.title || section.description" class="places-header">
-        <p v-if="section.subtitle" class="places-header__eyebrow">{{ section.subtitle }}</p>
-        <h2 v-if="section.title" class="places-header__title">{{ section.title }}</h2>
-        <p v-if="section.description" class="places-header__description">{{ section.description }}</p>
+        <div class="places-header__glass">
+          <p v-if="section.subtitle" class="places-header__eyebrow">{{ section.subtitle }}</p>
+          <h2 v-if="section.title" class="places-header__title">{{ section.title }}</h2>
+          <p v-if="section.description" class="places-header__description">{{ section.description }}</p>
+        </div>
       </header>
 
       <div class="places-grid">
         <article v-for="item in section.items" :key="item.title" class="places-card">
-          <img v-if="item.image?.src" :src="item.image.src" :alt="item.image.alt || item.title" class="places-card__image">
+          <div class="places-card__media">
+            <img v-if="item.image?.src" :src="item.image.src" :alt="item.image.alt || item.title" class="places-card__image">
+            <div class="places-card__overlay" />
+          </div>
           <div class="places-card__body">
-            <p v-if="item.meta" class="places-card__meta">{{ item.meta }}</p>
-            <h3 class="places-card__title">{{ item.title }}</h3>
-            <NuxtLink
-              v-if="item.href && resolveLink(item.href)?.isInternal"
-              :to="resolveLink(item.href)!.href"
-              class="places-card__link"
-            >
-              Explore
-            </NuxtLink>
-            <a v-else-if="item.href" :href="item.href" class="places-card__link">Explore</a>
+            <div class="places-card__glass">
+              <p v-if="item.meta" class="places-card__meta">{{ item.meta }}</p>
+              <h3 class="places-card__title">{{ item.title }}</h3>
+              <NuxtLink
+                v-if="item.href && resolveLink(item.href)?.isInternal"
+                :to="resolveLink(item.href)!.href"
+                class="places-card__link"
+              >
+                Explore
+              </NuxtLink>
+              <a v-else-if="item.href" :href="item.href" class="places-card__link">Explore</a>
+            </div>
           </div>
         </article>
       </div>
@@ -46,82 +53,165 @@ const resolveLink = useResolvedCmsLink();
 <style scoped>
 .shortcode-hotel-places-native {
   padding: clamp(4rem, 8vw, 7rem) 0;
-  background: #fbf7ef;
+  background:
+    radial-gradient(circle at top right, rgba(185, 130, 90, 0.1), transparent 28%),
+    linear-gradient(180deg, #fcfaf6, #f3ecdf);
 }
+
 .places-shell {
   display: grid;
-  gap: 2.25rem;
+  gap: 2.5rem;
 }
+
 .places-header {
-  max-width: 42rem;
+  max-width: 48rem;
   margin: 0 auto;
-  text-align: center;
 }
+
+.places-header__glass {
+  text-align: center;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid rgba(111, 117, 83, 0.1);
+  border-radius: 1.75rem;
+  background: rgba(255, 252, 246, 0.72);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 16px 40px rgba(47, 36, 29, 0.05);
+}
+
 .places-header__eyebrow {
   margin: 0 0 0.75rem;
   color: #8a6e48;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   font-size: 0.78rem;
+  font-weight: 600;
 }
+
 .places-header__title {
   margin: 0;
   color: #2f241d;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
   font-size: clamp(2.5rem, 5vw, 4.2rem);
+  line-height: 1;
 }
+
 .places-header__description {
   margin: 1rem 0 0;
-  color: rgba(47, 36, 29, 0.78);
-  line-height: 1.9;
+  color: rgba(47, 36, 29, 0.76);
+  line-height: 1.8;
 }
+
 .places-grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 1rem;
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
+
 .places-card {
+  position: relative;
   overflow: hidden;
-  border-radius: 1.5rem;
-  background: rgba(255, 252, 246, 0.88);
-  box-shadow: 0 18px 44px rgba(48, 35, 27, 0.08);
+  border-radius: 1.6rem;
+  background: #1a120c;
+  box-shadow: 0 18px 44px rgba(48, 35, 27, 0.12);
+  transition: box-shadow 0.35s ease;
 }
+
+.places-card:hover {
+  box-shadow: 0 24px 56px rgba(48, 35, 27, 0.18);
+}
+
+.places-card__media {
+  position: relative;
+}
+
 .places-card__image {
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 4;
   display: block;
   object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.places-card:hover .places-card__image {
+  transform: scale(1.03);
+}
+
+.places-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(14, 8, 4, 0.82) 0%, rgba(14, 8, 4, 0.2) 50%, transparent 100%);
+}
+
 .places-card__body {
-  padding: 1rem 1rem 1.2rem;
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  z-index: 1;
 }
+
+.places-card__glass {
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(248, 243, 234, 0.1);
+  border-radius: 1.15rem;
+  background: rgba(32, 22, 16, 0.36);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255, 248, 237, 0.06);
+}
+
 .places-card__meta {
-  margin: 0;
-  color: #8a6e48;
-  font-size: 0.78rem;
+  margin: 0 0 0.3rem;
+  color: #e3c8a8;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
+
 .places-card__title {
-  margin: 0.55rem 0 0;
-  color: #2f241d;
+  margin: 0;
+  color: #fff7ef;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: 1.8rem;
-  line-height: 1.04;
+  font-size: clamp(1.3rem, 1.8vw, 1.7rem);
+  line-height: 1.08;
 }
+
 .places-card__link {
   display: inline-flex;
-  margin-top: 0.85rem;
-  color: #6c744f;
+  margin-top: 0.55rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(108, 116, 79, 0.7);
+  color: #faf4ea;
   text-decoration: none;
   font-weight: 600;
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
 }
+
 @media (max-width: 1024px) {
   .places-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
 @media (max-width: 640px) {
   .places-grid {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(78%, 78%);
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .places-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .places-card {
+    scroll-snap-align: start;
   }
 }
 </style>

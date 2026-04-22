@@ -138,6 +138,7 @@ const tourismAction = computed(() => resolveLink(section.value.tourism.action?.h
   margin: 0;
   overflow: hidden;
   border-radius: 1.4rem;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
 }
 
 .location-map img,
@@ -168,8 +169,12 @@ const tourismAction = computed(() => resolveLink(section.value.tourism.action?.h
 .location-column {
   padding: 1.6rem;
   border-radius: 1.5rem;
+  border: 1px solid rgba(248, 243, 234, 0.1);
   background: rgba(255, 252, 246, 0.08);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255, 248, 237, 0.05);
 }
 
 .location-column__description {
@@ -194,9 +199,16 @@ const tourismAction = computed(() => resolveLink(section.value.tourism.action?.h
   margin-top: 1rem;
   padding: 0.9rem 1.3rem;
   border-radius: 999px;
-  background: #b19143;
+  background: linear-gradient(135deg, #b19143, #9a7c38);
   color: #fff9ef;
   text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 12px 28px rgba(177, 145, 67, 0.22);
+  transition: box-shadow 0.2s ease;
+}
+
+.location-column__button:hover {
+  box-shadow: 0 16px 36px rgba(177, 145, 67, 0.3);
 }
 
 @media (max-width: 991px) {

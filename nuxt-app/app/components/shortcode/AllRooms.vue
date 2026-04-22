@@ -39,17 +39,17 @@ const sanitizedPagination = useSanitizedCmsHtml(() => section.value.paginationHt
           </component>
 
           <div class="all-rooms-card__body">
-            <h3 class="all-rooms-card__title">{{ item.name }}</h3>
-            <p v-if="item.description" class="all-rooms-card__description">{{ item.description }}</p>
-            <component
-              :is="resolveLink(item.url)?.isInternal ? 'NuxtLink' : 'a'"
-              :to="resolveLink(item.url)?.isInternal ? resolveLink(item.url)?.href : undefined"
-              :href="resolveLink(item.url)?.isInternal ? undefined : resolveLink(item.url)?.href"
-              class="all-rooms-card__action"
-            >
-              {{ item.bookLabel }}
-            </component>
-          </div>
+              <h3 class="all-rooms-card__title">{{ item.name }}</h3>
+              <p v-if="item.description" class="all-rooms-card__description">{{ item.description }}</p>
+              <component
+                :is="resolveLink(item.url)?.isInternal ? 'NuxtLink' : 'a'"
+                :to="resolveLink(item.url)?.isInternal ? resolveLink(item.url)?.href : undefined"
+                :href="resolveLink(item.url)?.isInternal ? undefined : resolveLink(item.url)?.href"
+                class="all-rooms-card__action"
+              >
+                {{ item.bookLabel }}
+              </component>
+            </div>
         </article>
       </div>
 

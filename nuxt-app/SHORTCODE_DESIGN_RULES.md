@@ -1,4 +1,4 @@
-﻿# Shortcode Design Rules
+# Shortcode Design Rules
 
 ## Mục tiêu
 Tài liệu này quy định rule redesign shortcode cho Nuxt frontend đang render từ Botble/Laravel Blade.
@@ -183,43 +183,43 @@ Rule giao việc:
 - [x] `AboutUs.vue`
 
 ### Ưu tiên cao - đang có lỗi hoặc cần làm lại sớm
-- [ ] `SimpleSlider.vue`
+- [x] `SimpleSlider.vue`
 - [x] `CuisineShowcase.vue`
 - [x] `ForestFacilityShowcase.vue`
 - [x] `BlogPosts.vue`
-- [ ] `ServiceList.vue`
-- [ ] `Pricing.vue`
-- [ ] `Services.vue`
+- [x] `ServiceList.vue`
+- [x] `Pricing.vue`
+- [x] `Services.vue`
 
 ### Danh sách shortcode còn lại để QA / redesign nếu cần
-- [ ] `AllRooms.vue`
+- [x] `AllRooms.vue`
 - [x] `BookingForm.vue`
-- [ ] `Brands.vue`
-- [ ] `CheckAvailabilityForm.vue`
+- [x] `Brands.vue`
+- [x] `CheckAvailabilityForm.vue`
 - [x] `Faqs.vue`
   - `Parser changed : extract answer from paragraph instead of card-body`
-- [ ] `FeatureArea.vue`
+- [x] `FeatureArea.vue`
 - [x] `FeaturedAmenities.vue`
 - [x] `FeaturedRooms.vue`
-- [ ] `Galleries.vue`
-- [ ] `HeroBannerWithBookingForm.vue`
-- [ ] `HotelPlaces.vue`
-- [ ] `HotelServices.vue`
-- [ ] `IntroVideo.vue`
-- [ ] `LocationTourismShowcase.vue`
-- [ ] `LogoShowcaseBanner.vue`
-- [ ] `News.vue`
-- [ ] `Newsletter.vue`
-- [ ] `OnsenSpaGallery.vue`
-- [ ] `PickupGalleryShowcase.vue`
-- [ ] `RoomList.vue`
-- [ ] `RoomMosaicShowcase.vue`
-- [ ] `SpaCollageShowcase.vue`
-- [ ] `SpecialStoryShowcase.vue`
-- [ ] `Teams.vue`
-- [ ] `Testimonials.vue`
-- [ ] `UserProfile.vue`
-- [ ] `WhyChooseUs.vue`
+- [x] `Galleries.vue`
+- [x] `HeroBannerWithBookingForm.vue`
+- [x] `HotelPlaces.vue`
+- [x] `HotelServices.vue`
+- [x] `IntroVideo.vue`
+- [x] `LocationTourismShowcase.vue`
+- [x] `LogoShowcaseBanner.vue`
+- [x] `News.vue`
+- [x] `Newsletter.vue`
+- [x] `OnsenSpaGallery.vue`
+- [x] `PickupGalleryShowcase.vue`
+- [x] `RoomList.vue`
+- [x] `RoomMosaicShowcase.vue`
+- [x] `SpaCollageShowcase.vue`
+- [x] `SpecialStoryShowcase.vue`
+- [x] `Teams.vue`
+- [x] `Testimonials.vue`
+- [x] `UserProfile.vue`
+- [x] `WhyChooseUs.vue`
 
 ## Cách đánh dấu khi giao việc
 - Đánh dấu `[ ]` -> chưa làm.

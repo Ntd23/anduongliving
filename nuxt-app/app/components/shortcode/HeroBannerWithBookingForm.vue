@@ -62,15 +62,17 @@ const sectionStyle = computed(() => {
     <div class="hero-booking-overlay" />
     <div class="hero-booking-shell">
       <div class="hero-booking-copy">
-        <h1 v-if="section.title" class="hero-booking-copy__title">{{ section.title }}</h1>
-        <p v-if="section.description" class="hero-booking-copy__description">{{ section.description }}</p>
+        <div class="hero-booking-copy__glass">
+          <h1 v-if="section.title" class="hero-booking-copy__title">{{ section.title }}</h1>
+          <p v-if="section.description" class="hero-booking-copy__description">{{ section.description }}</p>
 
-        <NuxtLink v-if="action?.isInternal" :to="action.href" class="hero-booking-copy__button">
-          {{ section.action?.label }}
-        </NuxtLink>
-        <a v-else-if="action" :href="action.href" class="hero-booking-copy__button">
-          {{ section.action?.label }}
-        </a>
+          <NuxtLink v-if="action?.isInternal" :to="action.href" class="hero-booking-copy__button">
+            {{ section.action?.label }}
+          </NuxtLink>
+          <a v-else-if="action" :href="action.href" class="hero-booking-copy__button">
+            {{ section.action?.label }}
+          </a>
+        </div>
       </div>
 
       <div v-if="section.bookingForm" class="hero-booking-card">
@@ -122,7 +124,9 @@ const sectionStyle = computed(() => {
 .hero-booking-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(18, 12, 9, 0.56), rgba(18, 12, 9, 0.72));
+  background:
+    radial-gradient(circle at 20% 80%, rgba(185, 130, 90, 0.12), transparent 30%),
+    linear-gradient(0deg, rgba(18, 12, 9, 0.72) 0%, rgba(18, 12, 9, 0.5) 50%, rgba(18, 12, 9, 0.36) 100%);
 }
 
 .hero-booking-shell {
@@ -136,6 +140,18 @@ const sectionStyle = computed(() => {
   align-items: center;
 }
 
+/* ── Copy glass panel ── */
+.hero-booking-copy__glass {
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border: 1px solid rgba(248, 243, 234, 0.14);
+  border-radius: 1.75rem;
+  background: rgba(24, 15, 10, 0.38);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 248, 237, 0.06);
+}
+
 .hero-booking-copy__title {
   margin: 0;
   color: #fff6ea;
@@ -147,26 +163,35 @@ const sectionStyle = computed(() => {
 .hero-booking-copy__description {
   max-width: 38rem;
   margin: 1.2rem 0 0;
-  color: rgba(251, 243, 232, 0.86);
-  line-height: 1.95;
+  color: rgba(251, 243, 232, 0.82);
+  line-height: 1.85;
 }
 
 .hero-booking-copy__button {
   display: inline-flex;
   margin-top: 1.6rem;
-  padding: 0.95rem 1.35rem;
+  padding: 0.75rem 1.35rem;
   border-radius: 999px;
-  background: rgba(255, 250, 241, 0.16);
+  background: rgba(255, 250, 241, 0.14);
+  border: 1px solid rgba(248, 243, 234, 0.16);
   color: #fff8ef;
   text-decoration: none;
+  font-weight: 600;
   backdrop-filter: blur(8px);
+  transition: background-color 0.2s ease;
 }
 
+.hero-booking-copy__button:hover {
+  background: rgba(255, 250, 241, 0.22);
+}
+
+/* ── Form card ── */
 .hero-booking-card {
-  padding: 1.6rem;
+  padding: clamp(1.4rem, 3vw, 1.8rem);
   border-radius: 1.8rem;
-  background: rgba(255, 251, 245, 0.88);
-  box-shadow: 0 24px 60px rgba(18, 12, 9, 0.16);
+  border: 1px solid rgba(255, 252, 246, 0.08);
+  background: rgba(255, 251, 245, 0.92);
+  box-shadow: 0 28px 72px rgba(18, 12, 9, 0.2);
 }
 
 .hero-booking-card__title {
@@ -190,6 +215,7 @@ const sectionStyle = computed(() => {
 .hero-booking-form__field span {
   color: #6a5948;
   font-size: 0.72rem;
+  font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -197,18 +223,31 @@ const sectionStyle = computed(() => {
 .hero-booking-form__field input {
   min-height: 3.25rem;
   padding: 0 0.95rem;
-  border: 1px solid rgba(107, 116, 79, 0.18);
+  border: 1px solid rgba(107, 116, 79, 0.16);
   border-radius: 999px;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.9);
+  transition: border-color 0.2s ease;
+}
+
+.hero-booking-form__field input:focus {
+  outline: none;
+  border-color: rgba(107, 116, 79, 0.4);
 }
 
 .hero-booking-form__button {
   min-height: 3.3rem;
   border: 0;
   border-radius: 999px;
-  background: #6c744f;
+  background: linear-gradient(135deg, #6c744f, #5e6746);
   color: #fffaf1;
-  font-weight: 600;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(108, 116, 79, 0.18);
+  transition: box-shadow 0.2s ease;
+}
+
+.hero-booking-form__button:hover {
+  box-shadow: 0 16px 36px rgba(108, 116, 79, 0.24);
 }
 
 @media (max-width: 991px) {

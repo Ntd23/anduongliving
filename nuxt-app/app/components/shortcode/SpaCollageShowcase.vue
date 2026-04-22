@@ -82,6 +82,13 @@ const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
   height: 100%;
   display: block;
   object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.spa-top__left:hover img,
+.spa-top__right:hover img,
+.spa-bottom__item:hover img {
+  transform: scale(1.03);
 }
 
 .spa-top__copy {
@@ -89,6 +96,10 @@ const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
   flex-direction: column;
   justify-content: center;
   padding: clamp(2rem, 4vw, 3rem);
+  border: 1px solid rgba(248, 243, 234, 0.08);
+  border-radius: 0.5rem;
+  background: rgba(248, 243, 234, 0.04);
+  backdrop-filter: blur(8px);
 }
 
 .spa-top__subtitle {

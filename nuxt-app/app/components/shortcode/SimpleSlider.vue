@@ -22,7 +22,7 @@ const normalizeCaptionText = (value: string | null | undefined) =>
 const fallbackCaptions = computed(() =>
   Array.from(
     props.block.raw.matchAll(
-      /<p\b[^>]*class=(["'])[^"'<>]*slider-showcase-caption[^"'<>]*\1[^>]*>([\s\S]*?)<\/p>/gi,
+      /<p\b[^>]*class=(['"])[^"'<>]*slider-showcase-caption[^"'<>]*\1[^>]*>([\s\S]*?)<\/p>/gi,
     ),
   ).map((match) => normalizeCaptionText(match[2])),
 );
@@ -70,6 +70,34 @@ const goToSlide = (index: number) => {
   activeIndex.value = index;
   startAutoplay();
 };
+
+/* ── Touch swipe ── */
+let pointerStartX = 0;
+let pointerStartY = 0;
+let isSwiping = false;
+
+const onPointerDown = (e: PointerEvent) => {
+  pointerStartX = e.clientX;
+  pointerStartY = e.clientY;
+  isSwiping = true;
+};
+
+const onPointerUp = (e: PointerEvent) => {
+  if (!isSwiping) return;
+  isSwiping = false;
+
+  const dx = e.clientX - pointerStartX;
+  const dy = e.clientY - pointerStartY;
+
+  if (Math.abs(dx) < 40 || Math.abs(dy) > Math.abs(dx)) return;
+
+  if (dx < 0) {
+    goToSlide((activeIndex.value + 1) % slides.value.length);
+  } else {
+    goToSlide((activeIndex.value - 1 + slides.value.length) % slides.value.length);
+  }
+};
+
 onMounted(() => {
   startAutoplay();
 });
@@ -88,7 +116,12 @@ watch(
 </script>
 
 <template>
-  <section v-if="slides.length" class="shortcode-simple-slider-native">
+  <section
+    v-if="slides.length"
+    class="shortcode-simple-slider-native"
+    @pointerdown="onPointerDown"
+    @pointerup="onPointerUp"
+  >
     <div class="simple-slider-shell">
       <article
         v-for="(slide, index) in slides"
@@ -150,6 +183,7 @@ watch(
 .shortcode-simple-slider-native {
   position: relative;
   background: #0d0907;
+  touch-action: pan-y;
 }
 
 .simple-slider-shell {
@@ -163,8 +197,10 @@ watch(
   inset: 0;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.9s ease, transform 0.9s ease;
-  transform: scale(1.015);
+  transition:
+    opacity 1.1s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale(1.04);
 }
 
 .simple-slider-slide.is-active {
@@ -194,15 +230,16 @@ watch(
 .simple-slider-overlay {
   z-index: 1;
   background:
-    linear-gradient(180deg, rgba(14, 10, 8, 0.03), rgba(14, 10, 8, 0.18)),
-    radial-gradient(circle at center, rgba(255, 255, 255, 0.04), transparent 40%);
+    linear-gradient(0deg, rgba(14, 10, 8, 0.52) 0%, rgba(14, 10, 8, 0.05) 40%, rgba(14, 10, 8, 0.02) 100%),
+    radial-gradient(ellipse at 50% 100%, rgba(14, 10, 8, 0.32), transparent 60%);
 }
 
+/* ── Caption glass panel ── */
 .simple-slider-caption {
   position: absolute;
   left: clamp(1.5rem, 4vw, 4rem);
   right: clamp(1.5rem, 4vw, 4rem);
-  bottom: clamp(3.5rem, 9vw, 6rem);
+  bottom: clamp(4.5rem, 10vw, 7rem);
   z-index: 3;
   display: flex;
   justify-content: center;
@@ -210,55 +247,80 @@ watch(
 }
 
 .simple-slider-caption__inner {
-  width: min(100%, 58rem);
+  width: min(100%, 56rem);
   margin: 0;
-  padding: clamp(1rem, 2vw, 1.4rem) clamp(1.1rem, 2.5vw, 1.8rem);
-  border: 1px solid rgba(255, 248, 237, 0.14);
-  border-radius: 1.5rem;
-  background: linear-gradient(180deg, rgba(24, 15, 10, 0.72), rgba(24, 15, 10, 0.82));
+  padding: clamp(1.15rem, 2.5vw, 1.6rem) clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid rgba(248, 243, 234, 0.16);
+  border-radius: 1.75rem;
+  background: rgba(24, 15, 10, 0.42);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 248, 237, 0.08);
   color: #fff7ef;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: clamp(1.55rem, 3vw, 2.8rem);
+  font-size: clamp(1.5rem, 3vw, 2.7rem);
   font-weight: 600;
   line-height: 1.28;
   letter-spacing: 0.015em;
-  text-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   text-align: center;
   text-wrap: balance;
 }
 
+/* ── Controls ── */
 .simple-slider-controls {
   position: absolute;
   left: 50%;
-  bottom: 1.25rem;
+  bottom: 1.5rem;
   z-index: 4;
   display: flex;
   align-items: center;
   transform: translateX(-50%);
 }
 
-.simple-slider-dot {
-  border: 0;
-  cursor: pointer;
-}
-
 .simple-slider-dots {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.65rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(14, 10, 8, 0.38);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(248, 243, 234, 0.1);
 }
 
 .simple-slider-dot {
-  width: 0.7rem;
-  height: 0.7rem;
+  position: relative;
+  width: 0.6rem;
+  height: 0.6rem;
+  padding: 0;
+  border: 0;
   border-radius: 999px;
-  background: rgba(255, 248, 237, 0.38);
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  background: rgba(255, 248, 237, 0.35);
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* 44px mobile hit area */
+.simple-slider-dot::before {
+  content: "";
+  position: absolute;
+  inset: -1rem;
 }
 
 .simple-slider-dot.is-active {
   background: #f7efe1;
-  transform: scale(1.18);
+  transform: scale(1.3);
+  box-shadow: 0 0 0 3px rgba(247, 239, 225, 0.18);
+}
+
+.simple-slider-dot:hover:not(.is-active) {
+  background: rgba(255, 248, 237, 0.6);
+  transform: scale(1.1);
 }
 
 @media (max-width: 767px) {
@@ -267,13 +329,13 @@ watch(
   }
 
   .simple-slider-controls {
-    bottom: 0.9rem;
+    bottom: 1rem;
   }
 
   .simple-slider-caption {
     left: 1rem;
     right: 1rem;
-    bottom: 4.4rem;
+    bottom: 4.5rem;
   }
 }
 </style>

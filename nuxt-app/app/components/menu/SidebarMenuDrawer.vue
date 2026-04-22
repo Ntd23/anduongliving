@@ -68,6 +68,9 @@ const registerTo = computed(() =>
 const overviewTo = computed(() =>
   customer.value?.overviewUrl?.startsWith("/") ? localePath(customer.value.overviewUrl) : null,
 );
+const logoutTo = computed(() =>
+  customer.value?.logoutUrl?.startsWith("/") ? localePath(customer.value.logoutUrl) : null,
+);
 
 const socialIconMap: Record<string, string> = {
   facebook: "ph:facebook-logo-fill",
@@ -276,8 +279,16 @@ onBeforeUnmount(() => {
             </a>
           </div>
 
+          <NuxtLink
+            v-if="customer?.authenticated && logoutTo"
+            :to="logoutTo"
+            class="sidebar-menu-drawer__contact-link"
+            @click="closeDrawer"
+          >
+            Logout
+          </NuxtLink>
           <a
-            v-if="customer?.authenticated && customer.logoutUrl"
+            v-else-if="customer?.authenticated && customer.logoutUrl"
             :href="customer.logoutUrl"
             class="sidebar-menu-drawer__contact-link"
           >

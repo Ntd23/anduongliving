@@ -21,111 +21,172 @@ const sectionStyle = computed(() =>
 </script>
 
 <template>
-  <section class="shortcode-services-split" :style="sectionStyle">
-    <div class="container services-split-shell">
-      <div v-if="section.image?.src" class="services-split-shell__media">
-        <img :src="section.image.src" :alt="section.image.alt || section.title || 'Services image'">
-      </div>
+  <section class="shortcode-services-hero" :style="sectionStyle">
+    <!-- Full-width background image -->
+    <div
+      v-if="section.image?.src"
+      class="services-hero__backdrop"
+      :style="{ backgroundImage: `url(${section.image.src})` }"
+    />
+    <div class="services-hero__veil" />
 
-      <div
-        v-if="section.subtitle || section.title || section.description || section.action"
-        class="services-split-shell__content"
-      >
-        <p v-if="section.subtitle" class="services-split-shell__eyebrow">
+    <!-- Glass panel overlay with text -->
+    <div
+      v-if="section.subtitle || section.title || section.description || section.action"
+      class="container services-hero__shell"
+    >
+      <div class="services-hero__glass">
+        <p v-if="section.subtitle" class="services-hero__eyebrow shortcode-narrative-eyebrow">
           {{ section.subtitle }}
         </p>
-        <h2 v-if="section.title" class="services-split-shell__title">
+        <h2 v-if="section.title" class="services-hero__title shortcode-narrative-title">
           {{ section.title }}
         </h2>
-        <p v-if="section.description" class="services-split-shell__description">
+        <p v-if="section.description" class="services-hero__description">
           {{ section.description }}
         </p>
         <NuxtLink
           v-if="section.action?.href && section.action?.label"
           :to="section.action.href"
-          class="services-split-shell__action"
+          class="services-hero__action"
         >
           {{ section.action.label }}
         </NuxtLink>
       </div>
+    </div>
 
-      <div v-else class="services-split-shell__fallback" v-html="sanitizedHtml" />
+    <div v-else class="container services-hero__shell">
+      <div class="services-hero__fallback" v-html="sanitizedHtml" />
     </div>
   </section>
 </template>
 
 <style scoped>
-.shortcode-services-split {
-  padding: clamp(4rem, 7vw, 6rem) 0;
-  background: #f7f5f1;
-}
-
-.services-split-shell {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  gap: clamp(2rem, 5vw, 4rem);
-  align-items: center;
-}
-
-.services-split-shell__media {
+.shortcode-services-hero {
+  position: relative;
   overflow: hidden;
-  border-radius: 1.8rem;
+  min-height: clamp(30rem, 70vh, 48rem);
+  display: flex;
+  align-items: flex-end;
 }
 
-.services-split-shell__media img {
-  display: block;
+/* ── Full-width background image ── */
+.services-hero__backdrop {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  transform: scale(1.02);
+}
+
+/* ── Gradient veil between image and content ── */
+.services-hero__veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(185, 130, 90, 0.14), transparent 30%),
+    linear-gradient(0deg,
+      rgba(21, 16, 11, 0.72) 0%,
+      rgba(21, 16, 11, 0.45) 35%,
+      rgba(21, 16, 11, 0.12) 70%,
+      rgba(21, 16, 11, 0.06) 100%
+    );
+}
+
+/* ── Shell ── */
+.services-hero__shell {
+  position: relative;
+  z-index: 1;
   width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
+  padding-top: 6rem;
+  padding-bottom: clamp(3rem, 6vw, 5rem);
 }
 
-.services-split-shell__content {
-  max-width: 34rem;
+/* ── Glass panel ── */
+.services-hero__glass {
+  max-width: min(38rem, 92vw);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border: 1px solid rgba(248, 243, 234, 0.16);
+  border-radius: 1.75rem;
+  background: rgba(32, 22, 16, 0.38);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 28px 72px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 248, 237, 0.08);
 }
 
-.services-split-shell__eyebrow {
+.services-hero__eyebrow {
   margin: 0 0 0.75rem;
-  color: #8b6a3f;
+  color: #e3c8a8;
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
-.services-split-shell__title {
+.services-hero__title {
   margin: 0;
-  color: #2d2018;
+  color: #fff9f0;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: clamp(2.5rem, 5vw, 4.35rem);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
   line-height: 0.95;
   font-weight: 600;
 }
 
-.services-split-shell__description {
+.services-hero__description {
   margin: 1.25rem 0 0;
-  color: rgba(58, 42, 31, 0.78);
+  max-width: 32rem;
+  color: rgba(255, 249, 240, 0.8);
   line-height: 1.8;
 }
 
-.services-split-shell__action {
+.services-hero__action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.95rem;
-  margin-top: 1.5rem;
-  padding: 0 1.25rem;
+  min-height: 3.25rem;
+  margin-top: 1.75rem;
+  padding: 0 1.4rem;
   border-radius: 999px;
-  background: #4c5d43;
-  color: #faf4ea;
+  background: linear-gradient(135deg, var(--retreat-clay, #b9825a), #9f6f49);
+  color: #fff9f0;
   text-decoration: none;
-  font-size: 0.84rem;
-  letter-spacing: 0.1em;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  box-shadow: 0 16px 36px rgba(185, 130, 90, 0.22);
+  transition: box-shadow 0.25s ease;
 }
 
-@media (max-width: 900px) {
-  .services-split-shell {
-    grid-template-columns: minmax(0, 1fr);
+.services-hero__action:hover {
+  box-shadow: 0 20px 44px rgba(185, 130, 90, 0.3);
+}
+
+/* ── Responsive ── */
+@media (max-width: 767px) {
+  .shortcode-services-hero {
+    min-height: 28rem;
+  }
+
+  .services-hero__veil {
+    background:
+      radial-gradient(circle at 20% 80%, rgba(185, 130, 90, 0.12), transparent 30%),
+      linear-gradient(0deg,
+        rgba(21, 16, 11, 0.78) 0%,
+        rgba(21, 16, 11, 0.5) 40%,
+        rgba(21, 16, 11, 0.18) 100%
+      );
+  }
+
+  .services-hero__glass {
+    max-width: 100%;
+    padding: 1.25rem;
+  }
+
+  .services-hero__shell {
+    padding-top: 4rem;
   }
 }
 </style>

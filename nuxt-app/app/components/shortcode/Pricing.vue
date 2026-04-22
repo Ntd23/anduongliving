@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import {
   parsePricingBlock,
   type PricingSectionData,
@@ -35,6 +35,27 @@ const cardsBackgroundStyle = computed(() =>
     ? { backgroundImage: `url(${resolveAsset(section.value.backgroundImage2.src) || section.value.backgroundImage2.src})` }
     : undefined,
 );
+
+/* ── Mobile rail dot tracking ── */
+const railRef = ref<HTMLElement | null>(null);
+const activeDot = ref(0);
+const itemCount = computed(() => section.value.items.length);
+
+const onRailScroll = () => {
+  const el = railRef.value;
+  if (!el || !itemCount.value) return;
+  const maxScroll = el.scrollWidth - el.clientWidth;
+  if (maxScroll <= 0) return;
+  const scrollRatio = el.scrollLeft / maxScroll;
+  activeDot.value = Math.round(scrollRatio * (itemCount.value - 1));
+};
+
+const scrollToDot = (index: number) => {
+  const el = railRef.value;
+  if (!el || !itemCount.value) return;
+  const cardWidth = el.scrollWidth / itemCount.value;
+  el.scrollTo({ left: cardWidth * index, behavior: "smooth" });
+};
 </script>
 
 <template>
@@ -75,7 +96,7 @@ const cardsBackgroundStyle = computed(() =>
           aria-hidden="true"
         />
 
-        <div class="pricing-grid">
+        <div ref="railRef" class="pricing-grid" @scroll="onRailScroll">
           <div
             v-for="item in section.items"
             :key="item.title"
@@ -120,6 +141,21 @@ const cardsBackgroundStyle = computed(() =>
             </a>
           </div>
         </div>
+
+        <!-- Mobile dot indicators -->
+        <div v-if="section.items.length > 1" class="pricing-dots-wrap">
+          <div class="pricing-dots">
+            <button
+              v-for="(_, index) in section.items"
+              :key="`pricing-dot-${index}`"
+              type="button"
+              class="pricing-dot"
+              :class="{ 'is-active': index === activeDot }"
+              :aria-label="`Go to plan ${index + 1}`"
+              @click="scrollToDot(index)"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -144,6 +180,7 @@ const cardsBackgroundStyle = computed(() =>
   margin: 0 auto;
 }
 
+/* ── Header ── */
 .pricing-header {
   position: relative;
   z-index: 1;
@@ -162,7 +199,9 @@ const cardsBackgroundStyle = computed(() =>
   background: rgba(255, 250, 242, 0.62);
   backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.72);
-  box-shadow: 0 24px 55px rgba(72, 49, 31, 0.08);
+  box-shadow:
+    0 24px 55px rgba(72, 49, 31, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.52);
 }
 
 .pricing-header__panel.has-header-media {
@@ -221,6 +260,7 @@ const cardsBackgroundStyle = computed(() =>
   text-align: left;
 }
 
+/* ── Cards shell ── */
 .pricing-cards-shell {
   position: relative;
   z-index: 1;
@@ -251,6 +291,7 @@ const cardsBackgroundStyle = computed(() =>
   z-index: 1;
 }
 
+/* ── Card ── */
 .pricing-card {
   position: relative;
   display: flex;
@@ -260,40 +301,34 @@ const cardsBackgroundStyle = computed(() =>
   overflow: hidden;
   border-radius: 2rem;
   background:
-    linear-gradient(180deg, rgba(255, 251, 245, 0.92), rgba(252, 244, 232, 0.82));
+    linear-gradient(180deg, rgba(255, 251, 245, 0.95), rgba(252, 244, 232, 0.88));
   box-shadow:
     0 24px 60px rgba(56, 38, 25, 0.08),
+    0 4px 12px rgba(56, 38, 25, 0.04),
     inset 0 1px 0 rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(185, 161, 129, 0.22);
-  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  border: 1px solid rgba(185, 161, 129, 0.2);
+  backdrop-filter: blur(6px);
+  transition:
+    transform 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.32s ease,
+    border-color 0.32s ease;
 }
 
 .pricing-card:hover {
-  transform: translateY(-6px);
   box-shadow:
-    0 30px 70px rgba(56, 38, 25, 0.12),
+    0 36px 80px rgba(56, 38, 25, 0.14),
+    0 6px 16px rgba(56, 38, 25, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  border-color: rgba(185, 161, 129, 0.35);
 }
 
 .pricing-card--popular {
   border-color: rgba(122, 99, 61, 0.4);
+  box-shadow:
+    0 28px 68px rgba(56, 38, 25, 0.12),
+    0 0 0 1px rgba(122, 99, 61, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
   transform: translateY(-0.35rem);
-}
-
-.pricing-card--popular::before {
-  content: "Signature";
-  position: absolute;
-  top: 1.05rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(97, 78, 49, 0.92);
-  color: #fff8ef;
-  padding: 0.35rem 0.8rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
 }
 
 .pricing-card__glow {
@@ -306,6 +341,7 @@ const cardsBackgroundStyle = computed(() =>
   pointer-events: none;
 }
 
+/* ── Card header ── */
 .pricing-card-header {
   position: relative;
   z-index: 1;
@@ -358,6 +394,7 @@ const cardsBackgroundStyle = computed(() =>
   line-height: 1.6;
 }
 
+/* ── Features ── */
 .pricing-features {
   list-style: none;
   padding: 0;
@@ -369,7 +406,7 @@ const cardsBackgroundStyle = computed(() =>
 
 .pricing-feature {
   position: relative;
-  padding: 0.62rem 0 0.62rem 1rem;
+  padding: 0.62rem 0 0.62rem 1.2rem;
   color: rgba(47, 36, 29, 0.82);
   font-size: 0.91rem;
   line-height: 1.48;
@@ -379,50 +416,61 @@ const cardsBackgroundStyle = computed(() =>
 .pricing-feature::before {
   content: "";
   position: absolute;
-  top: 0.95rem;
+  top: 0.92rem;
   left: 0;
-  width: 0.42rem;
-  height: 0.42rem;
+  width: 0.55rem;
+  height: 0.55rem;
   border-radius: 999px;
-  background: #a98257;
+  background: linear-gradient(135deg, var(--retreat-olive, #6f7553), var(--retreat-clay, #b9825a));
+  box-shadow: 0 0 0 3px rgba(111, 117, 83, 0.08);
 }
 
 .pricing-feature:last-child {
   border-bottom: none;
 }
 
+/* ── Button ── */
 .pricing-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 3rem;
+  min-height: 3.1rem;
   padding: 0.72rem 1.1rem;
-  background: #32231a;
+  background: linear-gradient(135deg, #32231a, #4a3628);
   color: #fff8ef;
   text-decoration: none;
   border-radius: 999px;
   font-weight: 600;
   text-align: center;
   border: 1px solid rgba(50, 35, 26, 0.15);
-  box-shadow: 0 16px 28px rgba(50, 35, 26, 0.12);
-  transition: transform 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+  box-shadow: 0 16px 32px rgba(50, 35, 26, 0.14);
+  transition:
+    transform 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .pricing-button:hover {
-  background: #60543e;
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #4a3628, #60543e);
+  box-shadow: 0 20px 40px rgba(50, 35, 26, 0.18);
   color: #fffaf3;
 }
 
 .pricing-button--popular {
-  background: #7a6340;
+  background: linear-gradient(135deg, #7a6340, #9f7f55);
 }
 
 .pricing-button--popular:hover {
-  background: #665233;
+  background: linear-gradient(135deg, #665233, #876a44);
 }
 
+/* ── Mobile dots ── */
+.pricing-dots-wrap {
+  display: none;
+}
+
+/* ── Responsive ── */
 @media (max-width: 1279px) {
   .pricing-header__panel {
     grid-template-columns: 1fr;
@@ -463,7 +511,11 @@ const cardsBackgroundStyle = computed(() =>
     overflow-x: auto;
     padding-bottom: 0.55rem;
     scroll-snap-type: x mandatory;
-    scrollbar-width: thin;
+    scrollbar-width: none;
+  }
+
+  .pricing-grid::-webkit-scrollbar {
+    display: none;
   }
 
   .pricing-card {
@@ -501,6 +553,46 @@ const cardsBackgroundStyle = computed(() =>
 
   .container {
     width: min(100%, calc(100% - 1.25rem));
+  }
+
+  .pricing-dots-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 1.25rem 0 0;
+  }
+
+  .pricing-dots {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(47, 36, 29, 0.06);
+  }
+
+  .pricing-dot {
+    position: relative;
+    width: 0.5rem;
+    height: 0.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(47, 36, 29, 0.2);
+    cursor: pointer;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .pricing-dot::before {
+    content: "";
+    position: absolute;
+    inset: -0.75rem;
+  }
+
+  .pricing-dot.is-active {
+    background: rgba(47, 36, 29, 0.65);
+    transform: scale(1.35);
   }
 }
 </style>

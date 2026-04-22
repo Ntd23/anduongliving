@@ -142,6 +142,12 @@ const heroStyle = computed(() =>
   width: min(100%, 48rem);
   margin: 0 auto;
   text-align: center;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border: 1px solid rgba(248, 243, 234, 0.12);
+  border-radius: 1.75rem;
+  background: rgba(22, 13, 10, 0.36);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.2);
 }
 
 .room-mosaic-hero__eyebrow {
@@ -225,7 +231,9 @@ const heroStyle = computed(() =>
   padding: 1.5rem;
   border-radius: 1.35rem;
   background: rgba(255, 251, 244, 0.74);
-  border: 1px solid rgba(111, 117, 83, 0.08);
+  border: 1px solid rgba(111, 117, 83, 0.1);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 12px 28px rgba(47, 36, 29, 0.05);
 }
 
 .room-mosaic-sidebar__copy p {
@@ -274,15 +282,16 @@ const heroStyle = computed(() =>
   min-width: 100%;
   padding: 0.95rem 1.35rem;
   border-radius: 999px;
-  background: #6d7351;
+  background: linear-gradient(135deg, #6d7351, #5b6244);
   color: #fffaf2;
   text-decoration: none;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  font-weight: 600;
+  box-shadow: 0 12px 28px rgba(109, 115, 81, 0.2);
+  transition: box-shadow 0.2s ease;
 }
 
 .room-mosaic-cta__button:hover {
-  transform: translateY(-1px);
-  background: #5b6244;
+  box-shadow: 0 16px 36px rgba(109, 115, 81, 0.28);
 }
 
 @media (max-width: 991px) {

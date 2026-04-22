@@ -26,44 +26,49 @@ const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
           :key="`${member.name}-${member.profileUrl || member.image?.src || 'card'}`"
           class="team-card"
         >
-          <component
-            :is="member.profileUrl ? 'a' : 'div'"
-            class="team-card__media"
-            :href="member.profileUrl || undefined"
-          >
-            <img
-              v-if="member.image?.src"
-              :src="member.image.src"
-              :alt="member.image.alt || member.name"
-              loading="lazy"
+          <div class="team-card__media-wrap">
+            <component
+              :is="member.profileUrl ? 'a' : 'div'"
+              class="team-card__media"
+              :href="member.profileUrl || undefined"
             >
-          </component>
+              <img
+                v-if="member.image?.src"
+                :src="member.image.src"
+                :alt="member.image.alt || member.name"
+                loading="lazy"
+              >
+            </component>
+            <div class="team-card__media-overlay" />
+          </div>
 
           <div class="team-card__body">
-            <h3 class="team-card__name">
-              <component
-                :is="member.profileUrl ? 'a' : 'span'"
-                :href="member.profileUrl || undefined"
-              >
-                {{ member.name }}
-              </component>
-            </h3>
+            <div class="team-card__glass">
+              <h3 class="team-card__name">
+                <component
+                  :is="member.profileUrl ? 'a' : 'span'"
+                  :href="member.profileUrl || undefined"
+                >
+                  {{ member.name }}
+                </component>
+              </h3>
 
-            <p v-if="member.title" class="team-card__title">
-              {{ member.title }}
-            </p>
+              <p v-if="member.title" class="team-card__title">
+                {{ member.title }}
+              </p>
 
-            <div v-if="member.socials.length" class="team-card__socials">
-              <a
-                v-for="social in member.socials"
-                :key="`${member.name}-${social.platform}-${social.url}`"
-                :href="social.url"
-                target="_blank"
-                rel="noreferrer"
-                :aria-label="`${member.name} on ${social.platform}`"
-              >
-                <Icon :name="socialIcons[social.platform]" />
-              </a>
+              <div v-if="member.socials.length" class="team-card__socials">
+                <a
+                  v-for="social in member.socials"
+                  :key="`${member.name}-${social.platform}-${social.url}`"
+                  :href="social.url"
+                  target="_blank"
+                  rel="noreferrer"
+                  :aria-label="`${member.name} on ${social.platform}`"
+                >
+                  <Icon :name="socialIcons[social.platform]" />
+                </a>
+              </div>
             </div>
           </div>
         </article>
@@ -78,59 +83,83 @@ const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 
 <style scoped>
 .shortcode-team {
-  padding: 5.5rem 0;
-  background: linear-gradient(180deg, rgba(255, 252, 246, 0.9), rgba(243, 236, 223, 0.72));
+  padding: clamp(4.5rem, 8vw, 6rem) 0;
+  background:
+    radial-gradient(circle at top left, rgba(185, 130, 90, 0.1), transparent 28%),
+    linear-gradient(180deg, rgba(255, 252, 246, 0.9), rgba(243, 236, 223, 0.72));
 }
 
 .team-grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 1rem;
   grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
 .team-card {
+  position: relative;
   overflow: hidden;
-  border: 1px solid rgba(111, 117, 83, 0.12);
-  border-radius: 1.25rem;
-  background: rgba(255, 252, 246, 0.92);
-  box-shadow: 0 24px 48px rgba(47, 36, 29, 0.08);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
+  border-radius: 1.6rem;
+  background: #1a120c;
+  box-shadow: 0 20px 50px rgba(47, 36, 29, 0.12);
+  transition: box-shadow 0.3s ease;
 }
 
 .team-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(111, 117, 83, 0.24);
-  box-shadow: 0 28px 60px rgba(47, 36, 29, 0.12);
+  box-shadow: 0 24px 56px rgba(47, 36, 29, 0.18);
+}
+
+.team-card__media-wrap {
+  position: relative;
 }
 
 .team-card__media {
   display: block;
   aspect-ratio: 15 / 17;
   overflow: hidden;
-  background:
-    radial-gradient(circle at top, rgba(185, 130, 90, 0.24), transparent 55%),
-    linear-gradient(180deg, #f8f3ea, #ede4d6);
 }
 
 .team-card__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.team-card:hover .team-card__media img {
+  transform: scale(1.03);
+}
+
+.team-card__media-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(14, 8, 4, 0.82) 0%, rgba(14, 8, 4, 0.2) 45%, transparent 100%);
+  pointer-events: none;
 }
 
 .team-card__body {
-  padding: 1.4rem 1.25rem 1.5rem;
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  z-index: 1;
+}
+
+.team-card__glass {
+  padding: 0.9rem 1.1rem;
+  border: 1px solid rgba(248, 243, 234, 0.1);
+  border-radius: 1.15rem;
+  background: rgba(32, 22, 16, 0.36);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255, 248, 237, 0.06);
   text-align: center;
 }
 
 .team-card__name {
   margin: 0;
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   line-height: 1.2;
-  color: var(--retreat-ink);
+  color: #fff7ef;
+  font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
 }
 
 .team-card__name a,
@@ -139,41 +168,35 @@ const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
   text-decoration: none;
 }
 
-.team-card__name a:hover {
-  color: var(--retreat-olive);
-}
-
 .team-card__title {
-  margin: 0.45rem 0 0;
-  color: var(--retreat-clay);
+  margin: 0.3rem 0 0;
+  color: #e3c8a8;
   font-weight: 600;
+  font-size: 0.82rem;
 }
 
 .team-card__socials {
   display: flex;
   justify-content: center;
-  gap: 0.6rem;
-  margin-top: 1rem;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
 }
 
 .team-card__socials a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.2rem;
+  height: 2.2rem;
   border-radius: 999px;
-  background: var(--retreat-olive);
+  background: rgba(108, 116, 79, 0.7);
   color: #fffdf9;
   text-decoration: none;
-  transition:
-    transform 0.2s ease,
-    background-color 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
 .team-card__socials a:hover {
-  transform: translateY(-1px);
-  background: #5d6447;
+  background: rgba(108, 116, 79, 0.9);
 }
 
 @media (min-width: 640px) {
