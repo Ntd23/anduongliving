@@ -780,52 +780,61 @@ app()->booted(function (): void {
             );
     });
 
-    Shortcode::register(
-        'logo-showcase-banner',
-        __('Logo Showcase Banner'),
-        __('Large background section with centered logo and bottom text'),
-        function (ShortcodeCompiler $shortcode): ?string {
-            return Theme::partial('shortcodes.logo-showcase-banner.index', compact('shortcode'));
-        }
-    );
+Shortcode::register(
+    'logo-showcase-banner',
+    __('Logo Showcase Banner'),
+    __('Large story banner with background image, title, description and button'),
+    function (ShortcodeCompiler $shortcode): ?string {
+        return Theme::partial('shortcodes.logo-showcase-banner.index', compact('shortcode'));
+    }
+);
 
-    Shortcode::setPreviewImage('logo-showcase-banner', Theme::asset()->url('images/logo-showcase-banner/logo-show.jpeg'));
+Shortcode::setPreviewImage('logo-showcase-banner', Theme::asset()->url('images/logo-showcase-banner/logo-show.jpeg'));
 
-    Shortcode::setAdminConfig('logo-showcase-banner', function (array $attributes) {
-        return ShortcodeForm::createFromArray($attributes)
-            ->add(
-                'background_image',
-                MediaImageField::class,
-                MediaImageFieldOption::make()
-                    ->label(__('Background image'))
-                    ->toArray()
-            )
-            ->add(
-                'logo_image',
-                MediaImageField::class,
-                MediaImageFieldOption::make()
-                    ->label(__('Center logo'))
-                    ->toArray()
-            )
-            ->add(
-                'top_text',
-                TextareaField::class,
-                TextareaFieldOption::make()
-                    ->label(__('Top text'))
-                    ->helperText(__('Each line will be shown on a new row'))
-                    ->rows(6)
-                    ->toArray()
-            )
-            ->add(
-                'bottom_text',
-                TextareaField::class,
-                TextareaFieldOption::make()
-                    ->label(__('Bottom text'))
-                    ->helperText(__('Each line will be shown on a new row'))
-                    ->rows(4)
-                    ->toArray()
-            );
-    });
+Shortcode::setAdminConfig('logo-showcase-banner', function (array $attributes) {
+    return ShortcodeForm::createFromArray($attributes)
+        ->add(
+            'background_image',
+            MediaImageField::class,
+            MediaImageFieldOption::make()
+                ->label(__('Background image'))
+                ->toArray()
+        )
+        ->add(
+            'title',
+            TextareaField::class,
+            TextareaFieldOption::make()
+                ->label(__('Title'))
+                ->helperText(__('Nhập tiêu đề banner'))
+                ->rows(2)
+                ->toArray()
+        )
+        ->add(
+            'description',
+            TextareaField::class,
+            TextareaFieldOption::make()
+                ->label(__('Description'))
+                ->helperText(__('Nhập mô tả hiển thị dưới tiêu đề'))
+                ->rows(5)
+                ->toArray()
+        )
+        ->add(
+            'button_text',
+            TextField::class,
+            TextFieldOption::make()
+                ->label(__('Button text'))
+                ->helperText(__('Ví dụ: Khám phá thêm'))
+                ->toArray()
+        )
+        ->add(
+            'button_url',
+            TextField::class,
+            TextFieldOption::make()
+                ->label(__('Button URL'))
+                ->helperText(__('Ví dụ: /lien-he hoặc https://example.com'))
+                ->toArray()
+        );
+});
 
     Shortcode::register(
         'room-mosaic-showcase',

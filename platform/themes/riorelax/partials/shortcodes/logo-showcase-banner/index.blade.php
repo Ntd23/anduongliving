@@ -1,133 +1,107 @@
 @php
-    $backgroundImage = $shortcode->background_image ? RvMedia::getImageUrl($shortcode->background_image) : null;
-    $logoImage = $shortcode->logo_image ? RvMedia::getImageUrl($shortcode->logo_image) : null;
-    $topLines = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) $shortcode->top_text))));
-    $bottomLines = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) $shortcode->bottom_text))));
+    use Botble\Media\Facades\RvMedia;
+
+    $backgroundImage = $shortcode->background_image
+        ? RvMedia::getImageUrl($shortcode->background_image)
+        : null;
+
+    $title = trim((string) $shortcode->title);
+    $description = trim((string) $shortcode->description);
+    $buttonText = trim((string) $shortcode->button_text);
+    $buttonUrl = trim((string) $shortcode->button_url);
 @endphp
 
-<section class="logo-showcase-banner" @if ($backgroundImage) style="background-image: url('{{ $backgroundImage }}');" @endif>
-    <style>
-        .logo-showcase-banner {
-            align-items: center;
-            background-color: #050505;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            min-height: min(100vh, 1300px);
-            overflow: hidden;
-            padding: 80px 24px 60px;
-            position: relative;
-        }
-
-        .logo-showcase-banner::before {
-            background: rgba(0, 0, 0, 0.46);
-            content: "";
-            inset: 0;
+<section
+    style="
+        position: relative;
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 80px 20px;
+        background-image: url('{{ $backgroundImage }}');
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    "
+>
+    <div
+        style="
             position: absolute;
-            z-index: 0;
-        }
-
-        .logo-showcase-banner__inner {
-            align-items: center;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            min-height: min(88vh, 1140px);
-            position: relative;
-            text-align: center;
-            width: min(100%, 1180px);
+            inset: 0;
+            background: rgba(0,0,0,0.42);
             z-index: 1;
-        }
+        "
+    ></div>
 
-        .logo-showcase-banner__top,
-        .logo-showcase-banner__bottom {
-            width: min(100%, 980px);
-        }
-
-        .logo-showcase-banner__top {
-            margin-bottom: auto;
-            padding-top: 18px;
-        }
-
-        .logo-showcase-banner__top p,
-        .logo-showcase-banner__bottom p {
-            color: rgba(255, 255, 255, 0.95);
-            font-size: clamp(11.04px, 0.7245vw, 15.87px);
-            letter-spacing: 0.08em;
-            line-height: 2;
-            margin: 0;
-            text-shadow: 0 5px 18px rgba(0, 0, 0, 0.5);
-        }
-
-        .logo-showcase-banner__top p + p,
-        .logo-showcase-banner__bottom p + p {
-            margin-top: 8px;
-        }
-
-        .logo-showcase-banner__center {
-            align-items: center;
-            display: flex;
-            flex: 1 1 auto;
-            justify-content: center;
+    <div
+        style="
+            position: relative;
+            z-index: 2;
             width: 100%;
-        }
+            max-width: 1280px;
+            text-align: center;
+            color: #fff;
+            padding: 0 20px;
+            margin-top: 120px;
+        "
+    >
+        @if($title)
+            <h1
+                style="
+                    max-width: 1100px;
+                    margin: 0 auto 24px;
+                    font-size: clamp(36px, 4vw, 84px);
+                    line-height: 1.06;
+                    font-weight: 700;
+                    letter-spacing: -0.03em;
+                    color: #ffffff;
+                    text-shadow: 0 10px 28px rgba(0,0,0,0.28);
+                "
+            >
+                {!! BaseHelper::clean($title) !!}
+            </h1>
+        @endif
 
-        .logo-showcase-banner__logo {
-            display: block;
-            filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.35));
-            max-width: min(20.48vw, 205px);
-            width: 100%;
-        }
-
-        .logo-showcase-banner__bottom {
-            margin-top: auto;
-            padding-bottom: 10px;
-        }
-
-        @media (max-width: 991px) {
-            .logo-showcase-banner {
-                min-height: min(92vh, 980px);
-                padding: 48px 16px 36px;
-            }
-
-            .logo-showcase-banner__inner {
-                min-height: min(82vh, 900px);
-            }
-
-            .logo-showcase-banner__top p,
-            .logo-showcase-banner__bottom p {
-                letter-spacing: 0.04em;
-                line-height: 1.8;
-            }
-
-            .logo-showcase-banner__logo {
-                max-width: min(34.56vw, 154px);
-            }
-        }
-    </style>
-
-    <div class="logo-showcase-banner__inner">
-        @if ($topLines)
-            <div class="logo-showcase-banner__top">
-                @foreach ($topLines as $line)
-                    <p>{!! BaseHelper::clean($line) !!}</p>
-                @endforeach
+        @if($description)
+            <div
+                style="
+                    max-width: 900px;
+                    margin: 0 auto;
+                    font-size: clamp(18px, 1.45vw, 30px);
+                    line-height: 1.7;
+                    font-weight: 500;
+                    color: rgba(255,255,255,0.96);
+                    text-shadow: 0 6px 18px rgba(0,0,0,0.28);
+                "
+            >
+                {!! BaseHelper::clean(nl2br($description)) !!}
             </div>
         @endif
 
-        <div class="logo-showcase-banner__center">
-            @if ($logoImage)
-                <img class="logo-showcase-banner__logo" src="{{ $logoImage }}" alt="Logo showcase">
-            @endif
-        </div>
-
-        @if ($bottomLines)
-            <div class="logo-showcase-banner__bottom">
-                @foreach ($bottomLines as $line)
-                    <p>{!! BaseHelper::clean($line) !!}</p>
-                @endforeach
+        @if($buttonText && $buttonUrl)
+            <div style="margin-top: 38px;">
+                <a
+                    href="{{ $buttonUrl }}"
+                    style="
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        min-width: 220px;
+                        padding: 16px 34px;
+                        border-radius: 999px;
+                        background: #8b5e3c;
+                        color: #ffffff;
+                        text-decoration: none;
+                        font-size: 16px;
+                        font-weight: 700;
+                        letter-spacing: 0.03em;
+                    "
+                >
+                    {!! BaseHelper::clean($buttonText) !!}
+                </a>
             </div>
         @endif
     </div>
