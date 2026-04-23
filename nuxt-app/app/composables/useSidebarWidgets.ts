@@ -1,2 +1,1 @@
-﻿export * from "~/features/cms/data/useSidebarWidgets";
-
+﻿export * from "../features/cms/data/useSidebarWidgets";

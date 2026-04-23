@@ -1,2 +1,1 @@
-﻿export * from "~/features/cms/data/useService";
-
+﻿export * from "../features/cms/data/useService";

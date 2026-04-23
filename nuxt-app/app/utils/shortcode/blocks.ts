@@ -1,2 +1,1 @@
-﻿export * from "~/features/shortcodes/core/blocks";
-
+﻿export * from "../../features/shortcodes/core/blocks";
