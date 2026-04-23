@@ -59,4 +59,4 @@ storage/framework/maintenance.php
 .claude/
 .mcp.json
 .taskmaster/
-public/storage
+#public/storage
