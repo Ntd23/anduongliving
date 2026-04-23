@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-import { parseHeroStoryBlock, type ShortcodeBlock } from "~/features/shortcodes/core";
+import { parseHeroStoryBlock, type ShortcodeBlock } from "~/utils/shortcode";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
@@ -99,7 +99,9 @@ const descriptionLines = computed(() =>
 .hero-story__shell {
   position: relative;
   display: grid;
-  align-items: end;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 3rem);
+  align-items: stretch;
   min-height: inherit;
   padding-top: 5rem;
   padding-bottom: 5rem;
@@ -108,7 +110,7 @@ const descriptionLines = computed(() =>
 .hero-story__panel {
   position: relative;
   z-index: 1;
-  max-width: min(42rem, 92vw);
+  max-width: none;
   padding: clamp(1.75rem, 4vw, 3rem);
   border: 1px solid rgba(248, 243, 234, 0.18);
   border-radius: 1.9rem;
@@ -155,30 +157,41 @@ const descriptionLines = computed(() =>
 }
 
 .hero-story__aside {
-  position: absolute;
-  right: 1rem;
-  bottom: 4rem;
-  width: min(28vw, 16rem);
+  position: relative;
+  right: auto;
+  bottom: auto;
+  z-index: 1;
+  width: 100%;
+  min-height: 100%;
   overflow: hidden;
   border: 8px solid rgba(255, 252, 246, 0.88);
-  border-radius: 1.5rem;
+  border-radius: 1.75rem;
   box-shadow: 0 28px 60px rgba(18, 9, 5, 0.28);
 }
 
 .hero-story__aside img {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  height: 100%;
+  min-height: 100%;
   object-fit: cover;
 }
 
 @media (max-width: 1023px) {
+  .hero-story__shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .hero-story__aside {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    width: min(72vw, 18rem);
+    width: min(82vw, 26rem);
+    min-height: auto;
     margin: 1.5rem 0 0 auto;
+  }
+
+  .hero-story__aside img {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 4 / 5;
   }
 }
 
@@ -198,7 +211,3 @@ const descriptionLines = computed(() =>
   }
 }
 </style>
-
-
-
-
