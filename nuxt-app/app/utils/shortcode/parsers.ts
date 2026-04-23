@@ -1,2 +1,1 @@
-﻿export * from "~/features/shortcodes/core/parsers";
-
+﻿export * from "../../features/shortcodes/core/parsers";

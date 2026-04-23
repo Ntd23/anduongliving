@@ -1,2 +1,1 @@
-﻿export * from "~/features/cms/data/useResolvedCmsLink";
-
+﻿export * from "../features/cms/data/useResolvedCmsLink";

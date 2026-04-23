@@ -1,2 +1,1 @@
-﻿export * from "~/features/blog/data/useBlogSeo";
-
+﻿export * from "../features/blog/data/useBlogSeo";

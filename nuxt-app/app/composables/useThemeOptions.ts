@@ -1,2 +1,1 @@
-﻿export * from "~/features/cms/data/useThemeOptions";
-
+﻿export * from "../features/cms/data/useThemeOptions";
