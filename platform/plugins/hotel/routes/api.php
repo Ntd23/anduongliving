@@ -1,6 +1,7 @@
 <?php
 
 use Botble\Hotel\Http\Controllers\API\CustomerAuthController;
+use Botble\Hotel\Http\Controllers\API\CustomerHeaderExtrasController;
 use Botble\Hotel\Http\Controllers\API\CustomerProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -8,6 +9,7 @@ Route::group([
     'prefix' => 'api/v1/customer',
     'middleware' => ['api'],
 ], function (): void {
+    Route::get('header-extras', [CustomerHeaderExtrasController::class, 'index']);
     Route::post('register', [CustomerAuthController::class, 'register']);
     Route::post('login', [CustomerAuthController::class, 'login']);
 

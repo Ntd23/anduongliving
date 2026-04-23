@@ -71,6 +71,7 @@ class Customer extends BaseModel implements
         'state' => SafeContent::class,
         'country' => SafeContent::class,
         'password' => 'hashed',
+        'confirmed_at' => 'datetime',
     ];
 
     protected function firstName(): Attribute

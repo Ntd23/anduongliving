@@ -6,6 +6,7 @@ use Botble\Base\Facades\BaseHelper;
 use Botble\Hotel\Facades\HotelHelper;
 use Botble\Hotel\Models\Customer;
 use Carbon\Carbon;
+use DateTimeInterface;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Hash;
@@ -94,6 +95,11 @@ class CustomerAuthService
     public function transformCustomer(Customer $customer): array
     {
         $customer = $customer->fresh() ?: $customer;
+        $confirmedAt = $customer->confirmed_at;
+
+        if (is_string($confirmedAt) && $confirmedAt !== '') {
+            $confirmedAt = Carbon::parse($confirmedAt);
+        }
 
         return [
             'id' => $customer->getKey(),
@@ -102,7 +108,7 @@ class CustomerAuthService
             'name' => $customer->name,
             'email' => $customer->email,
             'avatar_url' => $customer->avatar_url,
-            'confirmed_at' => $customer->confirmed_at?->toISOString(),
+            'confirmed_at' => $confirmedAt instanceof DateTimeInterface ? $confirmedAt->format(DateTimeInterface::ATOM) : null,
         ];
     }
 

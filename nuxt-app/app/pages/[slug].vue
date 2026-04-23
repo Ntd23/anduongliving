@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { usePage } from "~/composables/usePage";
-import { resolveCmsLocale } from "~~/shared/cms-routing";
+import { usePage } from "~/features/cms/data/usePage";
+import { resolveCmsLocale } from "~~/shared/cms/locale";
 import {
   layoutUsesBreadcrumbs,
   layoutUsesFooter,
   resolvePageLayoutName,
-} from "~/utils/page-template";
+} from "~/features/cms/ui/page-template";
 
 const route = useRoute();
 const { locale } = useI18n();

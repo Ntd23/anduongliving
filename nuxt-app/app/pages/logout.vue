@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { cmsProxyRoutes } from "~~/shared/cms-routing";
+import { cmsProxyRoutes } from "~~/shared/routes/proxy";
 
 definePageMeta({
   layout: "default",
 });
 
 const localePath = useLocalePath();
+const requestFetch = useRequestFetch();
 
-await $fetch<{ data?: { nextUrl?: string | null } }>(cmsProxyRoutes.customer.logout());
+await requestFetch<{ data?: { nextUrl?: string | null } }>(cmsProxyRoutes.customer.logout());
 
 await navigateTo(localePath("/"), { replace: true });
 </script>

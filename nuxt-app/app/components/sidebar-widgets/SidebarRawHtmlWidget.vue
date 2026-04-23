@@ -1,14 +1,3 @@
-<script setup lang="ts">
-import type { SidebarWidgetManifest } from "~/utils/sidebar-widgets";
-
-defineProps<{
-  widget: SidebarWidgetManifest;
-}>();
+﻿<script lang="ts">
+export { default } from "~/features/cms/ui/sidebar-widgets/SidebarRawHtmlWidget.vue";
 </script>
-
-<template>
-  <div
-    class="sidebar-widget-raw"
-    v-html="widget.rendered_html || ''"
-  />
-</template>

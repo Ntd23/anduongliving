@@ -1,4 +1,4 @@
-import { clearCustomerAccessToken, callCustomerApi, getCustomerAccessToken } from "~~/server/utils/customer-auth";
+import { clearCustomerAccessToken, callCustomerApi, getCustomerAccessToken } from "~~/server/features/auth/customer-auth";
 
 export default defineEventHandler(async (event) => {
   const token = getCustomerAccessToken(event);

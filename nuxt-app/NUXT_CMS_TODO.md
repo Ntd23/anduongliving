@@ -1,12 +1,27 @@
-# Nuxt CMS status - clone Botble Blade
+# Nuxt CMS status - clone Blade spec
 
-Tai lieu nay chot trang thai hien tai giua `Botble Blade` va `Nuxt`.
+Tai lieu nay chot trang thai hien tai giua `Blade spec` va `Nuxt`.
 
 Nguyen tac:
 
-- `Botble Blade` la spec
+- `Blade` la spec
 - `Admin hien co` la source of truth
 - `Nuxt` clone renderer va flow, khong tu mo them source config moi neu admin hien tai khong dung
+
+---
+
+## 0. Kien truc hien tai
+
+- [x] `nuxt-app` da bat dau refactor sang `Feature-first modular monolith`
+- [x] da co `CMS BFF layer` trong `server/`
+- [x] da tach route/config/helper ra khoi `shared/cms-routing.ts`
+- [x] da tao feature modules cho:
+  - `cms`
+  - `auth`
+  - `blog`
+  - `navigation`
+  - `shortcodes`
+- [x] `app/components` va `app/composables` hien giu compatibility wrapper cho migration an toan
 
 ---
 

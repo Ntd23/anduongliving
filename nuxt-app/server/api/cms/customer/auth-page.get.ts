@@ -6,8 +6,9 @@ import type {
   CustomerAuthMode,
   CustomerAuthPageData,
 } from "~~/shared/customer-auth";
-import { buildAbsoluteUrl, cmsAppRoutes, normalizeSiteUrl } from "~~/shared/cms-routing";
-import { createForwardHeaders, forwardUpstreamCookies } from "~~/server/utils/http-upstream";
+import { cmsAppRoutes } from "~~/shared/routes/app";
+import { buildAbsoluteUrl, normalizeSiteUrl } from "~~/shared/utils/url";
+import { createForwardHeaders, forwardUpstreamCookies } from "~~/server/features/http/upstream";
 
 const resolveMode = (value?: string | null): CustomerAuthMode =>
   value === "register" ? "register" : "login";
