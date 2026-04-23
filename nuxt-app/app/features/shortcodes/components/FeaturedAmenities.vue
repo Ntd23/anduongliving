@@ -3,6 +3,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref } from "vue";
 import { parseFeaturedAmenitiesBlock, type ShortcodeBlock } from "~/features/shortcodes/core";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 import { useScrollAnimation } from "~/composables/useScrollAnimation";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
 
 const props = defineProps<{
   block: ShortcodeBlock;
@@ -10,9 +11,25 @@ const props = defineProps<{
 
 const section = computed(() => parseFeaturedAmenitiesBlock(props.block.raw));
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
-const sectionStyle = computed(() =>
-  section.value.backgroundColor ? { backgroundColor: section.value.backgroundColor } : undefined,
-);
+const resolveAsset = useResolvedCmsAsset();
+const sectionStyle = computed(() => {
+  const style: Record<string, string> = {};
+
+  if (section.value.backgroundColor) {
+    style.backgroundColor = section.value.backgroundColor;
+  }
+
+  if (section.value.backgroundImage?.src) {
+    const backgroundSrc = resolveAsset(section.value.backgroundImage.src) || section.value.backgroundImage.src;
+
+    style.backgroundImage = [
+      "linear-gradient(180deg, rgba(251, 247, 239, 0.78), rgba(242, 233, 220, 0.9))",
+      `url('${backgroundSrc}')`,
+    ].join(", ");
+  }
+
+  return Object.keys(style).length ? style : undefined;
+});
 
 const { setupScrollAnimations } = useScrollAnimation()
 
@@ -59,7 +76,7 @@ onUnmounted(() => {
           <div class="amenities-card__media">
             <img
               v-if="item.image?.src"
-              :src="item.image.src"
+              :src="resolveAsset(item.image.src) || item.image.src"
               :alt="item.image?.alt || item.title"
               class="amenities-card__image"
             >
@@ -87,8 +104,11 @@ onUnmounted(() => {
 <style scoped>
 .shortcode-featured-amenities-native {
   position: relative;
+  overflow: hidden;
   padding: clamp(4rem, 8vw, 7rem) 0;
   background: linear-gradient(180deg, #fbf7ef, #f2e9dc);
+  background-position: center;
+  background-size: cover;
 }
 
 .amenities-shell {
@@ -389,6 +409,3 @@ onUnmounted(() => {
   }
 }
 </style>
-
-
-

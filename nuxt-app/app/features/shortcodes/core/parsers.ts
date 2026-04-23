@@ -171,7 +171,15 @@ const extractSelectOptions = (selectHtml: string | null): BookingSelectOption[] 
   return options;
 };
 
-const parseAvailabilityBookingForm = (html: string): AvailabilityBookingFormSectionData | null => {
+const extractSubmitButtonLabel = (formHtml: string): string | null =>
+  extractTextFromTag(extractFirstTag(formHtml, "button", undefined, /\btype=(["'])submit\1/i) || "", "button") ||
+  extractTextFromTag(extractFirstTag(formHtml, "button", "ss-btn") || "", "button") ||
+  extractTextFromTag(formHtml, "button");
+
+const parseAvailabilityBookingForm = (
+  html: string,
+  overrides: Partial<Pick<AvailabilityBookingFormSectionData, "actionUrl" | "submitLabel" | "title">> = {},
+): AvailabilityBookingFormSectionData | null => {
   const formTag = extractFirstTag(html, "form");
 
   if (!formTag) {
@@ -186,12 +194,12 @@ const parseAvailabilityBookingForm = (html: string): AvailabilityBookingFormSect
   const roomsInput = extractInputByName(formTag, "rooms");
 
   return {
-    title: titleBlock ? extractTextFromTag(titleBlock, "h2") : null,
-    actionUrl: extractAttribute(formTag, "action"),
+    title: overrides.title || (titleBlock ? extractTextFromTag(titleBlock, "h2") : null),
+    actionUrl: overrides.actionUrl || extractAttribute(formTag, "action"),
     dateFormat:
       extractAttribute(startInput || "", "data-date-format") ||
       extractAttribute(endInput || "", "data-date-format"),
-    submitLabel: extractTextFromTag(formTag, "button"),
+    submitLabel: overrides.submitLabel || extractSubmitButtonLabel(formTag),
     startDate: extractAttribute(startInput || "", "value"),
     endDate: extractAttribute(endInput || "", "value"),
     minAdults: clampInteger(extractAttribute(adultsInput || "", "min"), 1),
@@ -668,12 +676,24 @@ export const parseSpaCollageShowcaseBlock = (html: string): SpaCollageShowcaseSe
 };
 
 export const parseHeroBannerWithBookingFormBlock = (html: string): HeroBannerWithBookingFormSectionData => {
+  const attributes = parseShortcodeAttributes(html);
   const section =
     extractFirstBlockByClass(html, "section", "shortcode-hero-banner-with-booking-form") || html;
   const sliderBlock = extractFirstBlockByClass(section, "div", "single-slider") || section;
   const contentBlock = extractFirstBlockByClass(section, "div", "slider-content");
   const actionLink = extractLinks(extractFirstBlockByClass(section, "div", "slider-btn") || "")[0];
   const bookingBlock = extractFirstBlockByClass(section, "div", "booking-area2");
+  const formSubmitLabel =
+    normalizeText(
+      attributes.form_button_label ||
+      attributes.form_submit_label ||
+      attributes.submit_label ||
+      attributes.booking_button_label ||
+      "",
+    ) || null;
+  const formActionUrl = normalizeText(attributes.form_button_url || attributes.booking_button_url || "") || null;
+  const formTitle =
+    normalizeText(attributes.form_title || attributes.booking_form_title || "") || null;
 
   return {
     backgroundColor: extractStyleValue(extractFirstBlockByClass(section, "div", "slider-active") || "", "background"),
@@ -681,7 +701,13 @@ export const parseHeroBannerWithBookingFormBlock = (html: string): HeroBannerWit
     title: extractTextFromTag(contentBlock || "", "h2"),
     description: extractTextFromTag(contentBlock || "", "p"),
     action: buildAction(actionLink),
-    bookingForm: bookingBlock ? parseAvailabilityBookingForm(bookingBlock) : null,
+    bookingForm: bookingBlock
+      ? parseAvailabilityBookingForm(bookingBlock, {
+          actionUrl: formActionUrl,
+          submitLabel: formSubmitLabel,
+          title: formTitle,
+        })
+      : null,
   };
 };
 
@@ -695,15 +721,26 @@ export const parseCheckAvailabilityFormBlock = (html: string): CheckAvailability
 };
 
 export const parseBookingFormBlock = (html: string): BookingFormSectionData => {
+  const attributes = parseShortcodeAttributes(html);
   const section = extractFirstBlockByClass(html, "section", "shortcode-booking-form") || html;
+  const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
   const formTag = extractFirstTag(section, "form");
   const hiddenToken = extractInputByName(formTag || "", "_token");
+  const descriptionFromAttributes = normalizeText((attributes.description || "").replace(/\{\{NEWLINE\}\}/g, "\n"));
 
   return {
-    shapeImage: extractFirstImage(extractFirstBlockByClass(section, "div", "animations-01") || ""),
-    image: extractFirstImage(extractFirstBlockByClass(section, "div", "booking-img") || ""),
-    subtitle: extractTextFromTag(section, "h5"),
-    title: extractTextFromTag(section, "h2"),
+    shapeImage: attributes.shape_image || attributes.background_image
+      ? { src: attributes.shape_image || attributes.background_image, alt: "" }
+      : extractFirstImage(extractFirstBlockByClass(section, "div", "animations-01") || ""),
+    image: attributes.image
+      ? { src: attributes.image, alt: attributes.title || "" }
+      : extractFirstImage(extractFirstBlockByClass(section, "div", "booking-img") || ""),
+    subtitle: attributes.subtitle || extractTextFromTag(titleBlock || section, "h5"),
+    title: attributes.title || extractTextFromTag(titleBlock || section, "h2"),
+    description:
+      descriptionFromAttributes ||
+      extractTextFromTag(titleBlock || "", "p") ||
+      null,
     actionUrl: extractAttribute(formTag || "", "action"),
     method: (extractAttribute(formTag || "", "method") || "post").toUpperCase(),
     csrfToken: extractAttribute(hiddenToken || "", "value"),
@@ -719,15 +756,19 @@ export const parseBookingFormBlock = (html: string): BookingFormSectionData => {
 };
 
 export const parseFeaturedAmenitiesBlock = (html: string): FeaturedAmenitiesSectionData => {
+  const attributes = parseShortcodeAttributes(html);
   const section = extractFirstBlockByClass(html, "section", "shortcode-featured-amenities") || html;
   const titleBlock = extractFirstBlockByClass(section, "div", "section-title");
+  const backgroundImageSrc = attributes.background_image || attributes.background || "";
 
   return {
-    backgroundColor: extractStyleValue(section, "background-color"),
-    backgroundImage: extractFirstImage(extractFirstBlockByClass(section, "div", "animations-01") || ""),
-    subtitle: extractTextFromTag(titleBlock || "", "h5"),
-    title: extractTextFromTag(titleBlock || "", "h2"),
-    description: extractTextFromTag(titleBlock || "", "p"),
+    backgroundColor: attributes.background_color || extractStyleValue(section, "background-color"),
+    backgroundImage: backgroundImageSrc
+      ? { src: backgroundImageSrc, alt: "" }
+      : extractFirstImage(extractFirstBlockByClass(section, "div", "animations-01") || "") || extractStyleImage(section),
+    subtitle: attributes.subtitle || extractTextFromTag(titleBlock || "", "h5"),
+    title: attributes.title || extractTextFromTag(titleBlock || "", "h2"),
+    description: attributes.description || extractTextFromTag(titleBlock || "", "p"),
     items: extractBlocksByTag(section, "div", "services-08-item")
       .map(parseFeatureGridItem)
       .filter(Boolean) as FeatureGridItem[],
@@ -897,11 +938,34 @@ export const parseFaqsBlock = (html: string): FaqsSectionData => {
 };
 
 export const parseBrandsBlock = (html: string): BrandsSectionData => {
+  const attributes = parseShortcodeAttributes(html);
   const section = extractFirstBlockByClass(html, "div", "shortcode-brands") || html;
+  const backgroundImageSrc = attributes.background_image || attributes.background || "";
+  const quantity = Number.parseInt(attributes.quantity || "0", 10);
+  const attributeItems = Number.isFinite(quantity) && quantity > 0
+    ? Array.from({ length: quantity }, (_, index) => {
+      const position = index + 1;
+      const imageSrc = attributes[`image_${position}`] || "";
+
+      if (!imageSrc) {
+        return null;
+      }
+
+      return {
+        name: attributes[`name_${position}`] || null,
+        image: {
+          src: imageSrc,
+          alt: attributes[`name_${position}`] || "",
+        },
+        href: attributes[`link_${position}`] || null,
+      } satisfies BrandItem;
+    }).filter(Boolean) as BrandItem[]
+    : [];
 
   return {
-    backgroundColor: extractStyleValue(section, "background-color"),
-    items: extractBlocksByTag(section, "div", "single-brand")
+    backgroundColor: attributes.background_color || extractStyleValue(section, "background-color"),
+    backgroundImage: backgroundImageSrc ? { src: backgroundImageSrc, alt: "" } : extractStyleImage(section),
+    items: attributeItems.length ? attributeItems : extractBlocksByTag(section, "div", "single-brand")
       .map((block) => {
         const link = extractLinks(block)[0];
         const image = extractFirstImage(block);
@@ -962,11 +1026,13 @@ export const parseUserProfileBlock = (html: string): UserProfileSectionData => {
 };
 
 export const parseFeatureAreaBlock = (html: string): FeatureAreaSectionData => {
+  const attributes = parseShortcodeAttributes(html);
   const section = extractFirstBlockByClass(html, "section", "feature-area2") || html;
   const titleBlock = extractFirstBlockByClass(section, "div", "feature-title");
   const contentBlock = extractFirstBlockByClass(section, "div", "feature-content");
   const imageBlock = extractFirstBlockByClass(section, "div", "feature-img");
   const backgroundImageBlock = extractFirstBlockByClass(section, "div", "animations-02");
+  const backgroundImageSrc = attributes.background_image || attributes.background || "";
   const actionLink =
     extractLinks(contentBlock || "").find((link) => normalizeText(link.raw)) ||
     extractLinks(extractFirstBlockByClass(section, "div", "slider-btn") || "")[0] ||
@@ -977,8 +1043,15 @@ export const parseFeatureAreaBlock = (html: string): FeatureAreaSectionData => {
   const secondaryImage = allImages.length > 1 ? allImages[1] || null : null;
 
   return {
-    backgroundColor: extractStyleValue(section, "background"),
-    backgroundImage: backgroundImageBlock ? extractFirstImage(backgroundImageBlock) : null,
+    backgroundColor:
+      attributes.background_color ||
+      extractStyleValue(section, "background-color") ||
+      extractStyleValue(section, "background"),
+    backgroundImage: backgroundImageSrc
+      ? { src: backgroundImageSrc, alt: "" }
+      : backgroundImageBlock
+        ? extractFirstImage(backgroundImageBlock)
+        : extractStyleImage(section),
     image: mainImage,
     secondaryImage,
     quote: null,
@@ -1001,7 +1074,7 @@ export const parseServicesBlock = (html: string): FeatureAreaSectionData => {
   return {
     ...section,
     backgroundColor: section.backgroundColor || "#f7f5f1",
-    secondaryImage: null,
+    secondaryImage: section.backgroundImage || section.secondaryImage,
   };
 };
 
@@ -1427,6 +1500,3 @@ const parseAllRoomsSection = (html: string, sectionClass: string): AllRoomSectio
 
 export const parseAllRoomsBlock = (html: string): AllRoomSectionData =>
   parseAllRoomsSection(html, "shortcode-all-rooms");
-
-
-
