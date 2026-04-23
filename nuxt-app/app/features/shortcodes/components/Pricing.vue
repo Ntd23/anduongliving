@@ -4,9 +4,9 @@ import {
   parsePricingBlock,
   type PricingSectionData,
   type ShortcodeBlock,
-} from "~/features/shortcodes/core";
-import { useResolvedCmsLink } from "~/features/cms/data/useResolvedCmsLink";
-import { useResolvedCmsAsset } from "~/features/cms/data/useResolvedCmsAsset";
+} from "~/utils/shortcode";
+import { useResolvedCmsLink } from "~/composables/useResolvedCmsLink";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
@@ -24,6 +24,7 @@ const sectionStyle = computed(() =>
     : undefined,
 );
 
+
 const headerBackgroundStyle = computed(() =>
   section.value.backgroundImage1?.src
     ? { backgroundImage: `url(${resolveAsset(section.value.backgroundImage1.src) || section.value.backgroundImage1.src})` }
@@ -36,7 +37,7 @@ const cardsBackgroundStyle = computed(() =>
     : undefined,
 );
 
-/* â”€â”€ Mobile rail dot tracking â”€â”€ */
+/* ── Mobile rail dot tracking ── */
 const railRef = ref<HTMLElement | null>(null);
 const activeDot = ref(0);
 const itemCount = computed(() => section.value.items.length);
@@ -56,6 +57,7 @@ const scrollToDot = (index: number) => {
   const cardWidth = el.scrollWidth / itemCount.value;
   el.scrollTo({ left: cardWidth * index, behavior: "smooth" });
 };
+
 </script>
 
 <template>
@@ -67,12 +69,16 @@ const scrollToDot = (index: number) => {
     <div class="container">
       <div v-if="section.title || section.subtitle || section.description" class="pricing-header">
         <div class="pricing-header__panel" :class="{ 'has-header-media': section.backgroundImage1?.src }">
-          <div
+          <figure
             v-if="section.backgroundImage1?.src"
             class="pricing-header__media"
-            :style="headerBackgroundStyle"
             aria-hidden="true"
-          />
+          >
+            <img
+              :src="resolveAsset(section.backgroundImage1.src) || section.backgroundImage1.src"
+              :alt="section.backgroundImage1.alt || ''"
+            >
+          </figure>
           <div class="pricing-header__intro">
             <p v-if="section.subtitle" class="pricing-subtitle">
               {{ section.subtitle }}
@@ -92,9 +98,13 @@ const scrollToDot = (index: number) => {
         <div
           v-if="section.backgroundImage2?.src"
           class="pricing-cards-shell__media"
-          :style="cardsBackgroundStyle"
           aria-hidden="true"
-        />
+        >
+          <img
+            :src="resolveAsset(section.backgroundImage2.src) || section.backgroundImage2.src"
+            :alt="section.backgroundImage2.alt || ''"
+          >
+        </div>
 
         <div ref="railRef" class="pricing-grid" @scroll="onRailScroll">
           <div
@@ -180,7 +190,7 @@ const scrollToDot = (index: number) => {
   margin: 0 auto;
 }
 
-/* â”€â”€ Header â”€â”€ */
+/* ── Header ── */
 .pricing-header {
   position: relative;
   z-index: 1;
@@ -191,7 +201,7 @@ const scrollToDot = (index: number) => {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: clamp(1.5rem, 4vw, 4rem);
-  align-items: end;
+  align-items: center;
   width: min(100%, 74rem);
   margin: 0 auto;
   padding: clamp(1.6rem, 3vw, 2.2rem) clamp(1.4rem, 3vw, 2.5rem);
@@ -206,20 +216,29 @@ const scrollToDot = (index: number) => {
 
 .pricing-header__panel.has-header-media {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .pricing-header__media {
   position: absolute;
-  inset: 1rem auto 1rem 1rem;
-  width: clamp(12rem, 22vw, 20rem);
+  top: -2rem;
+  left: -2.5rem;
+  width: clamp(10rem, 16vw, 14rem);
+  height: clamp(8rem, 13vw, 11rem);
+  margin: 0;
   border-radius: 1.7rem;
-  opacity: 0.18;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  opacity: 0.08;
   transform: rotate(-7deg);
   box-shadow: 0 24px 55px rgba(72, 49, 31, 0.12);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pricing-header__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .pricing-header__intro {
@@ -228,7 +247,10 @@ const scrollToDot = (index: number) => {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: center;
+  min-height: auto;
   max-width: 29rem;
+  padding-left: 0;
 }
 
 .pricing-subtitle {
@@ -244,23 +266,24 @@ const scrollToDot = (index: number) => {
   margin: 0;
   color: #2f241d;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: clamp(3rem, 5.4vw, 5rem);
-  line-height: 0.92;
+  font-size: clamp(2.5rem, 4.3vw, 4rem);
+  line-height: 0.95;
   font-weight: 600;
+  text-wrap: balance;
 }
 
 .pricing-description {
   position: relative;
   z-index: 1;
-  max-width: 40rem;
+  max-width: 33rem;
   margin: 0 0 0 auto;
   color: rgba(47, 36, 29, 0.76);
-  font-size: 1.03rem;
-  line-height: 1.9;
+  font-size: 1rem;
+  line-height: 1.8;
   text-align: left;
 }
 
-/* â”€â”€ Cards shell â”€â”€ */
+/* ── Cards shell ── */
 .pricing-cards-shell {
   position: relative;
   z-index: 1;
@@ -269,34 +292,41 @@ const scrollToDot = (index: number) => {
 
 .pricing-cards-shell__media {
   position: absolute;
-  inset: auto -2rem -2rem auto;
-  width: clamp(12rem, 18vw, 18rem);
-  height: clamp(12rem, 18vw, 18rem);
+  right: -1.25rem;
+  bottom: -1.5rem;
+  width: clamp(8rem, 12vw, 11rem);
+  height: clamp(8rem, 12vw, 11rem);
   border-radius: 2rem;
-  opacity: 0.14;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  opacity: 0.06;
   transform: rotate(7deg);
   box-shadow: 0 24px 60px rgba(72, 49, 31, 0.12);
   pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.pricing-cards-shell__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
   gap: 1rem;
   align-items: stretch;
   position: relative;
   z-index: 1;
 }
 
-/* â”€â”€ Card â”€â”€ */
+/* ── Card ── */
 .pricing-card {
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 100%;
+  min-height: 28rem;
   padding: 1.55rem 1.15rem 1.1rem;
   overflow: hidden;
   border-radius: 2rem;
@@ -341,7 +371,7 @@ const scrollToDot = (index: number) => {
   pointer-events: none;
 }
 
-/* â”€â”€ Card header â”€â”€ */
+/* ── Card header ── */
 .pricing-card-header {
   position: relative;
   z-index: 1;
@@ -354,7 +384,7 @@ const scrollToDot = (index: number) => {
 .pricing-card-title {
   margin: 0 0 0.7rem;
   color: #2f241d;
-  font-size: 1.32rem;
+  font-size: 1.24rem;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
   font-weight: 600;
   line-height: 1.02;
@@ -376,7 +406,7 @@ const scrollToDot = (index: number) => {
 
 .pricing-amount {
   color: #2a2018;
-  font-size: clamp(2.2rem, 3.1vw, 3.1rem);
+  font-size: clamp(1.9rem, 2.6vw, 2.6rem);
   font-weight: 700;
   line-height: 0.95;
 }
@@ -391,10 +421,14 @@ const scrollToDot = (index: number) => {
   margin: 0.75rem 0 0;
   color: rgba(47, 36, 29, 0.72);
   font-size: 0.89rem;
-  line-height: 1.6;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* â”€â”€ Features â”€â”€ */
+/* ── Features ── */
 .pricing-features {
   list-style: none;
   padding: 0;
@@ -402,6 +436,7 @@ const scrollToDot = (index: number) => {
   position: relative;
   z-index: 1;
   flex: 1;
+  overflow: hidden;
 }
 
 .pricing-feature {
@@ -411,6 +446,10 @@ const scrollToDot = (index: number) => {
   font-size: 0.91rem;
   line-height: 1.48;
   border-bottom: 1px solid rgba(109, 88, 58, 0.1);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .pricing-feature::before {
@@ -429,7 +468,7 @@ const scrollToDot = (index: number) => {
   border-bottom: none;
 }
 
-/* â”€â”€ Button â”€â”€ */
+/* ── Button ── */
 .pricing-button {
   display: inline-flex;
   align-items: center;
@@ -465,12 +504,12 @@ const scrollToDot = (index: number) => {
   background: linear-gradient(135deg, #665233, #876a44);
 }
 
-/* â”€â”€ Mobile dots â”€â”€ */
+/* ── Mobile dots ── */
 .pricing-dots-wrap {
   display: none;
 }
 
-/* â”€â”€ Responsive â”€â”€ */
+/* ── Responsive ── */
 @media (max-width: 1279px) {
   .pricing-header__panel {
     grid-template-columns: 1fr;
@@ -478,18 +517,15 @@ const scrollToDot = (index: number) => {
   }
 
   .pricing-header__media {
-    inset: 1rem auto auto 1rem;
-    width: 12rem;
-    height: 9rem;
+    top: -1rem;
+    left: -1rem;
+    width: 9rem;
+    height: 7rem;
   }
 
   .pricing-description {
     margin: 0;
     max-width: 44rem;
-  }
-
-  .pricing-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -520,6 +556,7 @@ const scrollToDot = (index: number) => {
 
   .pricing-card {
     padding: 1.45rem 1.1rem 1.1rem;
+    min-height: 26rem;
     transform: none;
     scroll-snap-align: start;
   }
@@ -596,7 +633,3 @@ const scrollToDot = (index: number) => {
   }
 }
 </style>
-
-
-
-
