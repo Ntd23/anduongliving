@@ -3,6 +3,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { parseBookingFormBlock, type ShortcodeBlock } from "~/features/shortcodes/core";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 import { useScrollAnimation } from "~/composables/useScrollAnimation";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
 
 const props = defineProps<{
   block: ShortcodeBlock;
@@ -10,6 +11,7 @@ const props = defineProps<{
 
 const section = computed(() => parseBookingFormBlock(props.block.raw));
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
+const resolveAsset = useResolvedCmsAsset();
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
@@ -148,7 +150,10 @@ const submit = () => {
 </script>
 
 <template>
-  <section v-if="section.actionUrl || section.title || section.image?.src" class="shortcode-booking-form-native">
+  <section
+    v-if="section.actionUrl || section.subtitle || section.title || section.description || section.image?.src"
+    class="shortcode-booking-form-native"
+  >
     <div class="booking-backdrop" />
     <div class="booking-veil" />
     
@@ -158,32 +163,32 @@ const submit = () => {
           <header class="booking-header animate-on-scroll" style="--delay: 200ms">
             <img
               v-if="section.shapeImage?.src"
-              :src="section.shapeImage.src"
+              :src="resolveAsset(section.shapeImage.src) || section.shapeImage.src"
               :alt="section.shapeImage.alt || 'Decorative shape'"
               class="booking-header__shape animate-on-scroll"
-              style="--delay: 300ms"
+              style="--delay: 250ms"
             >
-            <p v-if="section.subtitle" class="booking-header__eyebrow animate-on-scroll" style="--delay: 400ms">
-              {{ section.subtitle }}
-            </p>
-            <h2 v-if="section.title" class="booking-header__title animate-on-scroll" style="--delay: 500ms">
+            <h2 v-if="section.title" class="booking-header__title animate-on-scroll" style="--delay: 300ms">
               {{ section.title }}
             </h2>
+            <p v-if="section.description" class="booking-header__description animate-on-scroll" style="--delay: 400ms">
+              {{ section.description }}
+            </p>
           </header>
 
-          <form class="booking-form animate-on-scroll" style="--delay: 600ms" @submit.prevent="submit">
+          <form class="booking-form animate-on-scroll" style="--delay: 500ms" @submit.prevent="submit">
             <div class="booking-form__row">
-              <label class="booking-form__field animate-on-scroll" style="--delay: 700ms">
+              <label class="booking-form__field animate-on-scroll" style="--delay: 600ms">
                 <span class="booking-form__label">Check in</span>
                 <input v-model="startDate" type="date" class="booking-form__input" required>
               </label>
-              <label class="booking-form__field animate-on-scroll" style="--delay: 800ms">
+              <label class="booking-form__field animate-on-scroll" style="--delay: 700ms">
                 <span class="booking-form__label">Check out</span>
                 <input v-model="endDate" type="date" class="booking-form__input" required>
               </label>
             </div>
             <div class="booking-form__row">
-              <label class="booking-form__field animate-on-scroll" style="--delay: 900ms">
+              <label class="booking-form__field animate-on-scroll" style="--delay: 800ms">
                 <span class="booking-form__label">Guests</span>
                 <select v-model="adults" class="booking-form__select" required>
                   <option v-for="option in section.adultOptions" :key="option.value" :value="option.value">
@@ -191,7 +196,7 @@ const submit = () => {
                   </option>
                 </select>
               </label>
-              <label class="booking-form__field animate-on-scroll" style="--delay: 1000ms">
+              <label class="booking-form__field animate-on-scroll" style="--delay: 900ms">
                 <span class="booking-form__label">Room</span>
                 <select v-model="roomId" class="booking-form__select" required>
                   <option v-for="option in section.roomOptions" :key="option.value" :value="option.value">
@@ -201,16 +206,24 @@ const submit = () => {
               </label>
             </div>
 
-            <button type="submit" class="booking-form__button animate-on-scroll" style="--delay: 1100ms">
+            <button type="submit" class="booking-form__button animate-on-scroll" style="--delay: 1000ms">
               {{ section.submitLabel || "Book now" }}
             </button>
           </form>
         </div>
 
-        <figure v-if="section.image?.src" class="booking-media animate-on-scroll" style="--delay: 1200ms">
-          <img :src="section.image.src" :alt="section.image.alt || section.title || 'Booking image'" class="booking-media__image">
+        <figure v-if="section.image?.src" class="booking-media animate-on-scroll" style="--delay: 600ms">
+          <img
+            :src="resolveAsset(section.image.src) || section.image.src"
+            :alt="section.image.alt || section.title || 'Booking image'"
+            class="booking-media__image"
+          >
         </figure>
       </div>
+
+      <footer v-if="section.subtitle" class="booking-footer animate-on-scroll" style="--delay: 1100ms">
+        {{ section.subtitle }}
+      </footer>
     </div>
   </section>
 
@@ -223,9 +236,10 @@ const submit = () => {
 .shortcode-booking-form-native {
   position: relative;
   padding: clamp(4rem, 8vw, 7rem) 0;
-  min-height: 100vh;
+  min-height: clamp(44rem, 100vh, 58rem);
   display: flex;
   align-items: center;
+  overflow: hidden;
 }
 
 .booking-backdrop {
@@ -238,31 +252,44 @@ const submit = () => {
 .booking-veil {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at top, rgba(138, 110, 72, 0.08) 0%, transparent 50%);
+  background:
+    radial-gradient(ellipse at 12% 18%, rgba(138, 110, 72, 0.12) 0%, transparent 38%),
+    radial-gradient(ellipse at 88% 78%, rgba(45, 32, 24, 0.08) 0%, transparent 34%);
   z-index: 2;
 }
 
 .booking-shell {
   position: relative;
   z-index: 3;
-  max-width: min(72rem, 92vw);
+  width: min(76rem, 92vw);
+  max-width: none;
   margin: 0 auto;
 }
 
 .booking-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-  gap: 3rem;
-  align-items: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: stretch;
 }
 
 .booking-content {
   position: relative;
+  display: flex;
+  min-height: clamp(30rem, 58vw, 40rem);
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border: 1px solid rgba(45, 32, 24, 0.08);
+  border-radius: 2rem;
+  background: rgba(255, 252, 248, 0.62);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 24px 72px rgba(45, 32, 24, 0.08);
 }
 
 .booking-header {
-  text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: clamp(1.75rem, 3vw, 2.4rem);
+  text-align: start;
 }
 
 .booking-header__shape {
@@ -280,31 +307,14 @@ const submit = () => {
   transition-delay: var(--delay, 0ms);
 }
 
-.booking-header__eyebrow {
-  margin: 0 0 1rem 0;
-  color: #8a6e48;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  font-weight: 500;
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.booking-header__eyebrow.animate-in {
-  opacity: 1;
-  transform: translateY(0);
-  transition: all 0.6s ease-out;
-  transition-delay: var(--delay, 0ms);
-}
-
 .booking-header__title {
   margin: 0;
   color: #2d2018;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  font-size: clamp(2.8rem, 4.8vw, 5.2rem);
   font-weight: 600;
-  line-height: 0.95;
+  line-height: 0.96;
+  letter-spacing: -0.045em;
   opacity: 0;
   transform: translateY(30px);
 }
@@ -313,6 +323,23 @@ const submit = () => {
   opacity: 1;
   transform: translateY(0);
   transition: all 0.8s ease-out;
+  transition-delay: var(--delay, 0ms);
+}
+
+.booking-header__description {
+  max-width: 34rem;
+  margin: 1.35rem 0 0;
+  color: rgba(45, 32, 24, 0.68);
+  font-size: 1rem;
+  line-height: 1.8;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.booking-header__description.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.7s ease-out;
   transition-delay: var(--delay, 0ms);
 }
 
@@ -432,6 +459,7 @@ const submit = () => {
   box-shadow: 0 30px 80px rgba(45, 32, 24, 0.15);
   opacity: 0;
   transform: translateX(30px);
+  min-height: clamp(30rem, 58vw, 40rem);
 }
 
 .booking-media.animate-in {
@@ -444,10 +472,32 @@ const submit = () => {
 .booking-media__image {
   width: 100%;
   height: 100%;
-  min-height: 500px;
+  min-height: inherit;
   display: block;
   object-fit: cover;
   transition: transform 0.6s ease;
+}
+
+.booking-footer {
+  width: min(62rem, 100%);
+  margin: clamp(2rem, 4vw, 3rem) auto 0;
+  padding: clamp(1.15rem, 2.4vw, 1.75rem) clamp(1.25rem, 3vw, 2.5rem);
+  border-block: 1px solid rgba(138, 110, 72, 0.22);
+  color: #6d583a;
+  font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
+  font-size: clamp(1.35rem, 2.1vw, 2rem);
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.booking-footer.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.8s ease-out;
+  transition-delay: var(--delay, 0ms);
 }
 
 .booking-media:hover .booking-media__image {
@@ -558,7 +608,3 @@ const submit = () => {
   }
 }
 </style>
-
-
-
-

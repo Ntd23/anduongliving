@@ -194,7 +194,6 @@ Rule giao việc:
 ### Danh sách shortcode còn lại để QA / redesign nếu cần
 - [x] `AllRooms.vue` - ok
 - [x] `BookingForm.vue` - ok
-<<<<<<< Updated upstream
 - [x] `Brands.vue` - ok
 - [x] `CheckAvailabilityForm.vue` - ok
 - [x] `Faqs.vue` - ok
@@ -205,17 +204,6 @@ Rule giao việc:
 - [x] `FeaturedRooms.vue` - ok
 - [x] `Galleries.vue` - ok
 - [x] `HeroBannerWithBookingForm.vue` - ok
-=======
-- [x] `Brands.vue` - thiếu trường name - đã sửa
-- [x] `CheckAvailabilityForm.vue` - ok
-- [x] `Faqs.vue` - ok
-  - `Parser changed : extract answer from paragraph instead of card-body`
-- [x] `FeatureArea.vue` - thiếu nút button - Đã fix
-- [x] `FeaturedAmenities.vue` - ok
-- [x] `FeaturedRooms.vue` - ok
-- [x] `Galleries.vue` - ok
-- [x] `HeroBannerWithBookingForm.vue` -chưa hiển thị được form button label
->>>>>>> Stashed changes
 - [x] `HotelPlaces.vue` - ok
 - [x] `HotelServices.vue` - ok
 - [x] `IntroVideo.vue` - ok
