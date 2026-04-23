@@ -5,6 +5,7 @@ import {
   type FeatureAreaSectionData,
   type ShortcodeBlock,
 } from "~/features/shortcodes/core";
+import { useResolvedCmsLink } from "~/features/cms/data/useResolvedCmsLink";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
@@ -13,6 +14,8 @@ const props = defineProps<{
 
 const section = computed<FeatureAreaSectionData>(() => parseFeatureAreaBlock(props.block.raw));
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
+const resolveLink = useResolvedCmsLink();
+const action = computed(() => resolveLink(section.value.action?.href));
 
 const sectionStyle = computed(() =>
   section.value.backgroundColor
@@ -78,12 +81,19 @@ const sectionStyle = computed(() =>
               </p>
 
               <NuxtLink
-                v-if="section.action?.href && section.action?.label"
-                :to="section.action.href"
+                v-if="action?.isInternal && section.action?.label"
+                :to="action.href"
                 class="feature-button"
               >
                 {{ section.action.label }}
               </NuxtLink>
+              <a
+                v-else-if="action && section.action?.label"
+                :href="action.href"
+                class="feature-button"
+              >
+                {{ section.action.label }}
+              </a>
             </div>
           </div>
 

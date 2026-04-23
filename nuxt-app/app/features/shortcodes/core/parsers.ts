@@ -234,7 +234,10 @@ const parseFeatureGridItem = (html: string): FeatureGridItem | null => {
 };
 
 export const parseTeamsBlock = (html: string): TeamsSectionData => {
-  const section = extractFirstBlockByClass(html, "section", "team-area") || html;
+  const section =
+    extractFirstBlockByClass(html, "section", "team-area2") ||
+    extractFirstBlockByClass(html, "section", "team-area") ||
+    html;
   const title = extractTextFromTag(section, "h2") || "";
   const subtitle = extractTextFromTag(section, "h5") || "";
   const description = extractTextFromTag(section, "p") || "";
@@ -964,7 +967,10 @@ export const parseFeatureAreaBlock = (html: string): FeatureAreaSectionData => {
   const contentBlock = extractFirstBlockByClass(section, "div", "feature-content");
   const imageBlock = extractFirstBlockByClass(section, "div", "feature-img");
   const backgroundImageBlock = extractFirstBlockByClass(section, "div", "animations-02");
-  const actionLink = extractLinks(extractFirstBlockByClass(section, "div", "slider-btn") || "")[0];
+  const actionLink =
+    extractLinks(contentBlock || "").find((link) => normalizeText(link.raw)) ||
+    extractLinks(extractFirstBlockByClass(section, "div", "slider-btn") || "")[0] ||
+    extractLinks(section).find((link) => normalizeText(link.raw));
 
   const allImages = extractAllImages(section);
   const mainImage = imageBlock ? extractFirstImage(imageBlock) : allImages[0] || null;
