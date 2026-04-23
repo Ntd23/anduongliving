@@ -277,6 +277,7 @@ export const parseTeamsBlock = (html: string): TeamsSectionData => {
 };
 
 export const parseAboutUsBlock = (html: string): AboutUsSectionData => {
+  const attributes = parseShortcodeAttributes(html);
   const section = extractFirstBlockByClass(html, "section", "about-area") || html;
   const mediaBlock = extractFirstBlockByClass(section, "div", "s-about-img");
   const titleBlock = extractFirstBlockByClass(section, "div", "about-title");
@@ -287,22 +288,56 @@ export const parseAboutUsBlock = (html: string): AboutUsSectionData => {
   const backgroundImageBlock = extractFirstBlockByClass(section, "div", "animations-02");
   const accentImageBlock = extractFirstBlockByClass(section, "div", "about-icon");
   const description = contentBlock ? extractFirstParagraphText(contentBlock) : null;
+  const titleFromAttributes = normalizeText(attributes.title || "");
+  const descriptionFromAttributes = normalizeText((attributes.description || "").replace(/\{\{NEWLINE\}\}/g, "\n\n"));
+  const highlightsFromAttributes = normalizeText(attributes.highlights || "");
+  const buttonLabel = normalizeText(attributes.button_label || "");
+  const buttonUrl = normalizeText(attributes.button_url || "");
+  const floatingRightImage = normalizeText(attributes.floating_right_image || "");
+  const topLeftImage = normalizeText(attributes.top_left_image || "");
+  const bottomRightImage = normalizeText(attributes.bottom_right_image || "");
+  const signatureImage = normalizeText(attributes.signature_image || "");
 
   return {
-    backgroundImage: backgroundImageBlock ? extractFirstImage(backgroundImageBlock) : null,
-    mainImage: mediaBlock ? extractFirstDirectImage(mediaBlock) : null,
-    accentImage: accentImageBlock ? extractFirstImage(accentImageBlock) : null,
-    subtitle: titleBlock ? extractTextFromTag(titleBlock, "h5") : null,
-    title: titleBlock ? extractTextFromTag(titleBlock, "h2") : null,
-    description,
-    bullets: featureList ? extractListItems(featureList) : [],
-    action: actionLink?.url && normalizeText(actionLink.raw)
+    backgroundImage: floatingRightImage
+      ? { src: floatingRightImage, alt: titleFromAttributes }
+      : backgroundImageBlock
+        ? extractFirstImage(backgroundImageBlock)
+        : null,
+    mainImage: topLeftImage
+      ? { src: topLeftImage, alt: titleFromAttributes }
+      : mediaBlock
+        ? extractFirstDirectImage(mediaBlock)
+        : null,
+    accentImage: bottomRightImage
+      ? { src: bottomRightImage, alt: titleFromAttributes }
+      : accentImageBlock
+        ? extractFirstImage(accentImageBlock)
+        : null,
+    subtitle: normalizeText(attributes.subtitle || "") || (titleBlock ? extractTextFromTag(titleBlock, "h5") : null),
+    title: titleFromAttributes || (titleBlock ? extractTextFromTag(titleBlock, "h2") : null),
+    description: descriptionFromAttributes || description,
+    bullets: highlightsFromAttributes
+      ? highlightsFromAttributes.split(/\s*,\s*/).filter(Boolean)
+      : featureList
+        ? extractListItems(featureList)
+        : [],
+    action: buttonLabel
+      ? {
+          href: buttonUrl || "#",
+          label: buttonLabel,
+        }
+      : actionLink?.url && normalizeText(actionLink.raw)
       ? {
           href: actionLink.url,
           label: normalizeText(actionLink.raw),
         }
       : null,
-    signatureImage: signatureBlock ? extractFirstImage(signatureBlock) : null,
+    signatureImage: signatureImage
+      ? { src: signatureImage, alt: titleFromAttributes }
+      : signatureBlock
+        ? extractFirstImage(signatureBlock)
+        : null,
   };
 };
 
@@ -990,12 +1025,27 @@ export const parseFeatureAreaBlock = (html: string): FeatureAreaSectionData => {
 };
 
 export const parseServicesBlock = (html: string): FeatureAreaSectionData => {
+  const attributes = parseShortcodeAttributes(html);
   const section = parseFeatureAreaBlock(html);
+  const servicesSection = extractFirstBlockByClass(html, "section", "shortcode-services") || html;
+  const leftImageBlock = extractFirstBlockByClass(servicesSection, "div", "feature-img");
+  const rightFloatingImageBlock = extractFirstBlockByClass(servicesSection, "div", "animations-02");
+  const leftImageFromAttributes = normalizeText(attributes.left_image || "");
+  const rightImageFromAttributes = normalizeText(attributes.right_floating_image || "");
 
   return {
     ...section,
     backgroundColor: section.backgroundColor || "#f7f5f1",
-    secondaryImage: null,
+    image: leftImageFromAttributes
+      ? { src: leftImageFromAttributes, alt: section.title || "" }
+      : leftImageBlock
+        ? extractFirstImage(leftImageBlock) || section.image
+        : section.image,
+    secondaryImage: rightImageFromAttributes
+      ? { src: rightImageFromAttributes, alt: section.title || "" }
+      : rightFloatingImageBlock
+        ? extractFirstImage(rightFloatingImageBlock) || section.secondaryImage
+        : section.secondaryImage,
   };
 };
 

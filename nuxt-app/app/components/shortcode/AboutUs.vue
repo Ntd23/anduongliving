@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { parseAboutUsBlock, type ShortcodeBlock } from "~/utils/shortcode";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
@@ -8,6 +9,15 @@ const props = defineProps<{
 
 const section = computed(() => parseAboutUsBlock(props.block.raw));
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
+const resolveAsset = useResolvedCmsAsset();
+const sectionStyle = computed(() => {
+  const image = section.value.signatureImage?.src;
+  const resolvedImage = image ? resolveAsset(image) || image : "";
+
+  return resolvedImage
+    ? { "--about-signature-bg": `url("${resolvedImage}")` } as Record<string, string>
+    : undefined;
+});
 const descriptionLines = computed(() =>
   (section.value.description || "")
     .split(/\n{2,}/)
@@ -25,33 +35,16 @@ const descriptionLines = computed(() =>
       section.bullets.length
     "
     class="shortcode-about"
+    :style="sectionStyle"
   >
-    <div v-if="section.backgroundImage?.src" class="about-decor">
-      <img
-        :src="section.backgroundImage.src"
-        :alt="section.backgroundImage.alt || section.title || 'About decoration'"
-        loading="lazy"
-      >
-    </div>
-
     <div class="container">
       <div class="about-layout">
-        <div class="about-media">
-          <div v-if="section.mainImage?.src" class="about-media__primary">
-            <img
-              :src="section.mainImage.src"
-              :alt="section.mainImage.alt || section.title || 'About image'"
-              loading="lazy"
-            >
-          </div>
-        
-          <div v-if="section.accentImage?.src" class="about-media__accent">
-            <img
-              :src="section.accentImage.src"
-              :alt="section.accentImage.alt || section.title || 'About accent image'"
-              loading="lazy"
-            >
-          </div>
+        <div v-if="section.mainImage?.src" class="about-side-image">
+          <img
+            :src="resolveAsset(section.mainImage.src) || section.mainImage.src"
+            :alt="section.mainImage.alt || section.title || 'About side image'"
+            loading="lazy"
+          >
         </div>
 
         <div class="about-copy">
@@ -77,25 +70,31 @@ const descriptionLines = computed(() =>
             </li>
           </ul>
 
-          <div
-            v-if="section.action || section.signatureImage?.src"
-            class="about-footer"
-          >
+          <div v-if="section.action" class="about-footer">
             <NuxtLink
-              v-if="section.action"
               :to="section.action.href"
               class="about-cta"
             >
               {{ section.action.label }}
             </NuxtLink>
+          </div>
+        </div>
 
-            <div v-if="section.signatureImage?.src" class="about-signature">
-              <img
-                :src="section.signatureImage.src"
-                :alt="section.signatureImage.alt || 'Signature'"
-                loading="lazy"
-              >
-            </div>
+        <div class="about-media">
+          <div v-if="section.backgroundImage?.src" class="about-media__item">
+            <img
+              :src="resolveAsset(section.backgroundImage.src) || section.backgroundImage.src"
+              :alt="section.backgroundImage.alt || section.title || 'About image'"
+              loading="lazy"
+            >
+          </div>
+
+          <div v-if="section.accentImage?.src" class="about-media__item">
+            <img
+              :src="resolveAsset(section.accentImage.src) || section.accentImage.src"
+              :alt="section.accentImage.alt || section.title || 'About accent image'"
+              loading="lazy"
+            >
           </div>
         </div>
       </div>
@@ -109,76 +108,86 @@ const descriptionLines = computed(() =>
 
 <style scoped>
 .shortcode-about {
+  --about-signature-bg: none;
   position: relative;
   overflow: hidden;
-  padding: 5.5rem 0;
-  background:
+  padding: clamp(3rem, 5vw, 4.25rem) 0;
+  background-image:
+    linear-gradient(180deg, rgba(252, 250, 246, 0.74), rgba(243, 236, 223, 0.82)),
+    var(--about-signature-bg),
     radial-gradient(circle at top right, rgba(185, 130, 90, 0.12), transparent 28%),
     linear-gradient(180deg, #fcfaf6, #f3ecdf);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover, cover, auto, auto;
 }
 
-.about-decor {
-  position: absolute;
-  top: 1.25rem;
-  right: clamp(-1rem, 1vw, 1rem);
-  opacity: 0.3;
-  pointer-events: none;
+.shortcode-about > .container {
+  position: relative;
+  z-index: 1;
 }
 
 .about-layout {
   position: relative;
   display: grid;
-  gap: 2.5rem;
-  align-items: center;
+  gap: clamp(1.35rem, 2.6vw, 2.35rem);
+  align-items: stretch;
+  grid-template-columns: minmax(20rem, 0.95fr) minmax(0, 1.18fr) minmax(15rem, 0.68fr);
 }
 
 .about-media {
-  position: relative;
-  min-height: 24rem;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.1rem;
+  height: 100%;
 }
 
-.about-media__primary {
+.about-media__item {
+  display: flex;
   overflow: hidden;
-  width: min(100%, 34rem);
-  border-radius: 1.75rem;
-  box-shadow: 0 32px 84px rgba(47, 36, 29, 0.14);
+  min-height: 0;
+  border-radius: 1.55rem;
+  box-shadow: 0 24px 58px rgba(47, 36, 29, 0.13);
 }
 
-.about-media__primary img,
-.about-media__accent img,
-.about-signature img {
+.about-media__item img,
+.about-side-image img {
   display: block;
   width: 100%;
 }
 
-.about-media__primary img {
-  aspect-ratio: 4 / 5;
+.about-media__item img {
+  height: 100%;
+  min-height: 0;
   object-fit: cover;
-}
-
-.about-media__accent {
-  position: absolute;
-  right: 0;
-  bottom: 1.5rem;
-  overflow: hidden;
-  width: min(42%, 13rem);
-  border: 8px solid rgba(255, 252, 246, 0.95);
-  border-radius: 1.25rem;
-  box-shadow: 0 18px 40px rgba(47, 36, 29, 0.16);
+  object-position: center;
 }
 
 .about-copy {
-  max-width: 40rem;
-  padding: clamp(1.25rem, 2vw, 2rem);
+  min-height: clamp(28rem, 40vw, 36rem);
+  padding: clamp(1.35rem, 2vw, 2rem);
   border: 1px solid rgba(111, 117, 83, 0.12);
   border-radius: 1.75rem;
-  background: rgba(255, 252, 246, 0.72);
+  background: rgba(255, 252, 246, 0.76);
   box-shadow: 0 20px 48px rgba(47, 36, 29, 0.06);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
+}
+
+.about-side-image {
+  overflow: hidden;
+  height: 100%;
+  border-radius: 1.75rem;
+  box-shadow: 0 28px 68px rgba(47, 36, 29, 0.12);
+}
+
+.about-side-image img {
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .about-header {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .about-eyebrow {
@@ -189,22 +198,24 @@ const descriptionLines = computed(() =>
 .about-title {
   margin: 0;
   color: var(--retreat-ink);
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-size: clamp(2rem, 4.2vw, 3.35rem);
   line-height: 1.04;
 }
 
 .about-description {
   color: rgba(47, 36, 29, 0.76);
+  font-size: 0.96rem;
+  line-height: 1.62;
 }
 
 .about-description p {
-  margin: 0 0 1rem;
+  margin: 0 0 0.72rem;
 }
 
 .about-points {
   display: grid;
-  gap: 0.85rem;
-  margin: 1.75rem 0 0;
+  gap: 0.7rem;
+  margin: 1.15rem 0 0;
   padding: 0;
   list-style: none;
 }
@@ -232,16 +243,16 @@ const descriptionLines = computed(() =>
   flex-wrap: wrap;
   gap: 1.25rem;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 2rem;
+  justify-content: flex-start;
+  margin-top: 1.35rem;
 }
 
 .about-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 3.5rem;
-  padding: 0 1.4rem;
+  min-height: 3.05rem;
+  padding: 0 1.25rem;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--retreat-clay), #9f6f49);
   color: #fffdf9;
@@ -258,28 +269,35 @@ const descriptionLines = computed(() =>
   box-shadow: 0 18px 36px rgba(185, 130, 90, 0.28);
 }
 
-.about-signature {
-  width: min(100%, 12rem);
-  opacity: 0.92;
-}
-
 @media (min-width: 1024px) {
   .about-layout {
-    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    grid-template-columns: minmax(20rem, 0.95fr) minmax(0, 1.18fr) minmax(15rem, 0.68fr);
+  }
+}
+
+@media (max-width: 1100px) {
+  .about-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .about-copy {
+    min-height: auto;
+  }
+
+  .about-media,
+  .about-side-image {
+    height: auto;
+  }
+
+  .about-media__item img,
+  .about-side-image img {
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
   }
 }
 
 @media (max-width: 767px) {
-  .about-media {
-    min-height: 0;
-  }
-
-  .about-media__accent {
-    right: 0.75rem;
-    bottom: -1rem;
-    width: 40%;
-  }
-
   .about-footer {
     align-items: flex-start;
   }

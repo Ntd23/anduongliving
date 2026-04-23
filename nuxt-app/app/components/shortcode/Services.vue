@@ -5,6 +5,8 @@ import {
   type FeatureAreaSectionData,
   type ShortcodeBlock,
 } from "~/utils/shortcode";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
+import { useResolvedCmsLink } from "~/composables/useResolvedCmsLink";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
@@ -13,45 +15,63 @@ const props = defineProps<{
 
 const section = computed<FeatureAreaSectionData>(() => parseServicesBlock(props.block.raw));
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
+const resolveAsset = useResolvedCmsAsset();
+const resolveLink = useResolvedCmsLink();
 const sectionStyle = computed(() =>
   section.value.backgroundColor
     ? { background: section.value.backgroundColor }
     : undefined,
 );
+
+const action = computed(() => resolveLink(section.value.action?.href));
 </script>
 
 <template>
   <section class="shortcode-services-hero" :style="sectionStyle">
-    <!-- Full-width background image -->
     <div
       v-if="section.image?.src"
       class="services-hero__backdrop"
-      :style="{ backgroundImage: `url(${section.image.src})` }"
+      :style="{ backgroundImage: `url(${resolveAsset(section.image.src) || section.image.src})` }"
     />
     <div class="services-hero__veil" />
 
-    <!-- Glass panel overlay with text -->
     <div
       v-if="section.subtitle || section.title || section.description || section.action"
       class="container services-hero__shell"
     >
       <div class="services-hero__glass">
-        <p v-if="section.subtitle" class="services-hero__eyebrow shortcode-narrative-eyebrow">
-          {{ section.subtitle }}
-        </p>
-        <h2 v-if="section.title" class="services-hero__title shortcode-narrative-title">
-          {{ section.title }}
-        </h2>
-        <p v-if="section.description" class="services-hero__description">
-          {{ section.description }}
-        </p>
-        <NuxtLink
-          v-if="section.action?.href && section.action?.label"
-          :to="section.action.href"
-          class="services-hero__action"
-        >
-          {{ section.action.label }}
-        </NuxtLink>
+        <div class="services-hero__copy">
+          <p v-if="section.subtitle" class="services-hero__eyebrow shortcode-narrative-eyebrow">
+            {{ section.subtitle }}
+          </p>
+          <h2 v-if="section.title" class="services-hero__title shortcode-narrative-title">
+            {{ section.title }}
+          </h2>
+          <p v-if="section.description" class="services-hero__description">
+            {{ section.description }}
+          </p>
+          <NuxtLink
+            v-if="section.action?.href && section.action?.label"
+            :to="section.action.href"
+            class="services-hero__action"
+          >
+            {{ section.action.label }}
+          </NuxtLink>
+          <a
+            v-else-if="action?.href && section.action?.label"
+            :href="action.href"
+            class="services-hero__action"
+          >
+            {{ section.action.label }}
+          </a>
+        </div>
+
+        <div v-if="section.secondaryImage?.src" class="services-hero__floating">
+          <img
+            :src="resolveAsset(section.secondaryImage.src) || section.secondaryImage.src"
+            :alt="section.secondaryImage.alt || section.title || 'Floating image'"
+          >
+        </div>
       </div>
     </div>
 
@@ -67,49 +87,48 @@ const sectionStyle = computed(() =>
   overflow: hidden;
   min-height: clamp(30rem, 70vh, 48rem);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
 }
 
-/* ── Full-width background image ── */
 .services-hero__backdrop {
   position: absolute;
   inset: 0;
-  background-position: center;
+  background-position: center right;
   background-repeat: no-repeat;
   background-size: cover;
   transform: scale(1.02);
 }
 
-/* ── Gradient veil between image and content ── */
 .services-hero__veil {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 80%, rgba(185, 130, 90, 0.14), transparent 30%),
-    linear-gradient(0deg,
+    radial-gradient(circle at 82% 50%, rgba(185, 130, 90, 0.12), transparent 32%),
+    linear-gradient(90deg,
       rgba(21, 16, 11, 0.72) 0%,
-      rgba(21, 16, 11, 0.45) 35%,
-      rgba(21, 16, 11, 0.12) 70%,
-      rgba(21, 16, 11, 0.06) 100%
+      rgba(21, 16, 11, 0.48) 42%,
+      rgba(21, 16, 11, 0.16) 100%
     );
 }
 
-/* ── Shell ── */
 .services-hero__shell {
   position: relative;
   z-index: 1;
   width: 100%;
-  padding-top: 6rem;
-  padding-bottom: clamp(3rem, 6vw, 5rem);
+  padding-top: clamp(3rem, 5vw, 5rem);
+  padding-bottom: clamp(3rem, 5vw, 5rem);
 }
 
-/* ── Glass panel ── */
 .services-hero__glass {
-  max-width: min(38rem, 92vw);
+  display: grid;
+  grid-template-columns: minmax(0, 1.28fr) minmax(17rem, 0.72fr);
+  gap: clamp(1.5rem, 3vw, 2.6rem);
+  align-items: center;
+  width: min(82rem, 100%);
   padding: clamp(1.5rem, 3vw, 2.5rem);
   border: 1px solid rgba(248, 243, 234, 0.16);
   border-radius: 1.75rem;
-  background: rgba(32, 22, 16, 0.38);
+  background: rgba(32, 22, 16, 0.44);
   backdrop-filter: blur(14px);
   box-shadow:
     0 28px 72px rgba(0, 0, 0, 0.28),
@@ -129,15 +148,17 @@ const sectionStyle = computed(() =>
   margin: 0;
   color: #fff9f0;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  line-height: 0.95;
+  font-size: clamp(2.5rem, 4.45vw, 4.35rem);
+  line-height: 1;
   font-weight: 600;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
 }
 
 .services-hero__description {
   margin: 1.25rem 0 0;
-  max-width: 32rem;
-  color: rgba(255, 249, 240, 0.8);
+  max-width: 42rem;
+  color: rgba(255, 249, 240, 0.82);
   line-height: 1.8;
 }
 
@@ -164,7 +185,35 @@ const sectionStyle = computed(() =>
   box-shadow: 0 20px 44px rgba(185, 130, 90, 0.3);
 }
 
-/* ── Responsive ── */
+.services-hero__floating {
+  overflow: hidden;
+  border: 1px solid rgba(248, 243, 234, 0.18);
+  border-radius: 1.1rem;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.24);
+}
+
+.services-hero__floating img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.services-hero__fallback {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 900px) {
+  .services-hero__glass {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .services-hero__title {
+    white-space: normal;
+  }
+}
+
 @media (max-width: 767px) {
   .shortcode-services-hero {
     min-height: 28rem;
@@ -181,12 +230,7 @@ const sectionStyle = computed(() =>
   }
 
   .services-hero__glass {
-    max-width: 100%;
     padding: 1.25rem;
-  }
-
-  .services-hero__shell {
-    padding-top: 4rem;
   }
 }
 </style>
