@@ -1,5 +1,5 @@
-import { cmsApiRoutes } from "~~/shared/cms-routing";
-import { fetchCmsApi } from "~~/server/utils/cms-api";
+﻿import { cmsApiRoutes } from "~~/shared/routes/backend";
+import { fetchCmsApi } from "~~/server/features/cms/gateway";
 
 export default defineEventHandler((event) => {
   const slug = getRouterParam(event, "slug") || "";
@@ -21,3 +21,4 @@ export default defineEventHandler((event) => {
     "Failed to load menu",
   );
 });
+

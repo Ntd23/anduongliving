@@ -1,5 +1,5 @@
-import { cmsAppRoutes } from "~~/shared/cms-routing";
-import { callCustomerApi, setCustomerAccessToken } from "~~/server/utils/customer-auth";
+import { cmsAppRoutes } from "~~/shared/routes/app";
+import { callCustomerApi, setCustomerAccessToken } from "~~/server/features/auth/customer-auth";
 
 const extractErrors = (payload: any) => payload?.errors || payload?.data?.errors || payload?.data || null;
 

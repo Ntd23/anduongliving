@@ -1,5 +1,5 @@
-import { cmsApiRoutes } from "~~/shared/cms-routing";
-import { fetchCmsApi } from "~~/server/utils/cms-api";
+﻿import { cmsApiRoutes } from "~~/shared/routes/backend";
+import { fetchCmsApi } from "~~/server/features/cms/gateway";
 
 export default defineEventHandler((event) => {
   const query = getQuery(event);
@@ -13,3 +13,4 @@ export default defineEventHandler((event) => {
     "Failed to load main menu",
   );
 });
+

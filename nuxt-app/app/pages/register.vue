@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { CustomerAuthPageData } from "~~/shared/customer-auth";
-import CustomerAuthPage from "~/components/auth/CustomerAuthPage.vue";
-import { useCustomerAuthPage } from "~/composables/useCustomerAuthPage";
+import CustomerAuthPage from "~/features/auth/ui/CustomerAuthPage.vue";
+import { useCustomerAuthPage } from "~/features/auth/data/useCustomerAuthPage";
 
 definePageMeta({
   layout: "default",

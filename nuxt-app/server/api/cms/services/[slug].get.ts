@@ -1,9 +1,9 @@
 import {
   buildAbsoluteUrl,
-  cmsAppRoutes,
   normalizeSiteUrl,
   resolveUrlOrigin,
-} from "~~/shared/cms-routing";
+} from "~~/shared/utils/url";
+import { cmsAppRoutes } from "~~/shared/routes/app";
 
 type ServiceDetailPayload = {
   name: string;

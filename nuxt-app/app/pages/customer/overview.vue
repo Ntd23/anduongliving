@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { cmsProxyRoutes } from "~~/shared/cms-routing";
+import CmsFooter from "~/features/navigation/ui/CmsFooter.vue";
+import { cmsProxyRoutes } from "~~/shared/routes/proxy";
 
 type CustomerSessionData = {
   authenticated: boolean;
@@ -14,9 +15,10 @@ definePageMeta({
 });
 
 const localePath = useLocalePath();
+const requestFetch = useRequestFetch();
 
 const { data, error } = await useAsyncData("customer-session", () =>
-  $fetch<{ data?: CustomerSessionData }>(cmsProxyRoutes.customer.session(), {
+  requestFetch<{ data?: CustomerSessionData }>(cmsProxyRoutes.customer.session(), {
   }).then((response) => response.data || { authenticated: false }),
 );
 

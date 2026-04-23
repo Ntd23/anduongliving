@@ -1,6 +1,7 @@
-import { buildAbsoluteUrl, cmsAppRoutes, normalizePath, normalizeSiteUrl, resolveUrlOrigin } from "~~/shared/cms-routing";
-import { fetchCustomerProfile } from "~~/server/utils/customer-auth";
-import { createForwardHeaders } from "~~/server/utils/http-upstream";
+import { cmsAppRoutes } from "~~/shared/routes/app";
+import { buildAbsoluteUrl, normalizeSiteUrl } from "~~/shared/utils/url";
+import { fetchCustomerProfile } from "~~/server/features/auth/customer-auth";
+import { createForwardHeaders } from "~~/server/features/http/upstream";
 
 type CurrencyItem = {
   title: string;
@@ -23,39 +24,6 @@ const decodeHtml = (value: string) =>
 
 const normalizeText = (value?: string | null) => decodeHtml(stripTags(value || ""));
 
-const extractCurrencyItems = (html: string, siteUrl: string): CurrencyItem[] => {
-  const mobileBlock =
-    html.match(/<div class="currency-switcher-mobile d-none">([\s\S]*?)<\/div>/i)?.[1] ||
-    "";
-
-  const sources = mobileBlock || html;
-  const matches = Array.from(
-    sources.matchAll(
-      /<a\b[^>]*class=(["'])[^"']*currency-item[^"']*\1[^>]*href=(["'])(.*?)\2([^>]*)>([\s\S]*?)<\/a>/gi,
-    ),
-  );
-
-  const items = matches
-    .map((match) => ({
-      title: normalizeText(match[5]),
-      href: buildAbsoluteUrl(siteUrl, match[3]),
-      active: /\bactive\b/i.test(match[0]),
-    }))
-    .filter((item) => item.title && item.href);
-
-  if (items.length) {
-    return items;
-  }
-
-  const currentCurrency = normalizeText(
-    html.match(/id=(["'])currency-switcher-dropdown\1[^>]*>([\s\S]*?)<\/a>/i)?.[2],
-  );
-
-  return currentCurrency
-    ? [{ title: currentCurrency, href: buildAbsoluteUrl(siteUrl, "/currency/switch"), active: true }]
-    : [];
-};
-
 const emptyPayload = {
   currencies: [] as CurrencyItem[],
   customer: {
@@ -67,31 +35,65 @@ const emptyPayload = {
   },
 };
 
+const HEADER_EXTRAS_TIMEOUT_MS = 3000;
+
+const withTimeoutSignal = () => {
+  if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
+    return AbortSignal.timeout(HEADER_EXTRAS_TIMEOUT_MS);
+  }
+
+  return undefined;
+};
+
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
   const siteUrl = normalizeSiteUrl(config.public.siteUrl);
   const backendSiteUrl = normalizeSiteUrl(config.backendSiteUrl);
-  const siteOrigin = resolveUrlOrigin(siteUrl);
-  const backendOrigin = resolveUrlOrigin(backendSiteUrl);
+  const apiKey = String(config.apiKey || "");
 
-  let currencies: CurrencyItem[] = [];
-
-  if (siteUrl && backendSiteUrl && (!siteOrigin || !backendOrigin || siteOrigin !== backendOrigin)) {
-    try {
-      const response = await fetch(buildAbsoluteUrl(backendSiteUrl, normalizePath("/")), {
-        headers: createForwardHeaders(event, "text/html,application/xhtml+xml"),
-      });
-      const html = await response.text();
-      currencies = extractCurrencyItems(html, siteUrl);
-    } catch {
-      currencies = [];
+  const currencyPromise = (async () => {
+    if (!siteUrl || !backendSiteUrl || !apiKey) {
+      return [] as CurrencyItem[];
     }
-  }
+
+    try {
+      const response = await fetch(buildAbsoluteUrl(backendSiteUrl, "/api/v1/customer/header-extras"), {
+        headers: {
+          ...createForwardHeaders(event, "application/json"),
+          "X-API-KEY": apiKey,
+        },
+        signal: withTimeoutSignal(),
+      });
+
+      if (!response.ok) {
+        return [] as CurrencyItem[];
+      }
+
+      const payload = await response.json().catch(() => null) as { data?: { currencies?: CurrencyItem[] } } | null;
+      const items = Array.isArray(payload?.data?.currencies) ? payload.data.currencies : [];
+
+      return items
+        .map((item) => ({
+          title: normalizeText(item.title),
+          href: buildAbsoluteUrl(siteUrl, item.href),
+          active: Boolean(item.active),
+        }))
+        .filter((item) => item.title && item.href);
+    } catch {
+      return [] as CurrencyItem[];
+    }
+  })();
+
+  const customerPromise = fetchCustomerProfile(event).catch(() => emptyPayload.customer);
+  const [currenciesResult, customer] = await Promise.all([
+    currencyPromise,
+    customerPromise,
+  ]);
 
   return {
     data: {
-      currencies,
-      customer: await fetchCustomerProfile(event).catch(() => emptyPayload.customer),
+      currencies: currenciesResult,
+      customer,
     },
   };
 });

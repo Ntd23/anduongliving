@@ -1,14 +1,20 @@
-import { tr } from "@nuxt/ui/runtime/locale/index.js";
-import { buildDevOrigin, resolveBackendSiteUrl, resolveCmsProxyBaseUrl } from "./shared/cms-routing";
+import { buildDevOrigin, resolveCmsProxyBaseUrl } from "./shared/config/runtime";
+import {
+    DEFAULT_API_BASE_URL,
+    DEFAULT_DEV_HOST,
+    DEFAULT_DEV_PORT,
+    DEFAULT_PUBLIC_SITE_URL,
+} from "./shared/config/defaults";
+import { resolveBackendSiteUrl } from "./shared/routes/backend";
 
-const DEV_HOST = process.env.NUXT_DEV_HOST || "127.0.0.1";
-const DEV_PORT = Number(process.env.NUXT_DEV_PORT || 3000);
+const DEV_HOST = process.env.NUXT_DEV_HOST || DEFAULT_DEV_HOST;
+const DEV_PORT = Number(process.env.NUXT_DEV_PORT || DEFAULT_DEV_PORT);
 const DEV_ORIGIN = process.env.NUXT_DEV_ORIGIN || buildDevOrigin(DEV_HOST, DEV_PORT);
 const HMR_HOST = process.env.NUXT_HMR_HOST || DEV_HOST;
-const API_BASE_URL = process.env.NUXT_API_BASE_URL || "http://127.0.0.1/api";
+const API_BASE_URL = process.env.NUXT_API_BASE_URL || DEFAULT_API_BASE_URL;
 const API_KEY = process.env.NUXT_API_KEY || "";
 const PUBLIC_SITE_URL =
-    process.env.NUXT_PUBLIC_SITE_URL || `http://${DEV_HOST}:${DEV_PORT}`;
+    process.env.NUXT_PUBLIC_SITE_URL || DEFAULT_PUBLIC_SITE_URL;
 const BACKEND_SITE_URL = resolveBackendSiteUrl({
     explicitBaseUrl: process.env.NUXT_BACKEND_SITE_URL,
     apiBaseUrl: API_BASE_URL,
@@ -72,7 +78,7 @@ export default defineNuxtConfig({
         },
     },
     routeRules: {
-        "/api/cms/**": {
+        "/cms-proxy/**": {
             cors: true,
         },
     },
@@ -86,7 +92,7 @@ export default defineNuxtConfig({
     },
 
     imports: {
-        dirs: ["composables/**", "stores"],
+        dirs: ["composables/**", "features/**/data/**", "stores"],
     },
 
     runtimeConfig: {
