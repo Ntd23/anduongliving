@@ -194,32 +194,40 @@ Rule giao việc:
 ### Danh sách shortcode còn lại để QA / redesign nếu cần
 - [x] `AllRooms.vue` - ok
 - [x] `BookingForm.vue` - ok
-- [x] `Brands.vue` - thiếu trường name
+- [x] `Brands.vue` - ok
 - [x] `CheckAvailabilityForm.vue` - ok
 - [x] `Faqs.vue` - ok
   - `Parser changed : extract answer from paragraph instead of card-body`
-- [x] `FeatureArea.vue` - thiếu nút button
+- [x] `FeatureArea.vue` - ok
+  - `Parser changed : resolve CTA from direct link inside content block`
 - [x] `FeaturedAmenities.vue` - ok
 - [x] `FeaturedRooms.vue` - ok
 - [x] `Galleries.vue` - ok
-- [x] `HeroBannerWithBookingForm.vue` - thiếu subtitle, không hiển thị form button label
+- [x] `HeroBannerWithBookingForm.vue` - ok
 - [x] `HotelPlaces.vue` - ok
 - [x] `HotelServices.vue` - ok
-- [x] `IntroVideo.vue` - thiếu subtitle
-- [x] `LocationTourismShowcase.vue` - thiếu dữ liệu Decorative script text,Section title,Access column label,Access description text
+- [x] `IntroVideo.vue` - ok
+- [ ] `LocationTourismShowcase.vue`
+  - `Parser changed : exact class matching fix ở core extractor, cần QA lại Decorative text / Section title / Access-Tourism columns`
 - [x] `LogoShowcaseBanner.vue` - ok
-- [x] `News.vue` - lỗi chưa lấy được giao diện
+- [x] `News.vue` - ok
 - [x] `Newsletter.vue` - ok
-- [x] `OnsenSpaGallery.vue`- thiếu dữ liệu Large background title,Phụ đề,Image title
-- [x] `PickupGalleryShowcase.vue`- thiếu Pre-title,Tiêu đề,Mô tả  
+- [ ] `OnsenSpaGallery.vue`
+  - `Parser changed : exact class matching fix ở core extractor, cần QA lại Background title / Subtitle / Image title`
+- [ ] `PickupGalleryShowcase.vue`
+  - `Parser changed : exact class matching fix ở core extractor, cần QA lại Pretitle / Title / Description`
 - [x] `RoomList.vue` - ok
-- [x] `RoomMosaicShowcase.vue` - thiếu dữ liệu tiêu đề và phụ đề
-- [x] `SpaCollageShowcase.vue` - thiếu dữ liệu tiêu đề và phụ đề, mô tả
-- [x] `SpecialStoryShowcase.vue` - chỉ lấy được ảnh và button, các trường còn lại thiếu
-- [x] `Teams.vue` - thiếu phụ đề 
-- [x] `Testimonials.vue` - thiếu dữ liệu tiêu đề và phụ đề
-- [x] `UserProfile.vue` - thiếu dữ liệu tiêu đề tab
-- [x] `WhyChooseUs.vue` -  thiếu dữ liệu tiêu đề tab
+- [ ] `RoomMosaicShowcase.vue`
+  - `Parser changed : exact class matching fix ở core extractor, cần QA lại Title / Subtitle / Card titles`
+- [ ] `SpaCollageShowcase.vue`
+  - `Parser changed : exact class matching fix ở core extractor, cần QA lại Title / Subtitle / Description`
+- [ ] `SpecialStoryShowcase.vue`
+  - `Parser changed : exact class matching fix ở core extractor, cần QA lại Decorative text / Description / Cards / Nav entries`
+- [x] `Teams.vue` - ok
+  - `Parser changed : support both section classes team-area2 and team-area`
+- [x] `Testimonials.vue` - ok
+- [x] `UserProfile.vue` - ok
+- [x] `WhyChooseUs.vue` - ok
 
 ## Cách đánh dấu khi giao việc
 - Đánh dấu `[ ]` -> chưa làm.

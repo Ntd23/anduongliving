@@ -26,7 +26,7 @@ export const extractBlocksByTag = (
   while ((match = pattern.exec(html))) {
     const openingTag = match[0];
 
-    if (classNeedle && !openingTag.toLowerCase().includes(classNeedle.toLowerCase())) {
+    if (classNeedle && !tagHasClasses(openingTag, classNeedle)) {
       continue;
     }
 
@@ -101,7 +101,7 @@ export const extractFirstTag = (
   while ((match = pattern.exec(html))) {
     const openingTag = match[0];
 
-    if (classNeedle && !openingTag.toLowerCase().includes(classNeedle.toLowerCase())) {
+    if (classNeedle && !tagHasClasses(openingTag, classNeedle)) {
       continue;
     }
 
@@ -187,37 +187,25 @@ export const extractFirstDirectImage = (html: string): ShortcodeImage | null => 
 };
 
 export const extractTextFromTag = (html: string, tagName: string, classNeedle?: string): string | null => {
-  const classPattern = classNeedle
-    ? `[^>]*class=(["'])[^"']*${escapeRegExp(classNeedle)}[^"']*\\1[^>]*`
-    : "[^>]*";
-  const pattern = new RegExp(
-    `<${tagName}\\b${classPattern}>([\\s\\S]*?)</${tagName}>`,
-    "i",
-  );
-  const match = pattern.exec(html);
+  const tag = extractFirstTag(html, tagName, classNeedle);
+  const innerContent = tag ? extractTagInnerContent(tag, tagName) : null;
 
-  if (!match) {
+  if (innerContent === null) {
     return null;
   }
 
-  return normalizeText(match[1]);
+  return normalizeText(innerContent);
 };
 
 export const extractInnerHtmlFromTag = (html: string, tagName: string, classNeedle?: string): string | null => {
-  const classPattern = classNeedle
-    ? `[^>]*class=(["'])[^"']*${escapeRegExp(classNeedle)}[^"']*\\1[^>]*`
-    : "[^>]*";
-  const pattern = new RegExp(
-    `<${tagName}\\b${classPattern}>([\\s\\S]*?)</${tagName}>`,
-    "i",
-  );
-  const match = pattern.exec(html);
+  const tag = extractFirstTag(html, tagName, classNeedle);
+  const innerContent = tag ? extractTagInnerContent(tag, tagName) : null;
 
-  if (!match) {
+  if (innerContent === null) {
     return null;
   }
 
-  return decodeHtmlEntities((match[1] || "").trim());
+  return decodeHtmlEntities(innerContent.trim());
 };
 
 export const extractAttribute = (html: string, attribute: string): string | null => {
@@ -319,6 +307,35 @@ export const parseShortcodeAttributes = (shortcode: string): Record<string, stri
 };
 
 export const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const extractClassTokens = (openingTag: string): string[] => {
+  const classValue = /\bclass\s*=\s*(['"])(.*?)\1/i.exec(openingTag)?.[2] || "";
+
+  return classValue
+    .split(/\s+/)
+    .map((token) => token.trim())
+    .filter(Boolean);
+};
+
+const tagHasClasses = (openingTag: string, classNeedle: string): boolean => {
+  const tagClasses = extractClassTokens(openingTag);
+  const requiredClasses = classNeedle
+    .split(/\s+/)
+    .map((token) => token.trim())
+    .filter(Boolean);
+
+  if (!requiredClasses.length) {
+    return true;
+  }
+
+  return requiredClasses.every((requiredClass) => tagClasses.includes(requiredClass));
+};
+
+const extractTagInnerContent = (tagHtml: string, tagName: string): string | null => {
+  const pattern = new RegExp(`^<${tagName}\\b[^>]*>([\\s\\S]*?)</${tagName}>$`, "i");
+
+  return pattern.exec(tagHtml.trim())?.[1] ?? null;
+};
 
 
 
