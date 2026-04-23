@@ -102,6 +102,7 @@ export type AllRoomItem = {
   name: string;
   url: string;
   image: string;
+  images: string[];
   description?: string | null;
   bookLabel: string;
   price: string;

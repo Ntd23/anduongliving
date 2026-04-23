@@ -192,34 +192,34 @@ Rule giao việc:
 - [x] `Services.vue`
 
 ### Danh sách shortcode còn lại để QA / redesign nếu cần
-- [x] `AllRooms.vue`
-- [x] `BookingForm.vue`
-- [x] `Brands.vue`
-- [x] `CheckAvailabilityForm.vue`
-- [x] `Faqs.vue`
+- [x] `AllRooms.vue` - ok
+- [x] `BookingForm.vue` - ok
+- [x] `Brands.vue` - thiếu trường name
+- [x] `CheckAvailabilityForm.vue` - ok
+- [x] `Faqs.vue` - ok
   - `Parser changed : extract answer from paragraph instead of card-body`
-- [x] `FeatureArea.vue`
-- [x] `FeaturedAmenities.vue`
-- [x] `FeaturedRooms.vue`
-- [x] `Galleries.vue`
-- [x] `HeroBannerWithBookingForm.vue`
-- [x] `HotelPlaces.vue`
-- [x] `HotelServices.vue`
-- [x] `IntroVideo.vue`
-- [x] `LocationTourismShowcase.vue`
-- [x] `LogoShowcaseBanner.vue`
-- [x] `News.vue`
-- [x] `Newsletter.vue`
-- [x] `OnsenSpaGallery.vue`
-- [x] `PickupGalleryShowcase.vue`
-- [x] `RoomList.vue`
-- [x] `RoomMosaicShowcase.vue`
-- [x] `SpaCollageShowcase.vue`
-- [x] `SpecialStoryShowcase.vue`
-- [x] `Teams.vue`
-- [x] `Testimonials.vue`
-- [x] `UserProfile.vue`
-- [x] `WhyChooseUs.vue`
+- [x] `FeatureArea.vue` - thiếu nút button
+- [x] `FeaturedAmenities.vue` - ok
+- [x] `FeaturedRooms.vue` - ok
+- [x] `Galleries.vue` - ok
+- [x] `HeroBannerWithBookingForm.vue` - thiếu subtitle, không hiển thị form button label
+- [x] `HotelPlaces.vue` - ok
+- [x] `HotelServices.vue` - ok
+- [x] `IntroVideo.vue` - thiếu subtitle
+- [x] `LocationTourismShowcase.vue` - thiếu dữ liệu Decorative script text,Section title,Access column label,Access description text
+- [x] `LogoShowcaseBanner.vue` - ok
+- [x] `News.vue` - lỗi chưa lấy được giao diện
+- [x] `Newsletter.vue` - ok
+- [x] `OnsenSpaGallery.vue`- thiếu dữ liệu Large background title,Phụ đề,Image title
+- [x] `PickupGalleryShowcase.vue`- thiếu Pre-title,Tiêu đề,Mô tả  
+- [x] `RoomList.vue` - ok
+- [x] `RoomMosaicShowcase.vue` - thiếu dữ liệu tiêu đề và phụ đề
+- [x] `SpaCollageShowcase.vue` - thiếu dữ liệu tiêu đề và phụ đề, mô tả
+- [x] `SpecialStoryShowcase.vue` - chỉ lấy được ảnh và button, các trường còn lại thiếu
+- [x] `Teams.vue` - thiếu phụ đề 
+- [x] `Testimonials.vue` - thiếu dữ liệu tiêu đề và phụ đề
+- [x] `UserProfile.vue` - thiếu dữ liệu tiêu đề tab
+- [x] `WhyChooseUs.vue` -  thiếu dữ liệu tiêu đề tab
 
 ## Cách đánh dấu khi giao việc
 - Đánh dấu `[ ]` -> chưa làm.
