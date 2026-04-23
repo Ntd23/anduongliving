@@ -1295,6 +1295,56 @@ const parseAllRoomsSection = (html: string, sectionClass: string): AllRoomSectio
           .map((amenityBlock) => extractFirstImage(amenityBlock)?.alt || null)
           .filter((amenity): amenity is string => Boolean(amenity));
 
+        // Extract all images from room-images-list div
+        console.log('ServiceBlock HTML:', serviceBlock);
+        const imagesListBlock = extractFirstBlockByClass(serviceBlock, "div", "room-images-list");
+        console.log('ImagesListBlock found:', !!imagesListBlock, imagesListBlock);
+        let allImages: string[] = [];
+        
+        if (imagesListBlock) {
+          // Try multiple methods to extract images
+          let imageTags: string[] = [];
+          
+          // Method 1: extractBlocksByTag
+          try {
+            imageTags = extractBlocksByTag(imagesListBlock, "img");
+            console.log('Method 1 - extractBlocksByTag found:', imageTags.length);
+          } catch (e) {
+            console.log('Method 1 failed:', e);
+          }
+          
+          // Method 2: Manual regex extraction if method 1 fails
+          if (imageTags.length === 0) {
+            const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/g;
+            const matches = [...imagesListBlock.matchAll(imgRegex)];
+            imageTags = matches.map(match => match[0]);
+            console.log('Method 2 - Regex found:', imageTags.length);
+          }
+          
+          // Method 3: Split by img tags if regex fails
+          if (imageTags.length === 0) {
+            const parts = imagesListBlock.split('<img');
+            imageTags = parts.slice(1).map(part => '<img' + part.split('>')[0] + '>');
+            console.log('Method 3 - Split found:', imageTags.length);
+          }
+          
+          console.log('Final image tags count:', imageTags.length);
+          allImages = imageTags
+            .map(imgTag => {
+              const src = extractAttribute(imgTag, "src");
+              console.log('Extracting src from:', imgTag.substring(0, 100), '->', src);
+              return src;
+            })
+            .filter((src): src is string => Boolean(src));
+          console.log('Final extracted images:', allImages);
+        }
+        
+        // If no images list found, use single image
+        if (allImages.length === 0 && image) {
+          allImages = [image.src];
+          console.log('Using fallback single image:', image.src);
+        }
+
         // Extract room-specific fields from room-specifications structure
         const roomSpecsBlock = extractFirstBlockByClass(serviceBlock, "div", "room-specifications");
         
@@ -1325,7 +1375,7 @@ const parseAllRoomsSection = (html: string, sectionClass: string): AllRoomSectio
         
         // Fallback to regex extraction if room-specifications not found
         if (!size) {
-          const sizeText = extractFirstParagraphText(serviceBlock)?.match(/\d+(?:\.\d+)?\s*(?:mÂ²|mÂ²|sqm|sqft|m|meters?|metres?)/gi)?.[0] || "0";
+          const sizeText = extractFirstParagraphText(serviceBlock)?.match(/\d+(?:\.\d+)?\s*(?:m²|m²|sqm|sqft|m|meters?|metres?)/gi)?.[0] || "0";
           size = parseInt(sizeText) || null;
         }
         
@@ -1360,6 +1410,7 @@ const parseAllRoomsSection = (html: string, sectionClass: string): AllRoomSectio
           name: title,
           url: link || '#',
           image: image?.src || '',
+          images: allImages,
           description,
           bookLabel: button || 'Book Now',
           price: price,
