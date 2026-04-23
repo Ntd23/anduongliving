@@ -5,9 +5,17 @@
 <div @class(['single-services shadow-block mb-30', 'ser-m' => !$margin])>
     <div class="services-thumb hover-zoomin wow fadeInUp animated">
         @if ($images = $room->images)
+            <!-- Main image link -->
             <a href="{{ $room->url }}?start_date={{ BaseHelper::stringify(request()->query('start_date', $startDate)) }}&end_date={{ BaseHelper::stringify(request()->query('end_date', $endDate)) }}&adults={{ BaseHelper::stringify(request()->query('adults', HotelHelper::getMinimumNumberOfGuests())) }}&children={{ BaseHelper::stringify(request()->query('children', 0)) }}">
-                <img src="{{ RvMedia::getImageUrl(Arr::first($images), 'medium') }}" alt="{{ $room->name }}">
+                <img src="{{ RvMedia::getImageUrl(Arr::first($images), 'large') }}" alt="{{ $room->name }}">
             </a>
+            
+            <!-- Hidden image list for parser -->
+            <div class="room-images-list" style="display: none;">
+                @foreach ($images as $image)
+                    <img src="{{ RvMedia::getImageUrl($image, 'large') }}" alt="{{ $room->name }}" data-room-image="{{ $loop->index }}">
+                @endforeach
+            </div>
         @endif
     </div>
     <div class="services-content">
