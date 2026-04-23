@@ -990,12 +990,27 @@ export const parseFeatureAreaBlock = (html: string): FeatureAreaSectionData => {
 };
 
 export const parseServicesBlock = (html: string): FeatureAreaSectionData => {
+  const attributes = parseShortcodeAttributes(html);
   const section = parseFeatureAreaBlock(html);
+  const servicesSection = extractFirstBlockByClass(html, "section", "shortcode-services") || html;
+  const leftImageBlock = extractFirstBlockByClass(servicesSection, "div", "feature-img");
+  const rightFloatingImageBlock = extractFirstBlockByClass(servicesSection, "div", "animations-02");
+  const leftImageFromAttributes = normalizeText(attributes.left_image || "");
+  const rightImageFromAttributes = normalizeText(attributes.right_floating_image || "");
 
   return {
     ...section,
     backgroundColor: section.backgroundColor || "#f7f5f1",
-    secondaryImage: null,
+    image: leftImageFromAttributes
+      ? { src: leftImageFromAttributes, alt: section.title || "" }
+      : leftImageBlock
+        ? extractFirstImage(leftImageBlock) || section.image
+        : section.image,
+    secondaryImage: rightImageFromAttributes
+      ? { src: rightImageFromAttributes, alt: section.title || "" }
+      : rightFloatingImageBlock
+        ? extractFirstImage(rightFloatingImageBlock) || section.secondaryImage
+        : section.secondaryImage,
   };
 };
 

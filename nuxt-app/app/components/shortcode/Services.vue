@@ -5,6 +5,8 @@ import {
   type FeatureAreaSectionData,
   type ShortcodeBlock,
 } from "~/utils/shortcode";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
+import { useResolvedCmsLink } from "~/composables/useResolvedCmsLink";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 
 const props = defineProps<{
@@ -13,11 +15,15 @@ const props = defineProps<{
 
 const section = computed<FeatureAreaSectionData>(() => parseServicesBlock(props.block.raw));
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
+const resolveAsset = useResolvedCmsAsset();
+const resolveLink = useResolvedCmsLink();
 const sectionStyle = computed(() =>
   section.value.backgroundColor
     ? { background: section.value.backgroundColor }
     : undefined,
 );
+
+const action = computed(() => resolveLink(section.value.action?.href));
 </script>
 
 <template>
@@ -49,9 +55,24 @@ const sectionStyle = computed(() =>
           v-if="section.action?.href && section.action?.label"
           :to="section.action.href"
           class="services-hero__action"
+
         >
           {{ section.action.label }}
         </NuxtLink>
+        <a
+          v-else-if="action?.href && section.action?.label"
+          :href="action.href"
+          class="services-split-shell__action"
+        >
+          {{ section.action.label }}
+        </a>
+
+        <div v-if="section.secondaryImage?.src" class="services-split-shell__floating">
+          <img
+            :src="resolveAsset(section.secondaryImage.src) || section.secondaryImage.src"
+            :alt="section.secondaryImage.alt || section.title || 'Floating image'"
+          >
+        </div>
       </div>
     </div>
 
@@ -68,6 +89,7 @@ const sectionStyle = computed(() =>
   min-height: clamp(30rem, 70vh, 48rem);
   display: flex;
   align-items: flex-end;
+
 }
 
 /* ── Full-width background image ── */
@@ -114,6 +136,7 @@ const sectionStyle = computed(() =>
   box-shadow:
     0 28px 72px rgba(0, 0, 0, 0.28),
     inset 0 1px 0 rgba(255, 248, 237, 0.08);
+
 }
 
 .services-hero__eyebrow {
@@ -132,6 +155,7 @@ const sectionStyle = computed(() =>
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   line-height: 0.95;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .services-hero__description {
@@ -187,6 +211,21 @@ const sectionStyle = computed(() =>
 
   .services-hero__shell {
     padding-top: 4rem;
+
+  }
+
+  .services-split-shell__content {
+    max-width: none;
+  }
+
+  .services-split-shell__floating {
+    width: min(16rem, 72vw);
+  }
+}
+
+@media (max-width: 1200px) {
+  .services-split-shell__title {
+    white-space: normal;
   }
 }
 </style>
