@@ -117,7 +117,7 @@ onUnmounted(() => {
 }
 
 .amenities-header {
-  max-width: 42rem;
+  max-width: 64rem;
   margin: 0 auto;
   text-align: center;
 }
@@ -144,7 +144,8 @@ onUnmounted(() => {
   color: #2f241d;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
   font-size: clamp(2.5rem, 5vw, 4.2rem);
-  line-height: 0.96;
+  line-height: 1.02;
+  text-wrap: balance;
   opacity: 0;
   transform: translateY(30px);
 }
@@ -157,9 +158,13 @@ onUnmounted(() => {
 }
 
 .amenities-header__description {
-  margin: 1rem 0 0;
+  margin: 1.5rem auto 0;
+  max-width: 58rem;
   color: rgba(47, 36, 29, 0.78);
+  font-size: 1.05rem;
   line-height: 1.9;
+  text-align: justify;
+  text-align-last: center;
   opacity: 0;
   transform: translateY(20px);
 }
@@ -176,6 +181,7 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
+  margin-top: 1rem;
 }
 
 /* Card */
@@ -231,9 +237,9 @@ onUnmounted(() => {
   inset: 0;
   background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  padding: 2rem;
+  padding: 2rem 2rem 2.5rem;
 }
 
 /* Glass panel following Surface Rules */
@@ -313,6 +319,14 @@ onUnmounted(() => {
 
 /* Tablet: 2 items with better spacing */
 @media (max-width: 1024px) {
+  .amenities-shell {
+    gap: 3rem;
+  }
+
+  .amenities-header {
+    max-width: 56rem;
+  }
+
   .amenities-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem;
@@ -323,7 +337,7 @@ onUnmounted(() => {
   }
   
   .amenities-card__overlay {
-    padding: 1.5rem;
+    padding: 1.5rem 1.5rem 2rem;
   }
   
   .amenities-card__glass-panel {
@@ -333,6 +347,22 @@ onUnmounted(() => {
 
 /* Mobile: Horizontal rail with 3 items viewport */
 @media (max-width: 768px) {
+  .amenities-shell {
+    gap: 2.25rem;
+  }
+
+  .amenities-header__title {
+    line-height: 1.08;
+  }
+
+  .amenities-header__description {
+    margin-top: 1.25rem;
+    font-size: 1rem;
+    line-height: 1.75;
+    text-align: left;
+    text-align-last: left;
+  }
+
   .amenities-grid {
     display: grid;
     grid-auto-flow: column;
@@ -371,8 +401,8 @@ onUnmounted(() => {
   }
 
   .amenities-card__overlay {
-    padding: 1.2rem;
-    align-items: center;
+    padding: 1.2rem 1.2rem 1.5rem;
+    align-items: flex-end;
     justify-content: center;
   }
 
