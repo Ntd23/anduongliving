@@ -160,6 +160,14 @@ class RoomForm extends FormAbstract
                 'label' => trans('plugins/hotel::room.images'),
                 'values' => $this->getModel()->id ? $this->getModel()->images : [],
             ])
+                ->add('vr_image[]', 'mediaImages', [
+        'label'      => 'Ảnh 360 VR Tour (Equirectangular)',
+        'values' => $this->getModel()->id ? $this->getModel()->vr_image : [],
+        'label_attr' => ['class' => 'control-label'],
+        'wrapper'    => [
+            'class' => 'form-group mb-3',
+        ],  
+])
             ->add('status', SelectField::class, StatusFieldOption::make()->toArray())
             ->add('room_category_id', 'customSelect', [
                 'label' => trans('plugins/hotel::room.form.category'),

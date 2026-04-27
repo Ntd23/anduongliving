@@ -820,8 +820,10 @@ export const parseTestimonialsBlock = (html: string): TestimonialsSectionData =>
 
         return {
           name,
-          image: extractFirstImage(extractFirstBlockByClass(block, "div", "testi-author") || ""),
+          title: null,
           content: extractTextFromTag(block, "p"),
+          image: extractFirstImage(extractFirstBlockByClass(block, "div", "testi-author") || ""),
+          rating: null,
         } satisfies TestimonialItem;
       })
       .filter(Boolean) as TestimonialItem[],
@@ -892,7 +894,7 @@ export const parseFaqsBlock = (html: string): FaqsSectionData => {
         } satisfies FaqItem;
       })
       .filter(Boolean)
-      .sort((a, b) => Number.parseInt(a.id, 10) - Number.parseInt(b.id, 10)) as FaqItem[],
+      .sort((a, b) => Number.parseInt(a?.id || "0", 10) - Number.parseInt(b?.id || "0", 10)) as FaqItem[],
   };
 };
 
@@ -1294,58 +1296,72 @@ const parseAllRoomsSection = (html: string, sectionClass: string): AllRoomSectio
         const amenityImages = extractBlocksByTag(serviceBlock, "li")
           .map((amenityBlock) => extractFirstImage(amenityBlock)?.alt || null)
           .filter((amenity): amenity is string => Boolean(amenity));
-
-        // Extract all images from room-images-list div
-        console.log('ServiceBlock HTML:', serviceBlock);
         const imagesListBlock = extractFirstBlockByClass(serviceBlock, "div", "room-images-list");
-        console.log('ImagesListBlock found:', !!imagesListBlock, imagesListBlock);
         let allImages: string[] = [];
         
         if (imagesListBlock) {
-          // Try multiple methods to extract images
           let imageTags: string[] = [];
           
-          // Method 1: extractBlocksByTag
           try {
             imageTags = extractBlocksByTag(imagesListBlock, "img");
-            console.log('Method 1 - extractBlocksByTag found:', imageTags.length);
           } catch (e) {
-            console.log('Method 1 failed:', e);
           }
           
-          // Method 2: Manual regex extraction if method 1 fails
           if (imageTags.length === 0) {
             const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/g;
             const matches = [...imagesListBlock.matchAll(imgRegex)];
             imageTags = matches.map(match => match[0]);
-            console.log('Method 2 - Regex found:', imageTags.length);
           }
           
-          // Method 3: Split by img tags if regex fails
           if (imageTags.length === 0) {
             const parts = imagesListBlock.split('<img');
             imageTags = parts.slice(1).map(part => '<img' + part.split('>')[0] + '>');
-            console.log('Method 3 - Split found:', imageTags.length);
           }
-          
-          console.log('Final image tags count:', imageTags.length);
+
           allImages = imageTags
             .map(imgTag => {
               const src = extractAttribute(imgTag, "src");
-              console.log('Extracting src from:', imgTag.substring(0, 100), '->', src);
               return src;
             })
             .filter((src): src is string => Boolean(src));
-          console.log('Final extracted images:', allImages);
         }
         
-        // If no images list found, use single image
         if (allImages.length === 0 && image) {
           allImages = [image.src];
-          console.log('Using fallback single image:', image.src);
+
         }
 
-        // Extract room-specific fields from room-specifications structure
+        const vrImageBlock = extractFirstBlockByClass(serviceBlock, "div", "room-vr-image");
+        let vr_image: string | null = null;
+        let vr_images: string[] = [];
+        let vr_hotspots: any[] = [];
+        if (serviceBlock) {
+          const vrImageElements = extractBlocksByTag(serviceBlock, "div", "vr-image");
+          
+          vrImageElements.forEach((vrImageElement: string, index: number) => {
+            const vrImageTag = extractFirstTag(vrImageElement, "img");
+            const vrImageSrc = extractAttribute(vrImageTag || "", "src");
+            
+            const yaw = extractAttribute(vrImageElement, "data-yaw") || "0";
+            const pitch = extractAttribute(vrImageElement, "data-pitch") || "-10";
+            const name = extractAttribute(vrImageElement, "data-name") || `Gian ${index + 1}`;
+            
+            if (vrImageSrc) {
+              vr_images.push(vrImageSrc);
+              if (!vr_image) vr_image = vrImageSrc;
+              
+              vr_hotspots.push({
+                id: index + 1,
+                name: name,
+                image: vrImageSrc,
+                yaw: parseInt(yaw),
+                pitch: parseInt(pitch)
+              });
+            }
+          });
+          
+        }
+        
         const roomSpecsBlock = extractFirstBlockByClass(serviceBlock, "div", "room-specifications");
         
         let size = null;
@@ -1354,7 +1370,6 @@ const parseAllRoomsSection = (html: string, sectionClass: string): AllRoomSectio
         let max_children = null;
         
         if (roomSpecsBlock) {
-          // Extract from individual room-spec li elements
           const roomSpecs = extractBlocksByTag(roomSpecsBlock, "li", "room-spec");
           
           roomSpecs.forEach((spec) => {
@@ -1373,7 +1388,6 @@ const parseAllRoomsSection = (html: string, sectionClass: string): AllRoomSectio
           });
         }
         
-        // Fallback to regex extraction if room-specifications not found
         if (!size) {
           const sizeText = extractFirstParagraphText(serviceBlock)?.match(/\d+(?:\.\d+)?\s*(?:m²|m²|sqm|sqft|m|meters?|metres?)/gi)?.[0] || "0";
           size = parseInt(sizeText) || null;
@@ -1393,24 +1407,17 @@ const parseAllRoomsSection = (html: string, sectionClass: string): AllRoomSectio
           const childrenText = extractFirstParagraphText(serviceBlock)?.match(/\d+\s*(?:child|children|tre em|tre)/gi)?.[0] || "0";
           max_children = parseInt(childrenText) || null;
         }
-
-        console.log('Room extraction results:', {
-          title,
-          size,
-          number_of_beds,
-          max_adults,
-          max_children,
-          roomSpecsBlock: roomSpecsBlock ? 'found' : 'not found'
-        });
-
         if (!title) return null;
 
-        return {
+        const roomData = {
           id: index,
           name: title,
           url: link || '#',
           image: image?.src || '',
           images: allImages,
+          vr_image: vr_image,
+          vr_images: vr_images,
+          vr_hotspots: vr_hotspots,
           description,
           bookLabel: button || 'Book Now',
           price: price,
@@ -1420,13 +1427,51 @@ const parseAllRoomsSection = (html: string, sectionClass: string): AllRoomSectio
           max_adults: max_adults || null,
           max_children: max_children || null,
         } satisfies AllRoomItem;
+        return roomData;
       })
-      .filter(Boolean) as any[], // Type assertion needed due to filter
+      .filter(Boolean) as any[],
   };
 };
 
 export const parseAllRoomsBlock = (html: string): AllRoomSectionData =>
   parseAllRoomsSection(html, "shortcode-all-rooms");
 
+export type GoogleMapSectionData = {
+  address: string;
+  iframeSrc: string;
+  height: string;
+  width: string;
+  title: string;
+};
 
+export function parseGoogleMapBlock(raw: string): GoogleMapSectionData {
+  const mapBlock = extractFirstBlockByClass(raw, "div", "google-map-iframe");
+  
+  if (!mapBlock) {
+    return {
+      address: '',
+      iframeSrc: '',
+      height: '500px',
+      width: '100%',
+      title: 'Google Maps'
+    };
+  }
 
+  const iframeTag = extractFirstTag(mapBlock, "iframe");
+  const iframeSrc = extractAttribute(iframeTag || "", "src") || "";
+  const height = extractAttribute(iframeTag || "", "style")?.match(/height:\s*(\d+px)/)?.[1] || "500px";
+  const width = extractAttribute(iframeTag || "", "style")?.match(/width:\s*(\d+%|px)/)?.[1] || "100%";
+  const title = extractAttribute(iframeTag || "", "title") || "Google Maps";
+  
+  // Extract address from iframe src
+  const addressMatch = iframeSrc.match(/q=([^&]+)/);
+  const address = addressMatch ? decodeURIComponent(addressMatch[1] || '') : '';
+
+  return {
+    address,
+    iframeSrc,
+    height,
+    width,
+    title
+  };
+}

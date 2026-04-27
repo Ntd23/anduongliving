@@ -11,6 +11,7 @@
   parseFeaturedRoomsBlock,
   parseForestFacilityShowcaseBlock,
   parseGalleriesBlock,
+  parseGoogleMapBlock,
   parseHeroStoryBlock,
   parseHeroBannerWithBookingFormBlock,
   parseHotelPlacesBlock,
@@ -254,6 +255,12 @@ export const shortcodeRegistry = [
     aliases: ["shortcode-user-profile"],
     componentName: "UserProfile",
     parser: parseUserProfileBlock,
+  },
+  {
+    name: "google-maps",
+    aliases: ["google-map-iframe"],
+    componentName: "GoogleMaps",
+    parser: parseGoogleMapBlock,
   },
 ] as const satisfies readonly ShortcodeDefinition[];
 

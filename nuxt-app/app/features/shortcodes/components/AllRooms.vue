@@ -1,6 +1,6 @@
 ﻿<script setup lang="ts">
 import { computed, ref } from "vue";
-import { parseAllRoomsBlock, type ShortcodeBlock, type AllRoomSectionData } from "~/utils/shortcode";
+import { parseAllRoomsBlock, type ShortcodeBlock, type AllRoomItem } from "~/utils/shortcode";
 import { useResolvedCmsLink } from "~/composables/useResolvedCmsLink";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
 import { Swiper, SwiperSlide } from 'swiper/vue';
@@ -9,13 +9,27 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
+type VrSceneHotspot = {
+  id: string;
+  name: string;
+  targetImage: string;
+  yaw: number;
+  pitch: number;
+};
+
+type VrScene = {
+  id: string;
+  name: string;
+  image: string;
+  hotspots: VrSceneHotspot[];
+};
+
 const props = defineProps<{
   block: ShortcodeBlock;
 }>();
 
 const section = computed(() => {
   const parsed = parseAllRoomsBlock(props.block.raw);
-  console.log('AllRooms parsed data:', parsed);
   return parsed;
 });
 const resolveLink = useResolvedCmsLink();
@@ -73,30 +87,96 @@ const paginationConfig = (roomId: number) => ({
   clickable: true,
 });
 
-// Slider state for each room
-const activeSlides = ref<Record<string, number>>({});
-
-const setActiveSlide = (roomId: string, slideIndex: number) => {
-  activeSlides.value[roomId] = slideIndex;
-};
-
-const getActiveSlide = (roomId: string): number => {
-  return activeSlides.value[roomId] || 0;
-};
-
-const nextSlide = (roomId: string, totalSlides: number) => {
-  const currentSlide = getActiveSlide(roomId);
-  if (currentSlide < totalSlides - 1) {
-    setActiveSlide(roomId, currentSlide + 1);
+const getVrImages = (item: AllRoomItem): string[] => {
+  if (item.vr_images && item.vr_images.length > 0) {
+    return item.vr_images.filter((image): image is string => Boolean(image));
   }
+
+  return item.vr_image ? [item.vr_image] : [];
 };
 
-const prevSlide = (roomId: string) => {
-  const currentSlide = getActiveSlide(roomId);
-  if (currentSlide > 0) {
-    setActiveSlide(roomId, currentSlide - 1);
+const getDefaultHotspotPosition = (fromIndex: number, toIndex: number) => {
+  const relativeIndex = toIndex - fromIndex;
+
+  if (relativeIndex === 1) {
+    return { yaw: 0, pitch: -10 };
   }
+
+  if (relativeIndex === -1) {
+    return { yaw: 180, pitch: -10 };
+  }
+
+  if (relativeIndex > 1) {
+    return { yaw: 90, pitch: -10 };
+  }
+
+  return { yaw: -90, pitch: -10 };
 };
+
+const getVrScenes = (item: AllRoomItem): VrScene[] => {
+  const vrImages = getVrImages(item);
+
+  if (vrImages.length === 0) {
+    return [];
+  }
+
+  const hotspotMetaByImage = new Map(
+    (item.vr_hotspots || [])
+      .filter((hotspot): hotspot is NonNullable<AllRoomItem["vr_hotspots"]>[number] => Boolean(hotspot?.image))
+      .map((hotspot) => [hotspot.image, hotspot])
+  );
+
+  return vrImages.map((image, sceneIndex) => {
+    const sceneMeta = hotspotMetaByImage.get(image);
+
+    const hotspots = vrImages
+      .map((targetImage, targetIndex) => {
+        if (targetImage === image) {
+          return null;
+        }
+
+        const targetMeta = hotspotMetaByImage.get(targetImage);
+        const fallbackPosition = getDefaultHotspotPosition(sceneIndex, targetIndex);
+        const preferredPosition = sceneIndex === 0 && targetMeta
+          ? {
+              yaw: Number(targetMeta.yaw) || fallbackPosition.yaw,
+              pitch: Number(targetMeta.pitch) || fallbackPosition.pitch,
+            }
+          : fallbackPosition;
+
+        return {
+          id: `scene-${sceneIndex + 1}-to-${targetIndex + 1}`,
+          name: targetMeta?.name || `Gian ${targetIndex + 1}`,
+          targetImage,
+          yaw: preferredPosition.yaw,
+          pitch: preferredPosition.pitch,
+        } satisfies VrSceneHotspot;
+      })
+      .filter((hotspot): hotspot is VrSceneHotspot => Boolean(hotspot));
+
+    return {
+      id: `scene-${sceneIndex + 1}`,
+      name: sceneMeta?.name || `Gian ${sceneIndex + 1}`,
+      image,
+      hotspots,
+    } satisfies VrScene;
+  });
+};
+
+// VR Helper Functions
+const getVrTourUrl = (item: AllRoomItem) => {
+  const scenes = getVrScenes(item);
+  if (scenes.length === 0) return '#';
+
+  const firstImage = scenes[0]?.image || '';
+  return `/vr-tour?image=${encodeURIComponent(firstImage)}&scenes=${encodeURIComponent(JSON.stringify(scenes))}`;
+};
+
+const getVrButtonText = (item: AllRoomItem) => {
+  const vrImages = getVrImages(item);
+  return vrImages.length > 1 ? `Xem VR phòng` : 'Xem VR phòng';
+};
+// ----------------------
 </script>
 
 <template>
@@ -184,7 +264,7 @@ const prevSlide = (roomId: string) => {
                   :class="{ 'all-rooms-card__tab-button--active': getActiveTab(`${item.id}-${item.name}`) === 'description' }"
                   class="all-rooms-card__tab-button"
                 >
-                  Description
+                  Mô tả
                 </button>
                 <button
                   v-if="item.amenities && item.amenities.length > 0"
@@ -192,7 +272,7 @@ const prevSlide = (roomId: string) => {
                   :class="{ 'all-rooms-card__tab-button--active': getActiveTab(`${item.id}-${item.name}`) === 'amenities' }"
                   class="all-rooms-card__tab-button"
                 >
-                  Amenities
+                  Tiện nghi
                 </button>
               </div>
 
@@ -227,6 +307,16 @@ const prevSlide = (roomId: string) => {
               >
                 {{ item.bookLabel }}
               </component>
+              <NuxtLink 
+                v-if="item.vr_image || (item.vr_images && item.vr_images.length > 0)" 
+                :to="getVrTourUrl(item)"
+                class="all-rooms-card__action all-rooms-card__action--vr"
+                style="background-color: black; color: white; border: none; display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                target="_blank"
+              >
+                <Icon name="ph:virtual-reality" />
+                {{ getVrButtonText(item) }}
+              </NuxtLink>   
             </div>
           </div>
         </article>
@@ -239,6 +329,7 @@ const prevSlide = (roomId: string) => {
   <section v-else class="shortcode-all-rooms-native">
     <div v-html="sanitizedHtml" />
   </section>
+
 </template>
 
 <style scoped>
@@ -565,6 +656,9 @@ const prevSlide = (roomId: string) => {
 
 .all-rooms-card__footer {
   margin-top: auto;
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.5rem;
 }
 
 .all-rooms-card__action {

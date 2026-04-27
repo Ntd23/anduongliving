@@ -103,6 +103,15 @@ export type AllRoomItem = {
   url: string;
   image: string | null;
   images: string[] | null;
+  vr_image: string | null;
+  vr_images: string[] | null;
+  vr_hotspots?: Array<{
+    id: number;
+    name: string;
+    image: string;
+    yaw: number;
+    pitch: number;
+  }> | null;
   description?: string | null;
   bookLabel: string;
   price: string;
@@ -111,6 +120,14 @@ export type AllRoomItem = {
   number_of_beds?: number | null;
   max_adults?: number | null;
   max_children?: number | null;
+};
+
+export type GoogleMapItem = {
+  address: string;
+  iframeSrc: string;
+  height: string;
+  width: string;
+  title: string;
 };
 
 export type AllRoomSectionData = {
@@ -134,7 +151,7 @@ export type FeaturedRoomsSectionData = {
 export type TestimonialItem = {
   name: string;
   title: string | null;
-  content: string;
+  content: string | null;
   image: ShortcodeImage | null;
   rating: number | null;
 };
@@ -257,7 +274,7 @@ export type PricingSectionData = {
   backgroundImage2: ShortcodeImage | null;
   subtitle: string | null;
   title: string | null;
-  description: string | null;
+  description: string | null | undefined;
   items: PricingItem[];
 };
 export type ServiceDetailItem = {

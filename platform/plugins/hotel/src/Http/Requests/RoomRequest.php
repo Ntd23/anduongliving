@@ -26,6 +26,8 @@ class RoomRequest extends Request
             'size' => ['nullable', 'numeric', 'min:0'],
             'images' => ['nullable', 'array'],
             'images.*' => ['nullable', 'string'],
+            'vr_image' => ['nullable', 'array'],
+            'vr_image.*' => ['nullable', 'string'],
             'room_category_id' => ['required', 'string', 'exists:ht_room_categories,id'],
             'tax_id' => ['required', 'string', 'exists:ht_taxes,id'],
         ];
