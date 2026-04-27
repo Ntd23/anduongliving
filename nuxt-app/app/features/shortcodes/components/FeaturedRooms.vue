@@ -109,13 +109,15 @@ onUnmounted(() => {
 
 .shortcode-services__inner {
   display: grid;
-  gap: 2.5rem;
+  gap: 3.25rem;
 }
 
 .shortcode-services__header {
-  max-width: 40rem;
+  max-width: 64rem;
   display: grid;
   gap: 0.9rem;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .shortcode-services__eyebrow {
@@ -143,7 +145,8 @@ onUnmounted(() => {
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
   font-size: clamp(2.4rem, 5vw, 4rem);
   font-weight: 600;
-  line-height: 0.95;
+  line-height: 1.02;
+  text-wrap: balance;
   opacity: 0;
   transform: translateY(30px);
 }
@@ -156,10 +159,13 @@ onUnmounted(() => {
 }
 
 .shortcode-services__description {
-  margin: 0;
+  margin: 0.5rem auto 0;
+  max-width: 58rem;
   color: rgba(58, 42, 31, 0.78);
-  font-size: 1rem;
+  font-size: 1.05rem;
   line-height: 1.8;
+  text-align: justify;
+  text-align-last: center;
   opacity: 0;
   transform: translateY(20px);
 }
@@ -175,6 +181,7 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
+  margin-top: 0.75rem;
 }
 
 .shortcode-featured-rooms__card {
@@ -334,6 +341,14 @@ onUnmounted(() => {
 
 /* Tablet: 2 items with better spacing */
 @media (max-width: 1024px) {
+  .shortcode-services__inner {
+    gap: 2.75rem;
+  }
+
+  .shortcode-services__header {
+    max-width: 56rem;
+  }
+
   .shortcode-featured-rooms__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem;
@@ -354,6 +369,22 @@ onUnmounted(() => {
 
 /* Mobile: Horizontal rail with 3 items viewport */
 @media (max-width: 768px) {
+  .shortcode-services__inner {
+    gap: 2.25rem;
+  }
+
+  .shortcode-services__title {
+    line-height: 1.08;
+  }
+
+  .shortcode-services__description {
+    max-width: none;
+    font-size: 1rem;
+    line-height: 1.75;
+    text-align: left;
+    text-align-last: left;
+  }
+
   .shortcode-featured-rooms__grid {
     display: grid;
     grid-auto-flow: column;
@@ -432,7 +463,6 @@ onUnmounted(() => {
   }
 }
 </style>
-
 
 
 

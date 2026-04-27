@@ -63,17 +63,17 @@ const resolveLink = useResolvedCmsLink();
 
 .hotel-services-shell {
   display: grid;
-  gap: 2.5rem;
+  gap: 4.25rem;
 }
 
 .hotel-services-header {
-  max-width: 48rem;
+  max-width: 78rem;
   margin: 0 auto;
 }
 
 .hotel-services-header__glass {
   text-align: center;
-  padding: clamp(1.25rem, 3vw, 2rem);
+  padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.75rem, 4vw, 3.5rem);
   border: 1px solid rgba(111, 117, 83, 0.1);
   border-radius: 1.75rem;
   background: rgba(255, 252, 246, 0.72);
@@ -95,13 +95,18 @@ const resolveLink = useResolvedCmsLink();
   color: #2f241d;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
   font-size: clamp(2.5rem, 5vw, 4.2rem);
-  line-height: 1;
+  line-height: 1.06;
+  text-wrap: balance;
 }
 
 .hotel-services-header__description {
-  margin: 1rem 0 0;
+  margin: 1.5rem auto 0;
+  max-width: 70rem;
   color: rgba(47, 36, 29, 0.76);
+  font-size: 1.05rem;
   line-height: 1.8;
+  text-align: justify;
+  text-align-last: center;
 }
 
 .hotel-services-grid {
@@ -202,12 +207,44 @@ const resolveLink = useResolvedCmsLink();
 }
 
 @media (max-width: 991px) {
+  .hotel-services-shell {
+    gap: 2.75rem;
+  }
+
+  .hotel-services-header {
+    max-width: 58rem;
+  }
+
+  .hotel-services-header__glass {
+    padding-inline: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
   .hotel-services-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
+  .hotel-services-shell {
+    gap: 2.25rem;
+  }
+
+  .hotel-services-header__glass {
+    padding: 1.25rem 1.1rem;
+  }
+
+  .hotel-services-header__title {
+    line-height: 1.08;
+  }
+
+  .hotel-services-header__description {
+    max-width: none;
+    font-size: 1rem;
+    line-height: 1.75;
+    text-align: left;
+    text-align-last: left;
+  }
+
   .hotel-services-grid {
     display: grid;
     grid-auto-flow: column;
@@ -227,7 +264,6 @@ const resolveLink = useResolvedCmsLink();
   }
 }
 </style>
-
 
 
 
