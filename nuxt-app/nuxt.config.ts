@@ -30,6 +30,7 @@ const CMS_PROXY_BASE_URL = resolveCmsProxyBaseUrl({
     isDevelopment: process.env.NODE_ENV !== "production",
     devHost: DEV_HOST,
     devPort: DEV_PORT,
+    publicSiteUrl: PUBLIC_SITE_URL,
 });
 
 const NUXT_MODULES = [

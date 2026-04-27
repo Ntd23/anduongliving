@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { MenuData } from "~/features/cms/data/useMenu";
 import type { ThemeCurrencyLink, ThemeCustomerBlock } from "~/features/navigation/data/useHeaderExtras";
 import type { ThemeSocialLink } from "~/features/cms/data/useThemeOptions";
@@ -22,13 +22,14 @@ const emit = defineEmits<{
 }>();
 
 const { locale, locales } = useI18n();
+const localePath = useLocalePath();
 const switchLocalePath = useSwitchLocalePath();
 const route = useRoute();
 
 const languageLabels: Record<string, string> = {
-  vi: "Tiáº¿ng Viá»‡t",
+  vi: "Vietnam",
   en: "English",
-  ja: "æ—¥æœ¬èªž",
+  ja: "Japanese",
 };
 
 const languages = computed(() =>
