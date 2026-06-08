@@ -20,6 +20,7 @@ class Room extends BaseModel
         'content',
         'is_featured',
         'images',
+        'vr_image',
         'price',
         'currency_id',
         'number_of_rooms',
@@ -55,6 +56,22 @@ class Room extends BaseModel
     public function getImageAttribute(): ?string
     {
         return Arr::first($this->images) ?? null;
+    }
+
+    public function getVrImageAttribute($value)
+    {
+        if ($value === '[null]' || $value === null) {
+            return null;
+        }
+
+        $vrImages = json_decode((string) $value, true);
+
+        if (is_array($vrImages)) {
+            $vrImages = array_filter($vrImages);
+            return $vrImages ?: null;
+        }
+
+        return $value;
     }
 
     public function amenities(): BelongsToMany
