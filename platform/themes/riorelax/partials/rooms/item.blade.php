@@ -75,6 +75,46 @@
             </div>
         @endif
 
+        @if ($room->vr_image)
+            @if (is_array($room->vr_image))
+                <!-- Multiple VR images with positioning data -->
+                @foreach ($room->vr_image as $index => $vrImage)
+                    @php
+                        // Default positioning for VR hotspots
+                        $positions = [
+                            ['yaw' => 0, 'pitch' => -10],      // Right - Gian 1
+                            ['yaw' => 90, 'pitch' => -10],     // Top - Gian 2  
+                            ['yaw' => 180, 'pitch' => -10],    // Bottom - Gian 3
+                            ['yaw' => -90, 'pitch' => -10],    // Left - Gian 4
+                            ['yaw' => 45, 'pitch' => -10],     // Top-Right - Gian 5
+                            ['yaw' => -45, 'pitch' => -10],    // Top-Left - Gian 6
+                        ];
+                        
+                        $position = $positions[$index % count($positions)] ?? $positions[0];
+                    @endphp
+                    <div class="vr-image" style="display: none;" 
+                         data-yaw="{{ $position['yaw'] }}" 
+                         data-pitch="{{ $position['pitch'] }}" 
+                         data-name="Gian {{ $index + 1 }}">
+                        <img src="{{ RvMedia::getImageUrl($vrImage) }}" alt="{{ $room->name }} VR Tour - Gian {{ $index + 1 }}">
+                    </div>
+                @endforeach
+                
+                <!-- Backward compatibility - first image as room-vr-image -->
+                <div class="room-vr-image" style="display: none;">
+                    <img src="{{ RvMedia::getImageUrl(Arr::first($room->vr_image)) }}" alt="{{ $room->name }} VR Tour">
+                </div>
+            @else
+                <!-- Single VR image with default positioning -->
+                <div class="vr-image" style="display: none;" 
+                     data-yaw="0" 
+                     data-pitch="-10" 
+                     data-name="VR Tour">
+                    <img src="{{ RvMedia::getImageUrl($room->vr_image) }}" alt="{{ $room->name }} VR Tour">
+                </div>
+            @endif
+        @endif
+
         @if ($room->amenities->isNotEmpty())
             <div class="icon">
                 <ul class="d-flex justify-content-evenly">
