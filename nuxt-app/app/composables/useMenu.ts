@@ -1,2 +1,1 @@
-﻿export * from "~/features/cms/data/useMenu";
-
+﻿export * from "../features/cms/data/useMenu";

@@ -1,2 +1,1 @@
-﻿export * from "~/features/cms/data/usePageSeo";
-
+﻿export * from "../features/cms/data/usePageSeo";

@@ -7,6 +7,7 @@ import {
 } from "~/features/shortcodes/core";
 import { useResolvedCmsLink } from "~/features/cms/data/useResolvedCmsLink";
 import { useSanitizedCmsHtml } from "~/composables/useSanitizedCmsHtml";
+import { useResolvedCmsAsset } from "~/composables/useResolvedCmsAsset";
 
 const props = defineProps<{
   block: ShortcodeBlock;
@@ -15,13 +16,27 @@ const props = defineProps<{
 const section = computed<FeatureAreaSectionData>(() => parseFeatureAreaBlock(props.block.raw));
 const sanitizedHtml = useSanitizedCmsHtml(() => props.block.raw);
 const resolveLink = useResolvedCmsLink();
+const resolveAsset = useResolvedCmsAsset();
 const action = computed(() => resolveLink(section.value.action?.href));
 
-const sectionStyle = computed(() =>
-  section.value.backgroundColor
-    ? { background: section.value.backgroundColor }
-    : undefined,
-);
+const sectionStyle = computed(() => {
+  const style: Record<string, string> = {};
+
+  if (section.value.backgroundColor) {
+    style.background = section.value.backgroundColor;
+  }
+
+  if (section.value.backgroundImage?.src) {
+    const backgroundSrc = resolveAsset(section.value.backgroundImage.src) || section.value.backgroundImage.src;
+
+    style.backgroundImage = [
+      "linear-gradient(180deg, rgba(252, 250, 246, 0.76), rgba(243, 236, 223, 0.88))",
+      `url('${backgroundSrc}')`,
+    ].join(", ");
+  }
+
+  return Object.keys(style).length ? style : undefined;
+});
 </script>
 
 <template>
@@ -52,14 +67,13 @@ const sectionStyle = computed(() =>
           section.image?.src ||
           section.title ||
           section.subtitle ||
-          section.description ||
-          section.secondaryImage?.src
+          section.description
         "
         class="feature-grid"
       >
         <div v-if="section.image?.src" class="feature-main-image">
           <img
-            :src="section.image.src"
+            :src="resolveAsset(section.image.src) || section.image.src"
             :alt="section.image.alt || section.title || 'Feature image'"
             loading="lazy"
           >
@@ -96,14 +110,6 @@ const sectionStyle = computed(() =>
               </a>
             </div>
           </div>
-
-          <div v-if="section.secondaryImage?.src" class="feature-side-image">
-            <img
-              :src="section.secondaryImage.src"
-              :alt="section.secondaryImage.alt || section.title || 'Secondary image'"
-              loading="lazy"
-            >
-          </div>
         </div>
       </div>
 
@@ -124,6 +130,8 @@ const sectionStyle = computed(() =>
   background:
     radial-gradient(circle at bottom left, rgba(185, 130, 90, 0.1), transparent 28%),
     linear-gradient(180deg, #fcfaf6, #f3ecdf);
+  background-position: center;
+  background-size: cover;
 }
 
 .container {
@@ -188,9 +196,10 @@ const sectionStyle = computed(() =>
 /* â”€â”€ Grid â”€â”€ */
 .feature-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(2rem, 4vw, 3rem);
-  align-items: start;
+  align-items: stretch;
+  min-height: clamp(34rem, 58vw, 43rem);
 }
 
 .feature-main-image {
@@ -199,29 +208,32 @@ const sectionStyle = computed(() =>
   box-shadow: 0 28px 72px rgba(47, 36, 29, 0.12);
 }
 
-.feature-main-image img,
-.feature-side-image img {
+.feature-main-image img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  min-height: 100%;
   object-fit: cover;
 }
 
-.feature-main-image img {
-  aspect-ratio: 4 / 5;
-}
-
 .feature-right {
-  display: grid;
-  grid-template-rows: auto auto;
-  gap: clamp(1.5rem, 3vw, 2rem);
-  align-content: start;
-  padding-top: clamp(1rem, 3vw, 2.5rem);
+  display: flex;
+  min-height: 100%;
 }
 
 /* â”€â”€ Glass panel â”€â”€ */
+.feature-copy {
+  display: flex;
+  width: 100%;
+}
+
 .feature-copy__glass {
-  padding: clamp(1.25rem, 3vw, 2rem);
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.75rem, 4vw, 3rem);
   border: 1px solid rgba(111, 117, 83, 0.1);
   border-radius: 1.75rem;
   background: rgba(255, 252, 246, 0.72);
@@ -278,16 +290,6 @@ const sectionStyle = computed(() =>
   box-shadow: 0 18px 36px rgba(156, 99, 61, 0.24);
 }
 
-.feature-side-image {
-  overflow: hidden;
-  border-radius: 1.5rem;
-  box-shadow: 0 20px 50px rgba(47, 36, 29, 0.1);
-}
-
-.feature-side-image img {
-  aspect-ratio: 16 / 9;
-}
-
 .feature-fallback {
   min-height: 120px;
 }
@@ -303,10 +305,17 @@ const sectionStyle = computed(() =>
 
   .feature-grid {
     grid-template-columns: 1fr;
+    min-height: auto;
   }
 
   .feature-right {
+    min-height: auto;
     padding-top: 0;
+  }
+
+  .feature-main-image img,
+  .feature-copy__glass {
+    min-height: clamp(28rem, 62vw, 36rem);
   }
 }
 
@@ -324,7 +333,6 @@ const sectionStyle = computed(() =>
   }
 }
 </style>
-
 
 
 

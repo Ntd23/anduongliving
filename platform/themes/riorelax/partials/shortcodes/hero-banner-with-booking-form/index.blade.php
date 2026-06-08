@@ -33,7 +33,13 @@
                     <div class="col-lg-5 col-md-5 p-relative">
                         <div class="booking-area booking-area2 p-relative">
                             <div class="container">
-                                {!! Theme::partial('hotel.forms.form', ['style' => 1, 'availableForBooking' => false, 'title' => $shortcode->form_title]) !!}
+                                {!! Theme::partial('hotel.forms.form', [
+                                    'style' => 1,
+                                    'availableForBooking' => false,
+                                    'title' => $shortcode->form_title,
+                                    'buttonLabel' => $shortcode->form_button_label,
+                                    'buttonUrl' => $shortcode->form_button_url,
+                                ]) !!}
                             </div>
                         </div>
                     </div>

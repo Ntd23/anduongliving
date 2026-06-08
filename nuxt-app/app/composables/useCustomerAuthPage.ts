@@ -1,2 +1,1 @@
-﻿export * from "~/features/auth/data/useCustomerAuthPage";
-
+﻿export * from "../features/auth/data/useCustomerAuthPage";

@@ -1,2 +1,1 @@
-﻿export * from "~/features/shortcodes/core/registry";
-
+﻿export * from "../../features/shortcodes/core/registry";

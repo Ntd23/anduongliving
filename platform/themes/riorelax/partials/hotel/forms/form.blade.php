@@ -16,7 +16,12 @@
         $adults = request()->query('adults', $minimumNumberOfGuests);
     @endphp
 
-    <form action="{{ $availableForBooking ? route('public.booking') : route('public.rooms') }}" method="{{ $availableForBooking ? 'POST' : 'GET' }}" class="contact-form mt-30 form-booking">
+    @php
+        $submitLabel = $buttonLabel ?? ($availableForBooking ? __('Book Now') : __('Check Availability'));
+        $submitUrl = $buttonUrl ?? ($availableForBooking ? route('public.booking') : route('public.rooms'));
+    @endphp
+
+    <form action="{{ $submitUrl }}" method="{{ $availableForBooking ? 'POST' : 'GET' }}" class="contact-form mt-30 form-booking">
         @if ($availableForBooking)
             @csrf
             <input type="hidden" name="room_id" value="{{ $room->id }}">
@@ -104,7 +109,7 @@
                     <div class="col-lg-3 col-md-6">
                         <div class="slider-btn">
                             <button type="submit" class="btn ss-btn" data-animation="fadeInRight" data-delay=".8s">
-                                {{ $availableForBooking ? __('Book Now') : __('Check Availability') }}
+                                {{ $submitLabel }}
                             </button>
                         </div>
                     </div>
@@ -186,7 +191,7 @@
                     <div class="col-lg-12">
                         <div class="slider-btn mt-15">
                             <button type="submit" class="btn ss-btn" data-animation="fadeInRight" data-delay=".8s">
-                                <span>{{ $availableForBooking ? __('Book Now') : __('Check Availability') }}</span>
+                                <span>{{ $submitLabel }}</span>
                             </button>
                         </div>
                     </div>

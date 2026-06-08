@@ -1,2 +1,1 @@
-﻿export * from "~/features/navigation/data/useHeaderExtras";
-
+﻿export * from "../features/navigation/data/useHeaderExtras";

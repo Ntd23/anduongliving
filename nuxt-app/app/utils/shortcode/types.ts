@@ -1,2 +1,1 @@
-﻿export * from "~/features/shortcodes/core/types";
-
+﻿export * from "../../features/shortcodes/core/types";

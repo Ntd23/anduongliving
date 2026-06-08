@@ -60,17 +60,17 @@ const resolveLink = useResolvedCmsLink();
 
 .places-shell {
   display: grid;
-  gap: 2.5rem;
+  gap: 3.25rem;
 }
 
 .places-header {
-  max-width: 48rem;
+  max-width: 76rem;
   margin: 0 auto;
 }
 
 .places-header__glass {
   text-align: center;
-  padding: clamp(1.25rem, 3vw, 2rem);
+  padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1rem, 2vw, 1.75rem);
   border: 1px solid rgba(111, 117, 83, 0.1);
   border-radius: 1.75rem;
   background: rgba(255, 252, 246, 0.72);
@@ -91,14 +91,20 @@ const resolveLink = useResolvedCmsLink();
   margin: 0;
   color: #2f241d;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: clamp(2.5rem, 5vw, 4.2rem);
-  line-height: 1;
+  max-width: 66rem;
+  margin-inline: auto;
+  font-size: clamp(3rem, 5.35vw, 5.1rem);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
 }
 
 .places-header__description {
-  margin: 1rem 0 0;
+  margin: 1.35rem auto 0;
+  max-width: 68rem;
   color: rgba(47, 36, 29, 0.76);
+  font-size: 1.05rem;
   line-height: 1.8;
+  text-align: center;
 }
 
 .places-grid {
@@ -190,12 +196,51 @@ const resolveLink = useResolvedCmsLink();
 }
 
 @media (max-width: 1024px) {
+  .places-shell {
+    gap: 2.75rem;
+  }
+
+  .places-header {
+    max-width: 68rem;
+  }
+
+  .places-header__glass {
+    padding-inline: clamp(1rem, 2.5vw, 1.75rem);
+  }
+
+  .places-header__title {
+    max-width: 56rem;
+    font-size: clamp(2.7rem, 5vw, 4.2rem);
+    line-height: 1.02;
+  }
+
   .places-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
+  .places-shell {
+    gap: 2.25rem;
+  }
+
+  .places-header__glass {
+    padding: 1.25rem 1.1rem;
+  }
+
+  .places-header__title {
+    max-width: none;
+    font-size: clamp(2.2rem, 10vw, 3rem);
+    line-height: 1.08;
+  }
+
+  .places-header__description {
+    max-width: none;
+    font-size: 1rem;
+    line-height: 1.75;
+    text-align: center;
+  }
+
   .places-grid {
     display: grid;
     grid-auto-flow: column;
@@ -215,7 +260,3 @@ const resolveLink = useResolvedCmsLink();
   }
 }
 </style>
-
-
-
-

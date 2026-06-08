@@ -1,2 +1,1 @@
-﻿export * from "~/features/cms/data/useResolvedCmsAsset";
-
+﻿export * from "../features/cms/data/useResolvedCmsAsset";

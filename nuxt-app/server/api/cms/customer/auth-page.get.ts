@@ -1,3 +1,4 @@
+import { Buffer } from "node:buffer";
 import type {
   CustomerAuthActions,
   CustomerAuthAgreement,
@@ -14,29 +15,29 @@ const resolveMode = (value?: string | null): CustomerAuthMode =>
   value === "register" ? "register" : "login";
 
 const DEFAULT_LABELS: Record<CustomerAuthMode, string> = {
-  login: "Đăng nhập",
-  register: "Đăng ký",
+  login: "Login",
+  register: "Register",
 };
 
 const DEFAULT_CARD_HEADINGS: Record<CustomerAuthMode, string> = {
-  login: "Đăng nhập vào tài khoản của bạn",
-  register: "Đăng ký tài khoản",
+  login: "Sign in to your account",
+  register: "Create your account",
 };
 
 const DEFAULT_SUBMIT_LABELS: Record<CustomerAuthMode, string> = {
-  login: "Đăng nhập",
-  register: "Đăng ký",
+  login: "Login",
+  register: "Register",
 };
 
 const DEFAULT_ALT_LABELS: Record<CustomerAuthMode, { prompt: string; action: string; href: string }> = {
   login: {
-    prompt: "Bạn chưa có tài khoản?",
-    action: "Đăng ký ngay",
+    prompt: "Don't have an account?",
+    action: "Register now",
     href: cmsAppRoutes.auth.register(),
   },
   register: {
-    prompt: "Đã có tài khoản?",
-    action: "Đăng nhập",
+    prompt: "Already have an account?",
+    action: "Login",
     href: cmsAppRoutes.auth.login(),
   },
 };
@@ -78,10 +79,91 @@ const readHtml = async (response: Response) => {
   return new TextDecoder("utf-8").decode(buffer);
 };
 
-const extractFormHtml = (html: string) => html.match(/<form\b[\s\S]*?<\/form>/i)?.[0] || "";
-
 const extractAttribute = (tag: string, name: string) =>
   tag.match(new RegExp(`${escapeRegExp(name)}=(["'])(.*?)\\1`, "i"))?.[2] || "";
+
+const extractInputTags = (html: string) =>
+  Array.from(html.matchAll(/<input\b([^>]*)>/gi)).map((match) => `<input${match[1] || ""}>`);
+
+const extractInputValue = (html: string, fieldName: string) => {
+  for (const tag of extractInputTags(html)) {
+    if (extractAttribute(tag, "name") !== fieldName) {
+      continue;
+    }
+
+    return decodeAttribute(extractAttribute(tag, "value")) || "";
+  }
+
+  return "";
+};
+
+const extractMetaContent = (html: string, metaName: string) =>
+  html.match(
+    new RegExp(`<meta\\b[^>]*name=(["'])${escapeRegExp(metaName)}\\1[^>]*content=(["'])(.*?)\\2[^>]*>`, "i"),
+  )?.[3] || "";
+
+const collectForms = (html: string) =>
+  Array.from(html.matchAll(/<form\b[\s\S]*?<\/form>/gi)).map((match) => match[0]);
+
+const scoreAuthForm = (formHtml: string, mode: CustomerAuthMode) => {
+  const formTag = formHtml.match(/<form\b[^>]*>/i)?.[0] || "";
+  const action = decodeAttribute(extractAttribute(formTag, "action")).toLowerCase();
+  const inputNames = new Set(
+    extractInputTags(formHtml)
+      .map((tag) => extractAttribute(tag, "name"))
+      .filter((value): value is string => Boolean(value))
+      .map((value) => value.toLowerCase()),
+  );
+
+  let score = 0;
+
+  if (action.includes(mode)) {
+    score += 8;
+  }
+
+  if (inputNames.has("_token")) {
+    score += 4;
+  }
+
+  if (inputNames.has("email")) {
+    score += 2;
+  }
+
+  if (inputNames.has("password")) {
+    score += 2;
+  }
+
+  if (mode === "register") {
+    if (inputNames.has("first_name")) {
+      score += 4;
+    }
+
+    if (inputNames.has("password_confirmation")) {
+      score += 4;
+    }
+  }
+
+  if (mode === "login" && inputNames.has("remember")) {
+    score += 2;
+  }
+
+  return score;
+};
+
+const extractFormHtml = (html: string, mode: CustomerAuthMode) => {
+  const forms = collectForms(html);
+
+  if (!forms.length) {
+    return "";
+  }
+
+  return forms
+    .map((formHtml) => ({
+      formHtml,
+      score: scoreAuthForm(formHtml, mode),
+    }))
+    .sort((left, right) => right.score - left.score)[0]?.formHtml || forms[0];
+};
 
 const hasBooleanAttribute = (tag: string, name: string) =>
   new RegExp(`\\b${escapeRegExp(name)}(?:=(["']).*?\\1)?(?=[\\s>])`, "i").test(tag);
@@ -219,7 +301,7 @@ const extractHero = (html: string, mode: CustomerAuthMode, backendSiteUrl: strin
   return {
     title,
     breadcrumbLabel: title,
-    homeLabel: normalizeText(breadcrumbAnchor?.[4]) || "Trang chủ",
+    homeLabel: normalizeText(breadcrumbAnchor?.[4]) || "Home",
     homeUrl: breadcrumbAnchor?.[3] ? buildAbsoluteUrl(backendSiteUrl, decodeAttribute(breadcrumbAnchor[3])) : "/",
     backgroundImageUrl: backgroundImage ? buildAbsoluteUrl(backendSiteUrl, backgroundImage) : null,
   };
@@ -278,9 +360,11 @@ export default defineEventHandler(async (event) => {
   }
 
   const html = await readHtml(response);
-  const formHtml = extractFormHtml(html);
-  const csrfToken = extractAttribute(formHtml, "_token") ||
-    html.match(/<input\b[^>]*name=(["'])_token\1[^>]*value=(["'])(.*?)\2/i)?.[3] ||
+  const formHtml = extractFormHtml(html, mode);
+  const csrfToken =
+    extractInputValue(formHtml, "_token") ||
+    extractInputValue(html, "_token") ||
+    decodeAttribute(extractMetaContent(html, "csrf-token")) ||
     "";
 
   if (!formHtml || !csrfToken) {

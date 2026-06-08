@@ -453,6 +453,7 @@ export type BookingFormSectionData = {
   image: ShortcodeImage | null;
   subtitle: string | null;
   title: string | null;
+  description: string | null;
   actionUrl: string | null;
   method: string;
   csrfToken: string | null;
@@ -550,6 +551,7 @@ export type BrandItem = {
 
 export type BrandsSectionData = {
   backgroundColor: string | null;
+  backgroundImage: ShortcodeImage | null;
   items: BrandItem[];
 };
 
@@ -590,6 +592,5 @@ export type BookingSectionData = {
   imageAlt: string | null;
   rooms: BookingRoomOption[] | null;
 };
-
 
 

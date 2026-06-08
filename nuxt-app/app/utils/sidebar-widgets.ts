@@ -1,1 +1,1 @@
-﻿export * from "~/features/cms/ui/sidebar-widgets/registry";
+﻿export * from "../features/cms/ui/sidebar-widgets/registry";

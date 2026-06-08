@@ -1,2 +1,1 @@
-﻿export * from "~/features/blog/data/useBlog";
-
+﻿export * from "../features/blog/data/useBlog";

@@ -1,1 +1,1 @@
-﻿export * from "~/features/blog/ui/locale-format";
+﻿export * from "../features/blog/ui/locale-format";
