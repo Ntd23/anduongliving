@@ -139,12 +139,12 @@
             }
 
             .hero-story__aside {
-                position: relative;
-                right: auto;
-                bottom: auto;
-                margin: 24px 0 0 auto;
-                width: min(100%, 240px);
-            }
+    position: relative;
+    right: auto;
+    bottom: auto;
+    margin: 24px 0 0 auto;
+    width: 100%;
+}
         }
     </style>
 

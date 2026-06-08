@@ -1,0 +1,33 @@
+# ISOLATED_PHP_VERSION=8.4
+server {
+    listen 127.0.0.1:8080;
+    server_name anduongliving.test www.anduongliving.test *.anduongliving.test;
+
+    root /Users/duyhung/Desktop/anduongliving/public;
+    index index.php index.html;
+
+    charset utf-8;
+    client_max_body_size 1024M;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    access_log off;
+    error_log "/Users/duyhung/Library/Application Support/Herd/Log/nginx-error.log";
+
+    location ~ \.php$ {
+        fastcgi_pass $herd_sock_84;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
