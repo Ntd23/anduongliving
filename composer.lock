@@ -445,7 +445,7 @@
         },
         {
             "name": "botble/get-started",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/get-started",
@@ -471,7 +471,7 @@
         },
         {
             "name": "botble/installer",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/installer",
@@ -500,7 +500,7 @@
         },
         {
             "name": "botble/menu",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/menu",
@@ -533,7 +533,7 @@
         },
         {
             "name": "botble/optimize",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/optimize",
@@ -565,7 +565,7 @@
         },
         {
             "name": "botble/page",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/page",
@@ -595,7 +595,7 @@
         },
         {
             "name": "botble/platform",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/core",
@@ -705,7 +705,7 @@
         },
         {
             "name": "botble/plugin-management",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/plugin-management",
@@ -734,7 +734,7 @@
         },
         {
             "name": "botble/revision",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/revision",
@@ -763,7 +763,7 @@
         },
         {
             "name": "botble/seo-helper",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/seo-helper",
@@ -796,7 +796,7 @@
         },
         {
             "name": "botble/shortcode",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/shortcode",
@@ -828,7 +828,7 @@
         },
         {
             "name": "botble/sitemap",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/sitemap",
@@ -857,7 +857,7 @@
         },
         {
             "name": "botble/slug",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/slug",
@@ -889,7 +889,7 @@
         },
         {
             "name": "botble/theme",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/theme",
@@ -930,7 +930,7 @@
         },
         {
             "name": "botble/widget",
-            "version": "dev-dung",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/widget",
@@ -2126,7 +2126,7 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v6.11.1",
+            "version": "6.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/php-jwt.git",
@@ -2310,16 +2310,16 @@
         },
         {
             "name": "google/apiclient",
-            "version": "v2.19.2",
+            "version": "v2.19.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client.git",
-                "reference": "703ba9acfaf4ba71306108207feafb6d1d137eb0"
+                "reference": "a1f02761994fd9defb20f6f1449205fd66f450de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/703ba9acfaf4ba71306108207feafb6d1d137eb0",
-                "reference": "703ba9acfaf4ba71306108207feafb6d1d137eb0",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/a1f02761994fd9defb20f6f1449205fd66f450de",
+                "reference": "a1f02761994fd9defb20f6f1449205fd66f450de",
                 "shasum": ""
             },
             "require": {
@@ -2329,8 +2329,7 @@
                 "guzzlehttp/guzzle": "^7.4.5",
                 "guzzlehttp/psr7": "^2.6",
                 "monolog/monolog": "^2.9||^3.0",
-                "php": "^8.1",
-                "phpseclib/phpseclib": "^3.0.50"
+                "php": "^8.1"
             },
             "require-dev": {
                 "cache/filesystem-adapter": "^1.1",
@@ -2376,9 +2375,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client/issues",
-                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.19.2"
+                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.19.3"
             },
-            "time": "2026-03-30T18:54:44+00:00"
+            "time": "2026-05-04T21:00:36+00:00"
         },
         {
             "name": "google/apiclient-services",
@@ -3960,16 +3959,16 @@
         },
         {
             "name": "laravel/socialite",
-            "version": "v5.26.1",
+            "version": "v5.27.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/socialite.git",
-                "reference": "db6ec2ee967b7f06412c3a0cf1daaf072f4752a4"
+                "reference": "40e0757a75637c7b2dff05d3286b0d8fc25e5c0e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/socialite/zipball/db6ec2ee967b7f06412c3a0cf1daaf072f4752a4",
-                "reference": "db6ec2ee967b7f06412c3a0cf1daaf072f4752a4",
+                "url": "https://api.github.com/repos/laravel/socialite/zipball/40e0757a75637c7b2dff05d3286b0d8fc25e5c0e",
+                "reference": "40e0757a75637c7b2dff05d3286b0d8fc25e5c0e",
                 "shasum": ""
             },
             "require": {
@@ -4028,7 +4027,7 @@
                 "issues": "https://github.com/laravel/socialite/issues",
                 "source": "https://github.com/laravel/socialite"
             },
-            "time": "2026-03-29T14:50:53+00:00"
+            "time": "2026-04-24T14:05:47+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -8276,16 +8275,16 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v7.4.8",
+            "version": "v7.4.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "467464da294734b0fb17e853e5712abc8470f819"
+                "reference": "4c09e18a92cce126cc0d1155825279fca8cd0673"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/467464da294734b0fb17e853e5712abc8470f819",
-                "reference": "467464da294734b0fb17e853e5712abc8470f819",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/4c09e18a92cce126cc0d1155825279fca8cd0673",
+                "reference": "4c09e18a92cce126cc0d1155825279fca8cd0673",
                 "shasum": ""
             },
             "require": {
@@ -8356,7 +8355,7 @@
                 "psr6"
             ],
             "support": {
-                "source": "https://github.com/symfony/cache/tree/v7.4.8"
+                "source": "https://github.com/symfony/cache/tree/v7.4.13"
             },
             "funding": [
                 {
@@ -8376,7 +8375,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-03-30T15:15:47+00:00"
+            "time": "2026-05-24T08:43:14+00:00"
         },
         {
             "name": "symfony/cache-contracts",
@@ -11353,16 +11352,16 @@
         },
         {
             "name": "symfony/var-exporter",
-            "version": "v7.4.8",
+            "version": "v7.4.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-exporter.git",
-                "reference": "398907e89a2a56fe426f7955c6fa943ec0c77225"
+                "reference": "22e03a49c95ef054a43601cd159b222bfab1c701"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/398907e89a2a56fe426f7955c6fa943ec0c77225",
-                "reference": "398907e89a2a56fe426f7955c6fa943ec0c77225",
+                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/22e03a49c95ef054a43601cd159b222bfab1c701",
+                "reference": "22e03a49c95ef054a43601cd159b222bfab1c701",
                 "shasum": ""
             },
             "require": {
@@ -11410,7 +11409,7 @@
                 "serialize"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-exporter/tree/v7.4.8"
+                "source": "https://github.com/symfony/var-exporter/tree/v7.4.9"
             },
             "funding": [
                 {
@@ -11430,7 +11429,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-03-24T13:12:05+00:00"
+            "time": "2026-04-18T13:18:21+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -15180,6 +15179,6 @@
         "ext-pdo": "*",
         "ext-zip": "*"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }
