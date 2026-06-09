@@ -25,6 +25,8 @@ use Botble\Hotel\Models\Service;
 use Botble\Hotel\Repositories\Interfaces\RoomInterface;
 use Botble\Hotel\Shortcodes\Forms\ShortcodeHotelPlaceForm;
 use Botble\Hotel\Shortcodes\Forms\ShortcodeHotelServiceForm;
+use Botble\Language\Facades\Language;
+use Botble\LanguageAdvanced\Supports\LanguageAdvancedManager;
 use Botble\Shortcode\Compilers\Shortcode as ShortcodeCompiler;
 use Botble\Shortcode\Facades\Shortcode;
 use Botble\Shortcode\Forms\FieldOptions\ShortcodeTabsFieldOption;
@@ -364,6 +366,35 @@ app()->booted(function (): void {
 
         Shortcode::register('all-rooms', __('All Rooms'), __('All Rooms'), function (): ?string {
             $request = request();
+            $usesAdvancedLanguage = is_plugin_active('language') && is_plugin_active('language-advanced');
+
+            if ($usesAdvancedLanguage) {
+                $requestedLanguage = $request->input('lang', $request->input('locale'));
+
+                if (is_string($requestedLanguage) && $requestedLanguage !== '') {
+                    $requestedLanguage = str_replace('-', '_', trim($requestedLanguage));
+                    $languagePrefix = explode('_', $requestedLanguage, 2)[0];
+                    $language = collect(Language::getSupportedLocales())->first(
+                        fn (array $item, $key): bool => in_array($requestedLanguage, [
+                            $key,
+                            Arr::get($item, 'lang_code'),
+                            Arr::get($item, 'lang_locale'),
+                        ], true) || in_array($languagePrefix, [
+                            $key,
+                            Arr::get($item, 'lang_code'),
+                            Arr::get($item, 'lang_locale'),
+                        ], true)
+                    );
+                    $locale = Arr::get($language, 'lang_locale');
+                    $languageCode = Arr::get($language, 'lang_code');
+
+                    if ($locale && $languageCode) {
+                        Language::setCurrentLocale($locale);
+                        Language::setCurrentLocaleCode($languageCode);
+                        LanguageAdvancedManager::clearLocaleCache();
+                    }
+                }
+            }
 
             [$startDate, $endDate, $adults, $nights, $children, $room] = HotelHelper::getRoomBookingParams();
 
@@ -411,6 +442,11 @@ app()->booted(function (): void {
                     },
                 ],
             ];
+
+            if ($usesAdvancedLanguage) {
+                $params['with'][] = 'translations';
+                $params['with'][] = 'amenities.translations';
+            }
 
             $queriedRooms = app(RoomInterface::class)->getRooms($filters, $params);
 
@@ -584,9 +620,40 @@ app()->booted(function (): void {
                     return null;
                 }
 
+                $usesAdvancedLanguage = is_plugin_active('language') && is_plugin_active('language-advanced');
+
+                if ($usesAdvancedLanguage) {
+                    $requestedLanguage = request()->input('lang', request()->input('locale'));
+
+                    if (is_string($requestedLanguage) && $requestedLanguage !== '') {
+                        $requestedLanguage = str_replace('-', '_', trim($requestedLanguage));
+                        $languagePrefix = explode('_', $requestedLanguage, 2)[0];
+                        $language = collect(Language::getSupportedLocales())->first(
+                            fn (array $item, $key): bool => in_array($requestedLanguage, [
+                                $key,
+                                Arr::get($item, 'lang_code'),
+                                Arr::get($item, 'lang_locale'),
+                            ], true) || in_array($languagePrefix, [
+                                $key,
+                                Arr::get($item, 'lang_code'),
+                                Arr::get($item, 'lang_locale'),
+                            ], true)
+                        );
+                        $locale = Arr::get($language, 'lang_locale');
+                        $languageCode = Arr::get($language, 'lang_code');
+
+                        if ($locale && $languageCode) {
+                            Language::setCurrentLocale($locale);
+                            Language::setCurrentLocaleCode($languageCode);
+                            LanguageAdvancedManager::clearLocaleCache();
+                        }
+                    }
+                }
+
                 $testimonials = Testimonial::query()
                     ->wherePublished()
                     ->whereIn('id', $testimonialIds)
+                    ->when($usesAdvancedLanguage, fn ($query) => $query->with('translations'))
                     ->get();
 
                 return Theme::partial('shortcodes.testimonials.index', compact('shortcode', 'testimonials'));

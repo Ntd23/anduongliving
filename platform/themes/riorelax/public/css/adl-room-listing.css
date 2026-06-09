@@ -222,37 +222,54 @@
     pointer-events: none;
 }
 
-.adl-room-listing-pagination {
+.adl-listing-pager-x9 {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    margin-top: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 34px;
 }
 
-.adl-room-listing-page {
-    width: 36px;
-    height: 36px;
-    border: 1px solid rgba(80, 63, 45, 0.16);
+.adl-listing-pager-x9__button {
+    flex: 0 0 56px;
+    width: 56px;
+    height: 56px;
+    border: 0;
     border-radius: 50%;
-    color: #73794f;
-    background: #fffdf8;
+    color: #2f261f;
+    background: #fffaf2;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 21px;
+    font-weight: 500;
     line-height: 1;
     cursor: pointer;
     text-decoration: none;
-    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    box-shadow: 0 14px 34px rgba(91, 68, 47, 0.08);
+    transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
 }
 
-.adl-room-listing-page.is-active,
-.adl-room-listing-page:hover {
+.adl-listing-pager-x9__button:hover,
+.adl-listing-pager-x9__button--active {
     color: #fff;
-    background: #73794f;
-    border-color: #73794f;
+    background: #b1845c;
+}
+
+.adl-listing-pager-x9__button:hover {
+    transform: translateY(-2px);
+}
+
+.adl-listing-pager-x9__arrow {
+    font-size: 27px;
+}
+
+.adl-listing-pager-x9__button--disabled {
+    color: #a9a39b;
+    opacity: 0.72;
+    cursor: default;
+    pointer-events: none;
 }
 
 @media (max-width: 1199px) {
@@ -293,8 +310,20 @@
         transform: none;
     }
 
-    .adl-room-listing-pagination {
-        padding-right: 64px;
+    .adl-listing-pager-x9 {
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .adl-listing-pager-x9__button {
+        flex-basis: 46px !important;
+        width: 46px !important;
+        height: 46px !important;
+        font-size: 18px !important;
+    }
+
+    .adl-listing-pager-x9__arrow {
+        font-size: 23px !important;
     }
 
     .adl-room-listing-content {

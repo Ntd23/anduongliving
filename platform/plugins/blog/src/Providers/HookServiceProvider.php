@@ -14,6 +14,7 @@ use Botble\Blog\Models\Tag;
 use Botble\Blog\Services\BlogService;
 use Botble\Dashboard\Events\RenderingDashboardWidgets;
 use Botble\Dashboard\Supports\DashboardWidgetInstance;
+use Botble\Language\Facades\Language;
 use Botble\LanguageAdvanced\Supports\LanguageAdvancedManager;
 use Botble\Media\Facades\RvMedia;
 use Botble\Menu\Events\RenderingMenuOptions;
@@ -272,11 +273,47 @@ class HookServiceProvider extends ServiceProvider
 
     public function renderBlogPosts(Shortcode $shortcode): array|string
     {
+        $usesAdvancedLanguage = is_plugin_active('language') && is_plugin_active('language-advanced');
+
+        if ($usesAdvancedLanguage) {
+            $requestedLanguage = request()->input('lang', request()->input('locale'));
+
+            if (is_string($requestedLanguage) && $requestedLanguage !== '') {
+                $requestedLanguage = str_replace('-', '_', trim($requestedLanguage));
+                $languagePrefix = Str::before($requestedLanguage, '_');
+                $language = collect(Language::getSupportedLocales())->first(
+                    fn (array $item, $key): bool => in_array($requestedLanguage, [
+                        $key,
+                        Arr::get($item, 'lang_code'),
+                        Arr::get($item, 'lang_locale'),
+                    ], true) || in_array($languagePrefix, [
+                        $key,
+                        Arr::get($item, 'lang_code'),
+                        Arr::get($item, 'lang_locale'),
+                    ], true)
+                );
+                $locale = Arr::get($language, 'lang_locale');
+                $languageCode = Arr::get($language, 'lang_code');
+
+                if ($locale && $languageCode) {
+                    Language::setCurrentLocale($locale);
+                    Language::setCurrentLocaleCode($languageCode);
+                    LanguageAdvancedManager::clearLocaleCache();
+                }
+            }
+        }
+
         $categoryIds = ShortcodeFacade::fields()->getIds('category_ids', $shortcode);
+        $relations = ['slugable', 'categories.slugable'];
+
+        if ($usesAdvancedLanguage) {
+            $relations[] = 'translations';
+            $relations[] = 'categories.translations';
+        }
 
         $posts = Post::query()
             ->wherePublished()->latest()
-            ->with(['slugable', 'categories.slugable'])
+            ->with($relations)
             ->when(! empty($categoryIds), function ($query) use ($categoryIds): void {
                 $query->whereHas('categories', function ($query) use ($categoryIds): void {
                     $query->whereIn('categories.id', $categoryIds);
