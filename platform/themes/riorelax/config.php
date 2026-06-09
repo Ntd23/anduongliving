@@ -57,6 +57,7 @@ return [
             $theme->asset()->usePath()->add('magnific-popup-css', 'plugins/magnific-popup/magnific-popup.css');
             $theme->asset()->usePath()->add('toastr-css', 'plugins/toastr/toastr.min.css');
             $theme->asset()->usePath()->add('style-css', 'css/theme.css');
+            $theme->asset()->usePath()->add('adl-room-listing-css', 'css/adl-room-listing.css');
             $theme->asset()->usePath()->add('default-css', 'plugins/default.css');
             $theme->asset()->usePath()->add('responsive-css', 'plugins/responsive.css');
             $theme->asset()->usePath()->add('datepicker-css', 'plugins/datepicker/bootstrap-datepicker.css');
@@ -76,6 +77,7 @@ return [
             $theme->asset()->container('footer')->usePath()->add('bootstrap-bundle-js', 'plugins/bootstrap/bootstrap.bundle.min.js');
             $theme->asset()->container('footer')->usePath()->add('datepicker-js', 'plugins/datepicker/bootstrap-datepicker.js');
             $theme->asset()->container('footer')->usePath()->add('toastr-js', 'plugins/toastr/toastr.min.js');
+            $theme->asset()->container('footer')->usePath()->add('adl-room-listing-js', 'js/adl-room-listing.js', ['jquery', 'slick-js']);
             $theme->asset()->container('footer')->usePath()->add('main', 'js/main.js');
             $theme->asset()->container('footer')->usePath()->add('script', 'js/script.js', ['datepicker-js', 'bootstrap-datepicker-locale']);
 

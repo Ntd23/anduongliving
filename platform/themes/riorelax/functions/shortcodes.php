@@ -1782,6 +1782,33 @@ Shortcode::setAdminConfig('logo-showcase-banner', function (array $attributes) {
                 )
                 ->add('limit', NumberField::class, NumberFieldOption::make()->label(__('Limit'))->toArray());
         });
+
+        Shortcode::register('list-of-articles', __('Danh sách phòng'), __('Hiển thị danh sách phòng'), function (ShortcodeCompiler $shortcode): ?string {
+            $perPage = 3;
+
+            $rooms = Room::query()
+                ->wherePublished()
+                ->with(['category', 'slugable'])
+                ->orderBy('order')
+                ->latest()
+                ->get();
+
+            if ($rooms->isEmpty()) {
+                return null;
+            }
+
+            [$startDate, $endDate] = HotelHelper::getRoomBookingParams();
+
+            return Theme::partial('shortcodes.list-of-articles.index', compact('shortcode', 'rooms', 'startDate', 'endDate', 'perPage'));
+        });
+
+        Shortcode::setAdminConfig('list-of-articles', function (array $attributes) {
+            return ShortcodeForm::createFromArray($attributes)
+                ->add('title', TextField::class, TextFieldOption::make()->label(__('Title'))->toArray())
+                ->add('subtitle', TextField::class, TextFieldOption::make()->label(__('Subtitle'))->toArray())
+                ->add('description', TextareaField::class, DescriptionFieldOption::make()->toArray())
+                ->add('limit', NumberField::class, NumberFieldOption::make()->label(__('Limit'))->defaultValue(3)->toArray());
+        });
     }
 
     if (is_plugin_active('team')) {
