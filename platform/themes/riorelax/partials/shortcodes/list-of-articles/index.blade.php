@@ -102,30 +102,66 @@
                 @endforeach
                 </div>
 
-                @if ($currentPage < $totalPages)
-                    <a class="adl-room-listing-next" href="{{ $pageUrl($currentPage + 1) }}" aria-label="{{ __('Next rooms') }}">
-                        <i class="fal fa-chevron-right"></i>
-                    </a>
-                @else
-                    <span class="adl-room-listing-next is-disabled" aria-hidden="true">
-                        <i class="fal fa-chevron-right"></i>
-                    </span>
-                @endif
             </div>
 
-            <div class="adl-room-listing-pagination" aria-label="{{ __('Rooms pagination') }}" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 34px; line-height: 1;">
+            <nav
+                class="adl-listing-pager-x9"
+                aria-label="{{ __('Rooms pagination') }}"
+                style="width: 100%; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 34px; line-height: 1;"
+            >
+                @if ($currentPage > 1)
+                    <a
+                        class="adl-listing-pager-x9__button adl-listing-pager-x9__arrow"
+                        href="{{ $pageUrl($currentPage - 1) }}"
+                        aria-label="{{ __('Previous rooms') }}"
+                        style="flex: 0 0 56px; width: 56px; height: 56px; border: 0; border-radius: 50%; color: #2f261f; background: #fffaf2; display: inline-flex; align-items: center; justify-content: center; font-size: 27px; font-weight: 500; line-height: 1; text-decoration: none; box-shadow: 0 10px 24px rgba(91, 68, 47, 0.08);"
+                    >
+                        <span aria-hidden="true">&lsaquo;</span>
+                    </a>
+                @else
+                    <span
+                        class="adl-listing-pager-x9__button adl-listing-pager-x9__arrow adl-listing-pager-x9__button--disabled"
+                        aria-hidden="true"
+                        style="flex: 0 0 56px; width: 56px; height: 56px; border: 0; border-radius: 50%; color: #a9a39b; background: #fffaf2; display: inline-flex; align-items: center; justify-content: center; font-size: 27px; font-weight: 500; line-height: 1; opacity: 0.72; box-shadow: 0 10px 24px rgba(91, 68, 47, 0.08);"
+                    >
+                        <span>&lsaquo;</span>
+                    </span>
+                @endif
+
                 @for ($page = 1; $page <= $totalPages; $page++)
                     <a
-                        @class(['adl-room-listing-page', 'is-active' => $page === $currentPage])
+                        @class([
+                            'adl-listing-pager-x9__button',
+                            'adl-listing-pager-x9__button--active' => $page === $currentPage,
+                        ])
                         href="{{ $pageUrl($page) }}"
                         aria-label="{{ __('Go to rooms page :page', ['page' => $page]) }}"
                         @if ($page === $currentPage) aria-current="page" @endif
-                        style="width: 38px; height: 38px; border: 1px solid {{ $page === $currentPage ? '#73794f' : 'rgba(80, 63, 45, 0.16)' }}; border-radius: 50%; color: {{ $page === $currentPage ? '#fff' : '#73794f' }}; background: {{ $page === $currentPage ? '#73794f' : '#fffdf8' }}; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; line-height: 1; text-decoration: none; box-shadow: {{ $page === $currentPage ? '0 10px 24px rgba(66, 52, 36, 0.18)' : '0 6px 16px rgba(66, 52, 36, 0.08)' }};"
+                        style="flex: 0 0 56px; width: 56px; height: 56px; border: 0; border-radius: 50%; color: {{ $page === $currentPage ? '#fff' : '#2f261f' }}; background: {{ $page === $currentPage ? '#b1845c' : '#fffaf2' }}; display: inline-flex; align-items: center; justify-content: center; font-size: 21px; font-weight: 500; line-height: 1; text-decoration: none; box-shadow: {{ $page === $currentPage ? '0 12px 26px rgba(177, 132, 92, 0.22)' : '0 10px 24px rgba(91, 68, 47, 0.08)' }};"
                     >
                         {{ $page }}
                     </a>
                 @endfor
-            </div>
+
+                @if ($currentPage < $totalPages)
+                    <a
+                        class="adl-listing-pager-x9__button adl-listing-pager-x9__arrow"
+                        href="{{ $pageUrl($currentPage + 1) }}"
+                        aria-label="{{ __('Next rooms') }}"
+                        style="flex: 0 0 56px; width: 56px; height: 56px; border: 0; border-radius: 50%; color: #2f261f; background: #fffaf2; display: inline-flex; align-items: center; justify-content: center; font-size: 27px; font-weight: 500; line-height: 1; text-decoration: none; box-shadow: 0 10px 24px rgba(91, 68, 47, 0.08);"
+                    >
+                        <span aria-hidden="true">&rsaquo;</span>
+                    </a>
+                @else
+                    <span
+                        class="adl-listing-pager-x9__button adl-listing-pager-x9__arrow adl-listing-pager-x9__button--disabled"
+                        aria-hidden="true"
+                        style="flex: 0 0 56px; width: 56px; height: 56px; border: 0; border-radius: 50%; color: #a9a39b; background: #fffaf2; display: inline-flex; align-items: center; justify-content: center; font-size: 27px; font-weight: 500; line-height: 1; opacity: 0.72; box-shadow: 0 10px 24px rgba(91, 68, 47, 0.08);"
+                    >
+                        <span>&rsaquo;</span>
+                    </span>
+                @endif
+            </nav>
         @endif
     </div>
 </section>
@@ -324,68 +360,58 @@
         transform: translateY(-2px);
     }
 
-    .adl-room-listing-next {
-        position: absolute;
-        top: 50%;
-        right: -26px;
-        width: 52px;
-        height: 52px;
-        color: #73794f;
-        background: #fffdf8;
-        border: 0;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 14px 32px rgba(66, 52, 36, 0.18);
-        cursor: pointer;
-        text-decoration: none;
-        transform: translateY(-50%);
-        transition: background 0.25s ease, color 0.25s ease, opacity 0.25s ease;
-        z-index: 4;
-    }
-
-    .adl-room-listing-next:hover {
-        color: #fff;
-        background: #73794f;
-    }
-
-    .adl-room-listing-next.is-disabled {
-        opacity: 0.35;
-        pointer-events: none;
-    }
-
-    .adl-room-listing-pagination {
+    .adl-listing-pager-x9 {
+        width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        margin-top: 28px;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 34px;
+        line-height: 1;
     }
 
-    .adl-room-listing-page {
-        width: 36px;
-        height: 36px;
-        border: 1px solid rgba(80, 63, 45, 0.16);
+    .adl-listing-pager-x9__button {
+        flex: 0 0 56px;
+        width: 56px;
+        height: 56px;
+        border: 0;
         border-radius: 50%;
-        color: #73794f;
-        background: #fffdf8;
+        color: #2f261f;
+        background: #fffaf2;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 14px;
-        font-weight: 700;
+        font-size: 21px;
+        font-weight: 500;
         line-height: 1;
         cursor: pointer;
         text-decoration: none;
-        transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+        box-shadow: 0 14px 34px rgba(91, 68, 47, 0.08);
+        transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
     }
 
-    .adl-room-listing-page.is-active,
-    .adl-room-listing-page:hover {
+    .adl-listing-pager-x9__button:hover {
         color: #fff;
-        background: #73794f;
-        border-color: #73794f;
+        background: #b1845c;
+        transform: translateY(-2px);
+    }
+
+    .adl-listing-pager-x9__button--active {
+        color: #fff;
+        background: #b1845c;
+        box-shadow: 0 16px 34px rgba(177, 132, 92, 0.22);
+    }
+
+    .adl-listing-pager-x9__arrow {
+        font-size: 27px;
+    }
+
+    .adl-listing-pager-x9__button--disabled {
+        color: #a9a39b;
+        opacity: 0.72;
+        cursor: default;
+        pointer-events: none;
     }
 
     @media (max-width: 1199px) {
@@ -409,9 +435,6 @@
             margin-right: auto;
         }
 
-        .adl-room-listing-next {
-            right: -12px;
-        }
     }
 
     @media (max-width: 767px) {
@@ -419,15 +442,20 @@
             width: min(100% - 32px, 1680px);
         }
 
-        .adl-room-listing-next {
-            top: auto;
-            right: 0;
-            bottom: -68px;
-            transform: none;
+        .adl-listing-pager-x9 {
+            gap: 12px;
+            margin-top: 30px;
         }
 
-        .adl-room-listing-pagination {
-            padding-right: 64px;
+        .adl-listing-pager-x9__button {
+            flex-basis: 46px;
+            width: 46px;
+            height: 46px;
+            font-size: 18px;
+        }
+
+        .adl-listing-pager-x9__arrow {
+            font-size: 23px;
         }
 
         .adl-room-listing-content {
