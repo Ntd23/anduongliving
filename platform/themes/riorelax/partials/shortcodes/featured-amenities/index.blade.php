@@ -39,7 +39,7 @@
                         <div class="services-08-content">
                             <h3>{{ $amenity->name }}</h3>
 
-                            @if ($description = $amenity->getMetaData('description', true))
+                            @if ($description = $amenity->description ?: $amenity->getMetaData('description', true))
                                 <p title="{{ $description }}">{!! BaseHelper::clean(Str::limit($description, 80)) !!}</p>
                             @endif
                         </div>
