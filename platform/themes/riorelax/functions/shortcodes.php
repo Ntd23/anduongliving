@@ -283,9 +283,40 @@ app()->booted(function (): void {
                     return null;
                 }
 
+                $usesAdvancedLanguage = is_plugin_active('language') && is_plugin_active('language-advanced');
+
+                if ($usesAdvancedLanguage) {
+                    $requestedLanguage = request()->input('lang', request()->input('locale'));
+
+                    if (is_string($requestedLanguage) && $requestedLanguage !== '') {
+                        $requestedLanguage = str_replace('-', '_', trim($requestedLanguage));
+                        $languagePrefix = explode('_', $requestedLanguage, 2)[0];
+                        $language = collect(Language::getSupportedLocales())->first(
+                            fn (array $item, $key): bool => in_array($requestedLanguage, [
+                                $key,
+                                Arr::get($item, 'lang_code'),
+                                Arr::get($item, 'lang_locale'),
+                            ], true) || in_array($languagePrefix, [
+                                $key,
+                                Arr::get($item, 'lang_code'),
+                                Arr::get($item, 'lang_locale'),
+                            ], true)
+                        );
+                        $locale = Arr::get($language, 'lang_locale');
+                        $languageCode = Arr::get($language, 'lang_code');
+
+                        if ($locale && $languageCode) {
+                            Language::setCurrentLocale($locale);
+                            Language::setCurrentLocaleCode($languageCode);
+                            LanguageAdvancedManager::clearLocaleCache();
+                        }
+                    }
+                }
+
                 $amenities = Amenity::query()
                     ->wherePublished()
                     ->whereIn('id', $amenityIds)
+                    ->when($usesAdvancedLanguage, fn ($query) => $query->with('translations'))
                     ->get();
 
                 return Theme::partial('shortcodes.featured-amenities.index', compact('shortcode', 'amenities'));
@@ -293,8 +324,12 @@ app()->booted(function (): void {
         );
 
         Shortcode::setAdminConfig('featured-amenities', function (array $attributes) {
+            $usesAdvancedLanguage = is_plugin_active('language') && is_plugin_active('language-advanced');
+
             $amenities = Amenity::query()
                 ->wherePublished()
+                ->when($usesAdvancedLanguage, fn ($query) => $query->with('translations'))
+                ->get()
                 ->pluck('name', 'id')
                 ->all();
 

@@ -135,6 +135,11 @@ const action = computed(() => resolveLink(section.value.action?.href));
     inset 0 1px 0 rgba(255, 248, 237, 0.08);
 }
 
+.services-hero__copy,
+.services-hero__floating {
+  min-width: 0;
+}
+
 .services-hero__eyebrow {
   margin: 0 0 0.75rem;
   color: #e3c8a8;
@@ -148,11 +153,12 @@ const action = computed(() => resolveLink(section.value.action?.href));
   margin: 0;
   color: #fff9f0;
   font-family: "Cormorant Garamond", "Times New Roman", Georgia, serif;
-  font-size: clamp(2.5rem, 4.45vw, 4.35rem);
+  font-size: clamp(2.5rem, 3.8vw, 4rem);
   line-height: 1;
   font-weight: 600;
-  letter-spacing: -0.035em;
-  white-space: nowrap;
+  letter-spacing: 0;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .services-hero__description {

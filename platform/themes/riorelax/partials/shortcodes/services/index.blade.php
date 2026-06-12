@@ -1,19 +1,15 @@
 <section class="shortcode-services feature-area2 p-relative fix" style="background: #f7f5f1;">
-    @if($floatingImage = $shortcode->right_floating_image)
-        <div class="animations-02">
-            <img src="{{ RvMedia::getImageURL($floatingImage) }}" alt="{{ $shortcode->title }}" />
+    @if($leftImage = $shortcode->left_image)
+        <div class="feature-img shortcode-services__background">
+            <img src="{{ RvMedia::getImageURL($leftImage) }}" alt="{{ $shortcode->title }}" class="img" />
         </div>
     @endif
     <div class="container">
-        <div class="row justify-content-center align-items-center">
-            <div class="col-lg-6 col-md-12 col-sm-12 pr-30">
-                @if($leftImage = $shortcode->left_image)
-                    <div class="feature-img">
-                        <img src="{{ RvMedia::getImageURL($leftImage) }}" alt="{{ $shortcode->title }}" class="img" />
-                    </div>
-                @endif
-            </div>
-            <div class="col-lg-6 col-md-12 col-sm-12">
+        <div @class([
+            'row justify-content-center align-items-center shortcode-services__row',
+            'shortcode-services__row--single' => ! $shortcode->right_floating_image,
+        ])>
+            <div class="shortcode-services__content">
                 <div class="feature-content s-about-content">
                     @if($shortcode->title || $shortcode->subtitle)
                         <div class="feature-title pb-20">
@@ -40,6 +36,12 @@
                     @endif
                 </div>
             </div>
+
+            @if($floatingImage = $shortcode->right_floating_image)
+                <div class="shortcode-services__media">
+                    <img src="{{ RvMedia::getImageURL($floatingImage) }}" alt="{{ $shortcode->title }}" />
+                </div>
+            @endif
         </div>
     </div>
 </section>
